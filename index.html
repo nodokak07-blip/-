@@ -1013,9 +1013,12 @@
 // トップページ
 // ============================
 function startApp() {
-  document.getElementById('top-page').style.display = 'none';
-  document.getElementById('app-body').classList.add('show');
-  window.scrollTo({ top: 0 });
+  var topPage = document.getElementById('top-page');
+  var appBody = document.getElementById('app-body');
+  if (topPage) topPage.style.display = 'none';
+  if (appBody) { appBody.style.display = 'block'; appBody.classList.add('show'); }
+  window.scrollTo(0, 0);
+  return false;
 }
 
 // ============================
