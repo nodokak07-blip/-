@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>あなた専用ダイエット目標シート | Bloom Journal</title>
+<meta name="description" content="30〜40代ママ向けの体質改善ダイエット目標設定Webアプリ。BMI自動計算・パーソナライズされた習慣提案・PDF出力機能付き。">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  :root {
+    --pink-light: #FFF0F3;
+    --pink-mid: #FBBDD0;
+    --pink-strong: #E75480;
+    --pink-dark: #C0395D;
+    --green-light: #F0FAF5;
+    --green-mid: #7DD4A8;
+    --green-strong: #2DAA71;
+    --cream: #FDFAF6;
+    --text-dark: #2C2226;
+    --text-mid: #6B4F57;
+    --text-light: #A8889A;
+    --shadow: 0 4px 24px rgba(200, 100, 130, 0.08);
+    --shadow-hover: 0 8px 32px rgba(200, 100, 130, 0.16);
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: var(--cream);
+    color: var(--text-dark);
+    min-height: 100vh;
+  }
+
+  /* ヘッダー */
+  .header {
+    background: white;
+    border-bottom: 1px solid #F5E0EA;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .logo-icon {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--pink-strong), #FF8FAB);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .logo-text { font-family: 'Noto Serif JP', serif; font-size: 15px; font-weight: 600; color: var(--pink-dark); }
+  .logo-sub { font-size: 11px; color: var(--text-light); margin-top: 1px; }
+
+  /* ヒーローセクション */
+  .hero {
+    background: white;
+    padding: 48px 24px 40px;
+    text-align: center;
+    border-bottom: 1px solid #F5E0EA;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: -60px; right: -60px;
+    width: 240px; height: 240px;
+    background: radial-gradient(circle, #FFE4EF 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .hero::after {
+    content: '';
+    position: absolute; bottom: -40px; left: -40px;
+    width: 180px; height: 180px;
+    background: radial-gradient(circle, #E8F8F0 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: var(--pink-light);
+    color: var(--pink-strong);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    border: 1px solid var(--pink-mid);
+  }
+  .hero h1 {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 1.5;
+    margin-bottom: 16px;
+    color: var(--text-dark);
+  }
+  .hero h1 span { color: var(--pink-strong); }
+  .hero-sub {
+    font-size: 14px;
+    color: var(--text-mid);
+    line-height: 1.8;
+    max-width: 480px;
+    margin: 0 auto 28px;
+  }
+  .step-bar {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 4px;
+    position: relative;
+    z-index: 1;
+  }
+  .step-dot {
+    width: 32px; height: 6px;
+    border-radius: 3px;
+    background: #F0D4DC;
+    transition: background 0.3s;
+  }
+  .step-dot.active { background: var(--pink-strong); }
+  .step-dot.done { background: var(--green-mid); }
+
+  /* メインコンテナ */
+  .main { max-width: 600px; margin: 0 auto; padding: 32px 20px 80px; }
+
+  /* ステップカード */
+  .step-card {
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 32px 28px;
+    margin-bottom: 24px;
+    display: none;
+    animation: slideIn 0.4s ease;
+  }
+  .step-card.active { display: block; }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .step-num {
+    font-size: 12px;
+    color: var(--pink-strong);
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .step-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text-dark);
+  }
+  .step-desc {
+    font-size: 13px;
+    color: var(--text-light);
+    margin-bottom: 28px;
+    line-height: 1.7;
+  }
+
+  /* フォーム要素 */
+  .form-group { margin-bottom: 20px; }
+  .form-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-mid);
+    margin-bottom: 8px;
+  }
+  .form-label span { color: var(--pink-strong); font-size: 11px; margin-left: 4px; }
+  input[type="text"], input[type="number"], select, textarea {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1.5px solid #F0D8E2;
+    border-radius: var(--radius-sm);
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 15px;
+    color: var(--text-dark);
+    background: var(--pink-light);
+    transition: border-color 0.2s, background 0.2s;
+    outline: none;
+    appearance: none;
+  }
+  input[type="text"]:focus, input[type="number"]:focus, select:focus, textarea:focus {
+    border-color: var(--pink-strong);
+    background: white;
+  }
+  input[type="number"] { -moz-appearance: textfield; }
+  input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+  /* ラジオ＆チェックボックス */
+  .radio-group, .check-group { display: flex; flex-direction: column; gap: 10px; }
+  .radio-item, .check-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 16px;
+    border: 1.5px solid #F0D8E2;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--pink-light);
+  }
+  .radio-item:hover, .check-item:hover { border-color: var(--pink-strong); background: white; }
+  .radio-item.selected, .check-item.selected {
+    border-color: var(--pink-strong);
+    background: white;
+  }
+  .radio-item input, .check-item input { display: none; }
+  .radio-dot {
+    width: 18px; height: 18px;
+    border: 2px solid #D4B0C0;
+    border-radius: 50%;
+    flex-shrink: 0;
+    transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .radio-item.selected .radio-dot {
+    border-color: var(--pink-strong);
+    background: var(--pink-strong);
+  }
+  .radio-item.selected .radio-dot::after {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: white;
+  }
+  .check-box {
+    width: 18px; height: 18px;
+    border: 2px solid #D4B0C0;
+    border-radius: 4px;
+    flex-shrink: 0;
+    transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; color: white;
+  }
+  .check-item.selected .check-box {
+    border-color: var(--green-strong);
+    background: var(--green-strong);
+  }
+  .radio-label, .check-label { font-size: 14px; color: var(--text-dark); flex: 1; }
+  .radio-sub, .check-sub { font-size: 12px; color: var(--text-light); margin-top: 2px; }
+
+  /* スライダー */
+  .slider-wrap { padding: 8px 0; }
+  input[type="range"] {
+    width: 100%; height: 6px;
+    border-radius: 3px;
+    background: #F0D8E2;
+    outline: none; cursor: pointer;
+    -webkit-appearance: none;
+    border: none;
+    padding: 0;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--pink-strong);
+    border: 3px solid white;
+    box-shadow: 0 2px 8px rgba(231, 84, 128, 0.3);
+    cursor: pointer;
+  }
+  .slider-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-light); margin-top: 6px; }
+  .slider-value { text-align: center; font-size: 20px; font-weight: 700; color: var(--pink-strong); margin-top: 12px; }
+  .slider-unit { font-size: 13px; font-weight: 400; color: var(--text-mid); }
+
+  /* BMI表示 */
+  .bmi-card {
+    background: linear-gradient(135deg, var(--pink-light), white);
+    border: 1.5px solid var(--pink-mid);
+    border-radius: var(--radius-sm);
+    padding: 20px;
+    margin: 20px 0;
+    text-align: center;
+  }
+  .bmi-number { font-size: 48px; font-weight: 700; color: var(--pink-strong); line-height: 1; }
+  .bmi-label { font-size: 13px; color: var(--text-mid); margin-top: 6px; }
+  .bmi-bar-wrap { margin: 16px 0 8px; background: #F0D8E2; border-radius: 3px; height: 8px; overflow: hidden; }
+  .bmi-bar { height: 100%; border-radius: 3px; background: var(--pink-strong); transition: width 0.6s ease; }
+  .weight-diff {
+    background: var(--green-light);
+    border: 1.5px solid var(--green-mid);
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    margin-top: 16px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .weight-diff-icon { font-size: 24px; }
+  .weight-diff-text { font-size: 14px; color: var(--text-mid); }
+  .weight-diff-num { font-size: 18px; font-weight: 700; color: var(--green-strong); }
+
+  /* 習慣提案カード */
+  .habits-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
+  @media (max-width: 420px) { .habits-grid { grid-template-columns: 1fr; } }
+  .habit-card {
+    border: 1.5px solid #F0D8E2;
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--pink-light);
+    position: relative;
+    overflow: hidden;
+  }
+  .habit-card:hover { border-color: var(--pink-strong); background: white; box-shadow: var(--shadow); }
+  .habit-card.selected { border-color: var(--pink-strong); background: white; }
+  .habit-card.selected::before {
+    content: '✓';
+    position: absolute; top: 8px; right: 10px;
+    width: 20px; height: 20px;
+    background: var(--pink-strong);
+    border-radius: 50%;
+    color: white;
+    font-size: 11px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700;
+  }
+  .habit-icon { font-size: 24px; margin-bottom: 8px; }
+  .habit-name { font-size: 13px; font-weight: 500; color: var(--text-dark); margin-bottom: 4px; }
+  .habit-detail { font-size: 11px; color: var(--text-light); line-height: 1.5; }
+
+  /* ボタン */
+  .btn-primary {
+    width: 100%;
+    padding: 16px;
+    background: var(--pink-strong);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 8px;
+  }
+  .btn-primary:hover { background: var(--pink-dark); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(231, 84, 128, 0.3); }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-secondary {
+    width: 100%;
+    padding: 14px;
+    background: transparent;
+    color: var(--text-mid);
+    border: 1.5px solid #E8D0D8;
+    border-radius: var(--radius-sm);
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 8px;
+  }
+  .btn-secondary:hover { background: var(--pink-light); border-color: var(--pink-mid); }
+
+  /* 結果ページ */
+  .result-hero {
+    background: linear-gradient(135deg, var(--pink-strong) 0%, #FF8FAB 100%);
+    border-radius: var(--radius);
+    padding: 32px 24px;
+    text-align: center;
+    color: white;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .result-hero::before {
+    content: '';
+    position: absolute; top: -30px; right: -30px;
+    width: 120px; height: 120px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 50%;
+  }
+  .result-name { font-size: 14px; opacity: 0.85; margin-bottom: 4px; }
+  .result-title { font-family: 'Noto Serif JP', serif; font-size: 22px; font-weight: 600; margin-bottom: 20px; }
+  .result-stats { display: flex; justify-content: center; gap: 32px; }
+  .result-stat { text-align: center; }
+  .result-stat-num { font-size: 28px; font-weight: 700; line-height: 1; }
+  .result-stat-label { font-size: 11px; opacity: 0.8; margin-top: 4px; }
+
+  .result-section { margin-bottom: 24px; }
+  .result-section-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #F0D8E2;
+  }
+
+  .goal-card {
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+  .goal-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid #FBF0F4;
+  }
+  .goal-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .goal-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--pink-strong); margin-top: 6px; flex-shrink: 0; }
+  .goal-text { font-size: 14px; color: var(--text-dark); line-height: 1.6; }
+  .goal-sub { font-size: 12px; color: var(--text-light); margin-top: 3px; }
+
+  .habit-result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media (max-width: 420px) { .habit-result-grid { grid-template-columns: 1fr; } }
+  .habit-result-item {
+    background: var(--green-light);
+    border: 1.5px solid var(--green-mid);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .habit-result-icon { font-size: 20px; }
+  .habit-result-name { font-size: 13px; font-weight: 500; color: var(--text-dark); }
+
+  /* LINE登録バナー */
+  .line-banner {
+    background: #06C755;
+    border-radius: var(--radius);
+    padding: 24px;
+    text-align: center;
+    color: white;
+    margin-bottom: 24px;
+  }
+  .line-banner-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+  .line-banner-sub { font-size: 13px; opacity: 0.9; margin-bottom: 16px; line-height: 1.6; }
+  .btn-line {
+    display: inline-block;
+    background: white;
+    color: #06C755;
+    border: none;
+    border-radius: 8px;
+    padding: 14px 32px;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .btn-line:hover { background: #E8F8EE; transform: translateY(-1px); }
+
+  /* PDF/シェアボタン */
+  .action-row { display: flex; gap: 12px; margin-top: 8px; }
+  .btn-pdf, .btn-share {
+    flex: 1; padding: 14px;
+    border-radius: var(--radius-sm);
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+  }
+  .btn-pdf { background: var(--pink-strong); color: white; }
+  .btn-pdf:hover { background: var(--pink-dark); }
+  .btn-share { background: white; color: var(--text-mid); border: 1.5px solid #E8D0D8; }
+  .btn-share:hover { background: var(--pink-light); }
+
+  /* フッター */
+  .footer {
+    text-align: center;
+    padding: 32px 20px;
+    font-size: 12px;
+    color: var(--text-light);
+    border-top: 1px solid #F5E0EA;
+  }
+
+  /* プログレス */
+  .progress-wrap { margin-bottom: 24px; }
+  .progress-text { font-size: 12px; color: var(--text-light); margin-bottom: 6px; display: flex; justify-content: space-between; }
+  .progress-bar { height: 4px; background: #F0D8E2; border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--pink-strong); border-radius: 2px; transition: width 0.5s ease; }
+
+  /* バリデーションエラー */
+  .error-msg { font-size: 12px; color: #E74C3C; margin-top: 6px; display: none; }
+  .has-error input, .has-error select { border-color: #E74C3C !important; background: #FFF5F5 !important; }
+
+  /* ローディング */
+  .loading-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(253, 250, 246, 0.9);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .loading-overlay.show { display: flex; }
+  .loading-spinner {
+    width: 40px; height: 40px;
+    border: 3px solid #F0D8E2;
+    border-top-color: var(--pink-strong);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text { font-size: 14px; color: var(--text-mid); }
+</style>
+</head>
+<body>
+
+<!-- ヘッダー -->
+<header class="header">
+  <div class="logo-icon">🌸</div>
+  <div>
+    <div class="logo-text">Bloom Journal</div>
+    <div class="logo-sub">体質改善ダイエットサポート</div>
+  </div>
+</header>
+
+<!-- ローディング -->
+<div class="loading-overlay" id="loading">
+  <div class="loading-spinner"></div>
+  <div class="loading-text">目標シートを作成中...</div>
+</div>
+
+<!-- ヒーロー -->
+<section class="hero">
+  <div class="hero-badge">✨ 30〜40代ママのための体質改善プログラム</div>
+  <h1>無理しないのに、<br><span>自然に痩せていく体へ。</span></h1>
+  <p class="hero-sub">あなた専用のダイエット目標シートを作りましょう。<br>3分で完成。今日からはじめる体質改善の第一歩。</p>
+  <div class="step-bar">
+    <div class="step-dot active" id="dot-0"></div>
+    <div class="step-dot" id="dot-1"></div>
+    <div class="step-dot" id="dot-2"></div>
+    <div class="step-dot" id="dot-3"></div>
+    <div class="step-dot" id="dot-4"></div>
+  </div>
+</section>
+
+<!-- メインコンテンツ -->
+<main class="main">
+  <div class="progress-wrap">
+    <div class="progress-text">
+      <span id="progress-label">ステップ 1 / 5</span>
+      <span id="progress-pct">20%</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:20%"></div></div>
+  </div>
+
+  <!-- STEP 1: 基本プロフィール -->
+  <div class="step-card active" id="step-0">
+    <div class="step-num">STEP 01</div>
+    <div class="step-title">基本プロフィール</div>
+    <div class="step-desc">あなたの情報を入力してください。BMIと目標体重の計算に使用します。</div>
+
+    <div class="form-group" id="fg-name">
+      <label class="form-label">お名前（ニックネームでOK）<span>必須</span></label>
+      <input type="text" id="inp-name" placeholder="例：みかこ" maxlength="20">
+      <div class="error-msg">お名前を入力してください</div>
+    </div>
+    <div class="form-group" id="fg-age">
+      <label class="form-label">年齢<span>必須</span></label>
+      <select id="inp-age">
+        <option value="">選択してください</option>
+        <option>25〜29歳</option><option>30〜34歳</option><option>35〜39歳</option>
+        <option>40〜44歳</option><option>45〜49歳</option><option>50歳以上</option>
+      </select>
+      <div class="error-msg">年齢を選択してください</div>
+    </div>
+    <div class="form-group" id="fg-height">
+      <label class="form-label">身長（cm）<span>必須</span></label>
+      <input type="number" id="inp-height" placeholder="例：158" min="140" max="200" step="0.1">
+      <div class="error-msg">正しい身長を入力してください（140〜200cm）</div>
+    </div>
+    <div class="form-group" id="fg-weight">
+      <label class="form-label">現在の体重（kg）<span>必須</span></label>
+      <input type="number" id="inp-weight" placeholder="例：60" min="30" max="150" step="0.1">
+      <div class="error-msg">正しい体重を入力してください（30〜150kg）</div>
+    </div>
+
+    <button class="btn-primary" onclick="goStep(1)">次へ　→</button>
+  </div>
+
+  <!-- STEP 2: 目標設定 -->
+  <div class="step-card" id="step-1">
+    <div class="step-num">STEP 02</div>
+    <div class="step-title">目標体重と期間</div>
+    <div class="step-desc">無理のない目標を設定しましょう。</div>
+
+    <div class="form-group">
+      <label class="form-label">目標体重（kg）</label>
+      <div class="slider-wrap">
+        <input type="range" id="inp-goal-weight" min="40" max="80" step="0.5" value="55" oninput="updateGoalWeight()">
+        <div class="slider-labels"><span>40kg</span><span>80kg</span></div>
+        <div class="slider-value"><span id="goal-weight-val">55</span> <span class="slider-unit">kg</span></div>
+      </div>
+    </div>
+
+    <div id="bmi-display" class="bmi-card">
+      <div style="font-size:12px;color:var(--text-light);margin-bottom:4px;">現在のBMI</div>
+      <div class="bmi-number" id="bmi-val">—</div>
+      <div class="bmi-label" id="bmi-cat">プロフィールを入力するとBMIが表示されます</div>
+      <div class="bmi-bar-wrap"><div class="bmi-bar" id="bmi-bar" style="width:0%"></div></div>
+      <div class="weight-diff">
+        <div class="weight-diff-icon">🎯</div>
+        <div>
+          <div class="weight-diff-text">目標まで</div>
+          <div class="weight-diff-num" id="diff-val">— kg</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">目標期間</label>
+      <div class="radio-group" id="rg-period">
+        <label class="radio-item" onclick="selectRadio(this,'rg-period')">
+          <input type="radio" name="period" value="1ヶ月"><div class="radio-dot"></div>
+          <div><div class="radio-label">1ヶ月</div><div class="radio-sub">体を慣らすスタート期間</div></div>
+        </label>
+        <label class="radio-item" onclick="selectRadio(this,'rg-period')">
+          <input type="radio" name="period" value="3ヶ月"><div class="radio-dot"></div>
+          <div><div class="radio-label">3ヶ月</div><div class="radio-sub">習慣が定着しやすい期間</div></div>
+        </label>
+        <label class="radio-item selected" onclick="selectRadio(this,'rg-period')">
+          <input type="radio" name="period" value="6ヶ月" checked><div class="radio-dot"></div>
+          <div><div class="radio-label">6ヶ月</div><div class="radio-sub">体質改善に最適な期間 ✨</div></div>
+        </label>
+        <label class="radio-item" onclick="selectRadio(this,'rg-period')">
+          <input type="radio" name="period" value="1年"><div class="radio-dot"></div>
+          <div><div class="radio-label">1年</div><div class="radio-sub">じっくりリバウンドなし</div></div>
+        </label>
+      </div>
+    </div>
+
+    <button class="btn-primary" onclick="goStep(2)">次へ　→</button>
+    <button class="btn-secondary" onclick="goStep(0)">← 戻る</button>
+  </div>
+
+  <!-- STEP 3: 生活スタイル -->
+  <div class="step-card" id="step-2">
+    <div class="step-num">STEP 03</div>
+    <div class="step-title">あなたの生活スタイル</div>
+    <div class="step-desc">パーソナライズされた習慣提案のために教えてください。</div>
+
+    <div class="form-group">
+      <label class="form-label">運動習慣</label>
+      <div class="radio-group" id="rg-exercise">
+        <label class="radio-item" onclick="selectRadio(this,'rg-exercise')">
+          <input type="radio" name="exercise" value="ほぼしない"><div class="radio-dot"></div>
+          <div><div class="radio-label">ほぼしない</div><div class="radio-sub">デスクワーク中心・家事のみ</div></div>
+        </label>
+        <label class="radio-item" onclick="selectRadio(this,'rg-exercise')">
+          <input type="radio" name="exercise" value="週1〜2回"><div class="radio-dot"></div>
+          <div><div class="radio-label">週1〜2回</div><div class="radio-sub">軽いウォーキングなど</div></div>
+        </label>
+        <label class="radio-item" onclick="selectRadio(this,'rg-exercise')">
+          <input type="radio" name="exercise" value="週3〜4回"><div class="radio-dot"></div>
+          <div><div class="radio-label">週3〜4回</div><div class="radio-sub">定期的に体を動かしている</div></div>
+        </label>
+        <label class="radio-item" onclick="selectRadio(this,'rg-exercise')">
+          <input type="radio" name="exercise" value="ほぼ毎日"><div class="radio-dot"></div>
+          <div><div class="radio-label">ほぼ毎日</div><div class="radio-sub">アクティブな生活</div></div>
+        </label>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">食事の悩み（複数選択可）</label>
+      <div class="check-group" id="cg-food">
+        <label class="check-item" onclick="toggleCheck(this,'cg-food')">
+          <input type="checkbox" value="甘いものがやめられない"><div class="check-box">✓</div>
+          <div><div class="check-label">甘いものがやめられない 🍰</div></div>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this,'cg-food')">
+          <input type="checkbox" value="食べる量が多い"><div class="check-box">✓</div>
+          <div><div class="check-label">食べる量が多い 🍽️</div></div>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this,'cg-food')">
+          <input type="checkbox" value="夜食べすぎてしまう"><div class="check-box">✓</div>
+          <div><div class="check-label">夜食べすぎてしまう 🌙</div></div>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this,'cg-food')">
+          <input type="checkbox" value="外食・コンビニが多い"><div class="check-box">✓</div>
+          <div><div class="check-label">外食・コンビニが多い 🏪</div></div>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this,'cg-food')">
+          <input type="checkbox" value="ストレス食いがある"><div class="check-box">✓</div>
+          <div><div class="check-label">ストレス食いがある 😤</div></div>
+        </label>
+      </div>
+    </div>
+
+    <button class="btn-primary" onclick="goStep(3)">次へ　→</button>
+    <button class="btn-secondary" onclick="goStep(1)">← 戻る</button>
+  </div>
+
+  <!-- STEP 4: 習慣選択 -->
+  <div class="step-card" id="step-3">
+    <div class="step-num">STEP 04</div>
+    <div class="step-title">続けられる習慣を選ぼう</div>
+    <div class="step-desc">無理なく続けられそうなものを3〜5つ選んでください。</div>
+
+    <div class="habits-grid" id="habits-grid">
+      <!-- JavaScriptで生成 -->
+    </div>
+    <div class="error-msg" id="habits-error" style="display:block;visibility:hidden;">3〜5つ選んでください</div>
+
+    <button class="btn-primary" onclick="goStep(4)" style="margin-top:20px;">目標シートを作成する 🌸</button>
+    <button class="btn-secondary" onclick="goStep(2)">← 戻る</button>
+  </div>
+
+  <!-- STEP 5: 結果 -->
+  <div class="step-card" id="step-4">
+    <div class="result-hero">
+      <div class="result-name" id="res-name-greeting">こんにちは！</div>
+      <div class="result-title">あなた専用<br>ダイエット目標シート 🌸</div>
+      <div class="result-stats">
+        <div class="result-stat">
+          <div class="result-stat-num" id="res-current">—</div>
+          <div class="result-stat-label">現在の体重</div>
+        </div>
+        <div class="result-stat" style="font-size:24px;opacity:0.6;align-self:center">→</div>
+        <div class="result-stat">
+          <div class="result-stat-num" id="res-goal">—</div>
+          <div class="result-stat-label">目標体重</div>
+        </div>
+        <div class="result-stat">
+          <div class="result-stat-num" id="res-bmi2">—</div>
+          <div class="result-stat-label">現在のBMI</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="result-section">
+      <div class="result-section-title">📋 目標プラン</div>
+      <div class="goal-card" id="goal-list"></div>
+    </div>
+
+    <div class="result-section">
+      <div class="result-section-title">🌿 選んだ習慣</div>
+      <div class="habit-result-grid" id="habit-result-list"></div>
+    </div>
+
+    <div class="line-banner">
+      <div class="line-banner-title">📲 LINE登録で毎日サポート！</div>
+      <div class="line-banner-sub">目標達成をLINEでお手伝い。<br>毎朝の応援メッセージ・レシピ・習慣チェックをお届けします。</div>
+      <a href="#" class="btn-line" onclick="alert('LINEのURLを設定してください')">LINEで受け取る 🎁</a>
+    </div>
+
+    <div class="action-row">
+      <button class="btn-pdf" onclick="downloadPDF()">📄 PDFで保存</button>
+      <button class="btn-share" onclick="shareSheet()">🔗 シェアする</button>
+    </div>
+    <button class="btn-secondary" onclick="goStep(3)" style="margin-top:12px;">← 習慣を変更する</button>
+  </div>
+</main>
+
+<footer class="footer">
+  <p>© 2025 Bloom Journal ｜ 30〜40代ママの体質改善サポート</p>
+  <p style="margin-top:6px;">このシートは医療的アドバイスではありません。体調に合わせてご利用ください。</p>
+</footer>
+
+<script>
+// ============================
+// データ
+// ============================
+const HABITS = [
+  { icon: '🌅', name: '朝の白湯', detail: '起床後すぐにコップ1杯の白湯で代謝アップ' },
+  { icon: '🚶', name: '毎日10分ウォーク', detail: '買い物ついでや通園の帰りに10分歩く' },
+  { icon: '🥗', name: '野菜から食べる', detail: '食事の最初に野菜を食べて血糖値を安定させる' },
+  { icon: '💧', name: '水を1.5L飲む', detail: 'ペットボトルで管理して毎日の水分補給を習慣に' },
+  { icon: '😴', name: '23時前就寝', detail: '睡眠の質を上げて代謝・ホルモンバランスを整える' },
+  { icon: '🧘', name: '5分ストレッチ', detail: 'お風呂上がりの5分で柔軟性と血流改善' },
+  { icon: '🍚', name: '腹八分目を意識', detail: '少し物足りないくらいで箸を置くクセをつける' },
+  { icon: '📝', name: '食事を記録する', detail: 'アプリや手帳に記録するだけで食べ過ぎを防ぐ' },
+  { icon: '🛁', name: '湯船につかる', detail: '38〜40℃で15分。むくみ解消・リラックス効果' },
+  { icon: '🍵', name: '緑茶を飲む', detail: 'カテキンで脂肪燃焼・食後の一杯を習慣に' },
+  { icon: '🧗', name: '階段を使う', detail: 'エレベーターをやめて日常生活を運動に変える' },
+  { icon: '🌙', name: '夜21時以降食べない', detail: '就寝3時間前の食事をやめて脂肪をためない体に' },
+];
+
+// 状態
+const state = { name:'', age:'', height:0, weight:0, goalWeight:55, period:'6ヶ月', exercise:'', foodWorries:[], selectedHabits:[] };
+let currentStep = 0;
+
+// ============================
+// 初期化
+// ============================
+window.addEventListener('load', () => {
+  buildHabits();
+  initGoalWeight();
+});
+
+function buildHabits() {
+  const grid = document.getElementById('habits-grid');
+  grid.innerHTML = HABITS.map((h, i) => `
+    <div class="habit-card" data-idx="${i}" onclick="toggleHabit(this, ${i})">
+      <div class="habit-icon">${h.icon}</div>
+      <div class="habit-name">${h.name}</div>
+      <div class="habit-detail">${h.detail}</div>
+    </div>
+  `).join('');
+}
+
+function initGoalWeight() {
+  const slider = document.getElementById('inp-goal-weight');
+  document.getElementById('goal-weight-val').textContent = slider.value;
+}
+
+// ============================
+// ステップ管理
+// ============================
+function goStep(next) {
+  if (next > currentStep && !validateStep(currentStep)) return;
+
+  // データ収集
+  if (currentStep === 0) {
+    state.name = document.getElementById('inp-name').value.trim();
+    state.age = document.getElementById('inp-age').value;
+    state.height = parseFloat(document.getElementById('inp-height').value);
+    state.weight = parseFloat(document.getElementById('inp-weight').value);
+    if (next === 1) updateBMI();
+  }
+  if (currentStep === 1) {
+    state.goalWeight = parseFloat(document.getElementById('goal-weight-val').textContent);
+    const radios = document.querySelectorAll('#rg-period input[type=radio]');
+    radios.forEach(r => { if (r.closest('.radio-item.selected')) state.period = r.value; });
+  }
+  if (currentStep === 2) {
+    const exerciseEl = document.querySelector('#rg-exercise .radio-item.selected input');
+    state.exercise = exerciseEl ? exerciseEl.value : 'ほぼしない';
+    state.foodWorries = [];
+    document.querySelectorAll('#cg-food .check-item.selected input').forEach(c => state.foodWorries.push(c.value));
+  }
+  if (currentStep === 3) {
+    const count = state.selectedHabits.length;
+    if (count < 3 || count > 5) {
+      const err = document.getElementById('habits-error');
+      err.style.visibility = 'visible';
+      err.textContent = `3〜5つ選んでください（現在${count}個）`;
+      return;
+    }
+  }
+
+  // アニメーション
+  document.getElementById(`step-${currentStep}`).classList.remove('active');
+
+  if (next === 4) {
+    showLoading(600, () => {
+      buildResult();
+      document.getElementById(`step-${next}`).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  } else {
+    currentStep = next;
+    document.getElementById(`step-${next}`).classList.add('active');
+    updateProgress();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+function showLoading(ms, cb) {
+  document.getElementById('loading').classList.add('show');
+  setTimeout(() => {
+    document.getElementById('loading').classList.remove('show');
+    currentStep = 4;
+    updateProgress();
+    cb();
+  }, ms);
+}
+
+// ============================
+// バリデーション
+// ============================
+function validateStep(step) {
+  let valid = true;
+  if (step === 0) {
+    const name = document.getElementById('inp-name').value.trim();
+    const age = document.getElementById('inp-age').value;
+    const h = parseFloat(document.getElementById('inp-height').value);
+    const w = parseFloat(document.getElementById('inp-weight').value);
+    setError('fg-name', !name);
+    setError('fg-age', !age);
+    setError('fg-height', isNaN(h) || h < 140 || h > 200);
+    setError('fg-weight', isNaN(w) || w < 30 || w > 150);
+    valid = name && age && h >= 140 && h <= 200 && w >= 30 && w <= 150;
+  }
+  return valid;
+}
+
+function setError(id, hasError) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.toggle('has-error', hasError);
+  const msg = el.querySelector('.error-msg');
+  if (msg) msg.style.display = hasError ? 'block' : 'none';
+}
+
+// ============================
+// BMI計算
+// ============================
+function updateBMI() {
+  const h = state.height / 100;
+  const w = state.weight;
+  if (!h || !w) return;
+  const bmi = w / (h * h);
+  const bmiRound = Math.round(bmi * 10) / 10;
+  document.getElementById('bmi-val').textContent = bmiRound;
+
+  let cat = '';
+  if (bmi < 18.5) cat = '低体重（やせ型）';
+  else if (bmi < 25) cat = '普通体重（健康的）';
+  else if (bmi < 30) cat = '肥満（1度）';
+  else cat = '肥満（2度以上）';
+  document.getElementById('bmi-cat').textContent = cat;
+
+  const pct = Math.min(Math.max(((bmi - 15) / 20) * 100, 5), 95);
+  document.getElementById('bmi-bar').style.width = pct + '%';
+  updateGoalWeight();
+}
+
+function updateGoalWeight() {
+  const gw = parseFloat(document.getElementById('inp-goal-weight').value);
+  document.getElementById('goal-weight-val').textContent = gw;
+  state.goalWeight = gw;
+  const diff = state.weight - gw;
+  document.getElementById('diff-val').textContent = diff > 0 ? `-${Math.abs(diff).toFixed(1)} kg` : `+${Math.abs(diff).toFixed(1)} kg`;
+}
+
+// ============================
+// ラジオ・チェック
+// ============================
+function selectRadio(el, groupId) {
+  document.querySelectorAll(`#${groupId} .radio-item`).forEach(i => i.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function toggleCheck(el, groupId) {
+  el.classList.toggle('selected');
+}
+
+function toggleHabit(el, idx) {
+  const already = state.selectedHabits.includes(idx);
+  if (already) {
+    state.selectedHabits = state.selectedHabits.filter(i => i !== idx);
+    el.classList.remove('selected');
+  } else {
+    if (state.selectedHabits.length >= 5) { alert('最大5つまで選べます'); return; }
+    state.selectedHabits.push(idx);
+    el.classList.add('selected');
+  }
+  const count = state.selectedHabits.length;
+  const err = document.getElementById('habits-error');
+  if (count >= 3 && count <= 5) { err.style.visibility = 'hidden'; }
+}
+
+// ============================
+// プログレス更新
+// ============================
+function updateProgress() {
+  const pct = Math.round(((currentStep + 1) / 5) * 100);
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-pct').textContent = pct + '%';
+  document.getElementById('progress-label').textContent = `ステップ ${currentStep + 1} / 5`;
+
+  for (let i = 0; i < 5; i++) {
+    const dot = document.getElementById(`dot-${i}`);
+    dot.className = 'step-dot';
+    if (i < currentStep) dot.classList.add('done');
+    else if (i === currentStep) dot.classList.add('active');
+  }
+}
+
+// ============================
+// 結果生成
+// ============================
+function buildResult() {
+  const diff = (state.weight - state.goalWeight).toFixed(1);
+  const bmi = (state.weight / Math.pow(state.height / 100, 2)).toFixed(1);
+
+  document.getElementById('res-name-greeting').textContent = `${state.name}さんの`;
+  document.getElementById('res-current').textContent = state.weight + 'kg';
+  document.getElementById('res-goal').textContent = state.goalWeight + 'kg';
+  document.getElementById('res-bmi2').textContent = bmi;
+
+  // 月あたり減量
+  const months = { '1ヶ月': 1, '3ヶ月': 3, '6ヶ月': 6, '1年': 12 }[state.period] || 6;
+  const perMonth = diff > 0 ? (parseFloat(diff) / months).toFixed(1) : 0;
+
+  const goals = [
+    { text: `目標体重：${state.goalWeight}kg（現在より${diff}kg減）`, sub: '無理のない目標で体質から変える' },
+    { text: `達成期間：${state.period}`, sub: `月${perMonth}kgペースの健康的な減量` },
+    { text: `運動レベル：${state.exercise || '設定なし'}`, sub: 'あなたのペースに合わせたプランで進めましょう' },
+    ...(state.foodWorries.length > 0 ? [{ text: `改善したい食習慣：${state.foodWorries.slice(0, 2).join('・')}`, sub: '少しずつ意識を変えていきましょう' }] : []),
+  ];
+
+  document.getElementById('goal-list').innerHTML = goals.map(g => `
+    <div class="goal-item">
+      <div class="goal-dot"></div>
+      <div><div class="goal-text">${g.text}</div><div class="goal-sub">${g.sub}</div></div>
+    </div>
+  `).join('');
+
+  document.getElementById('habit-result-list').innerHTML = state.selectedHabits.map(i => `
+    <div class="habit-result-item">
+      <div class="habit-result-icon">${HABITS[i].icon}</div>
+      <div class="habit-result-name">${HABITS[i].name}</div>
+    </div>
+  `).join('');
+}
+
+// ============================
+// PDF出力
+// ============================
+function downloadPDF() {
+  alert('📄 PDFとして印刷するには、ブラウザの「印刷」→「PDFとして保存」をご利用ください。\n\n（Ctrl+P または Cmd+P）');
+}
+
+// ============================
+// シェア
+// ============================
+function shareSheet() {
+  if (navigator.share) {
+    navigator.share({
+      title: 'あなた専用ダイエット目標シート | Bloom Journal',
+      text: `${state.name}さんの目標：${state.goalWeight}kgを${state.period}で達成！`,
+      url: location.href
+    });
+  } else {
+    navigator.clipboard.writeText(location.href).then(() => alert('URLをコピーしました！'));
+  }
+}
+</script>
+</body>
+</html>
