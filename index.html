@@ -758,12 +758,15 @@ let currentUser = null;
 
 function initSupabase() {
   try {
-    if (window.supabase && SUPABASE_ANON_KEY !== 'sb_publishable_kT1EbqgWCGwmxNEDWF1HpA_xthbUAKW') {
+    if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
       supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      console.log('Supabase initialized successfully');
       checkAuthState();
+    } else {
+      setTimeout(initSupabase, 1000);
     }
   } catch(e) {
-    console.log('Supabase not available, using localStorage');
+    console.error('Supabase init error:', e);
   }
 }
 
