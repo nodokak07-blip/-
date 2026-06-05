@@ -753,13 +753,13 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
 // ========== Supabase設定 ==========
 const SUPABASE_URL = 'https://myxzlfoguczihvjkvccf.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_kT1EbqgWCGwmxNEDWF1HpA_xthbUAKWmxNEDWF1HpA_xthbUAKW';
-let supabase = null;
+let supabaseClient = null;
 let currentUser = null;
 
 function initSupabase() {
   try {
     if (window.supabase && SUPABASE_ANON_KEY !== 'sb_publishable_kT1EbqgWCGwmxNEDWF1HpA_xthbUAKWmxNEDWF1HpA_xthbUAKW') {
-      supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       checkAuthState();
     }
   } catch(e) {
@@ -851,7 +851,7 @@ function updateAuthUI() {
 
 // ========== Supabaseデータ保存 ==========
 async function saveToSupabase() {
-  if (!supabase || !currentUser) { saveToStorage(); return; }
+  if (!supabaseClient || !currentUser) { saveToStorage(); return; }
   try {
     await supabase.from('profiles').upsert({
       id: currentUser.id,
@@ -867,7 +867,7 @@ async function saveToSupabase() {
 }
 
 async function saveTodoToSupabase(date, habit, done) {
-  if (!supabase || !currentUser) return;
+  if (!supabaseClient || !currentUser) return;
   try {
     const existing = await supabase.from('todos')
       .select('id').eq('user_id', currentUser.id).eq('date', date).eq('habit', habit).single();
@@ -880,7 +880,7 @@ async function saveTodoToSupabase(date, habit, done) {
 }
 
 async function saveRecordToSupabase(date, data) {
-  if (!supabase || !currentUser) return;
+  if (!supabaseClient || !currentUser) return;
   try {
     const existing = await supabase.from('records')
       .select('id').eq('user_id', currentUser.id).eq('date', date).single();
@@ -893,7 +893,7 @@ async function saveRecordToSupabase(date, data) {
 }
 
 async function saveJournalToSupabase(date, content) {
-  if (!supabase || !currentUser) return;
+  if (!supabaseClient || !currentUser) return;
   try {
     const existing = await supabase.from('journals')
       .select('id').eq('user_id', currentUser.id).eq('date', date).single();
@@ -906,7 +906,7 @@ async function saveJournalToSupabase(date, content) {
 }
 
 async function loadUserDataFromSupabase() {
-  if (!supabase || !currentUser) return;
+  if (!supabaseClient || !currentUser) return;
   try {
     const { data: profile } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single();
     if (profile) {
