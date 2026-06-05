@@ -6,6 +6,7 @@
 <title>Bloom Journal | 美容健康ダイエット習慣サポート</title>
 <meta name="description" content="美容健康ダイエット習慣サポートアプリ。目標設定・習慣TODO管理・体調記録。">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root {
   --pink-light: #FFF0F3; --pink-mid: #FBBDD0; --pink-strong: #E75480; --pink-dark: #C0395D;
@@ -16,6 +17,35 @@
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Noto Sans JP', sans-serif; background: var(--cream); color: var(--text-dark); min-height: 100vh; }
+
+/* ========== 認証画面 ========== */
+.auth-overlay {
+  position: fixed; inset: 0; background: rgba(253,250,246,0.97);
+  z-index: 300; display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+}
+.auth-card {
+  background: white; border-radius: 20px; padding: 40px 32px;
+  width: 100%; max-width: 420px;
+  box-shadow: 0 8px 48px rgba(200,100,130,0.15);
+  text-align: center;
+}
+.auth-logo { font-family:'Noto Serif JP',serif; font-size:28px; font-weight:600; color:#c07090; margin-bottom:6px; }
+.auth-tagline { font-size:12px; color:#c0a0b0; margin-bottom:28px; }
+.auth-title { font-size:18px; font-weight:600; color:#3a2030; margin-bottom:6px; }
+.auth-sub { font-size:13px; color:#9a7080; margin-bottom:24px; line-height:1.7; }
+.auth-tabs { display:flex; gap:0; margin-bottom:24px; border-radius:10px; overflow:hidden; border:1.5px solid #F0D8E2; }
+.auth-tab { flex:1; padding:10px; border:none; background:#FFF0F3; font-size:14px; cursor:pointer; transition:all .2s; font-family:'Noto Sans JP',sans-serif; }
+.auth-tab.active { background:var(--pink-strong); color:white; font-weight:500; }
+.auth-form { display:flex; flex-direction:column; gap:12px; }
+.auth-input { padding:14px 16px; border:1.5px solid #F0D8E2; border-radius:10px; font-size:15px; font-family:'Noto Sans JP',sans-serif; outline:none; background:#FFF8FA; transition:all .2s; }
+.auth-input:focus { border-color:var(--pink-strong); background:white; }
+.auth-btn { padding:16px; background:linear-gradient(135deg,#f0a0b8,#d4b8e8); color:white; border:none; border-radius:10px; font-size:16px; font-weight:700; cursor:pointer; font-family:'Noto Sans JP',sans-serif; transition:all .2s; margin-top:4px; }
+.auth-btn:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(200,140,180,0.3); }
+.auth-msg { font-size:13px; margin-top:12px; padding:10px; border-radius:8px; }
+.auth-msg.error { background:#FFF0F0; color:#E74C3C; }
+.auth-msg.success { background:#F0FAF5; color:#2DAA71; }
+.auth-skip { font-size:12px; color:#c0a0b0; margin-top:16px; cursor:pointer; text-decoration:underline; }
 
 /* ========== LP ========== */
 .lp-wrap { background: #fffaf8; }
@@ -247,6 +277,40 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
 </head>
 <body>
 
+<!-- ========== 認証画面 ========== -->
+<div id="auth-overlay" class="auth-overlay" style="display:none;">
+  <div class="auth-card">
+    <div class="auth-logo">🌸 Bloom Journal</div>
+    <div class="auth-tagline">美容健康ダイエット習慣サポート</div>
+
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchAuthTab('login')">ログイン</button>
+      <button class="auth-tab" onclick="switchAuthTab('signup')">新規登録</button>
+    </div>
+
+    <div id="auth-login-form" class="auth-form">
+      <div class="auth-title">おかえりなさい！</div>
+      <div class="auth-sub">メールアドレスとパスワードでログイン</div>
+      <input type="email" class="auth-input" id="login-email" placeholder="メールアドレス">
+      <input type="password" class="auth-input" id="login-password" placeholder="パスワード">
+      <button class="auth-btn" onclick="handleLogin()">ログイン</button>
+      <div id="login-msg" class="auth-msg" style="display:none;"></div>
+    </div>
+
+    <div id="auth-signup-form" class="auth-form" style="display:none;">
+      <div class="auth-title">はじめましょう！</div>
+      <div class="auth-sub">メールアドレスで無料登録</div>
+      <input type="email" class="auth-input" id="signup-email" placeholder="メールアドレス">
+      <input type="password" class="auth-input" id="signup-password" placeholder="パスワード（8文字以上）">
+      <input type="password" class="auth-input" id="signup-password2" placeholder="パスワード（確認）">
+      <button class="auth-btn" onclick="handleSignup()">無料登録</button>
+      <div id="signup-msg" class="auth-msg" style="display:none;"></div>
+    </div>
+
+    <div class="auth-skip" onclick="skipAuth()">登録せずに使う（データは端末に保存）</div>
+  </div>
+</div>
+
 <!-- ========== LPトップページ ========== -->
 <div id="top-page" class="lp-wrap">
   <section class="lp-hero">
@@ -320,6 +384,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
   <div class="nav-header">
     <span style="font-size:20px;">🌸</span>
     <span class="nav-logo">Bloom Journal</span>
+    <button id="nav-auth-btn" onclick="toggleAuth()" style="margin-left:auto;padding:6px 14px;border-radius:20px;border:1.5px solid #F0D8E2;background:white;font-size:12px;cursor:pointer;color:var(--text-mid);">🔑 ログイン</button>
   </div>
   <div class="nav-tabs">
     <button class="nav-tab active" onclick="showPage('page-goal')">🎯 目標設定</button>
@@ -684,6 +749,201 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
 </div>
 
 <script>
+
+// ========== Supabase設定 ==========
+const SUPABASE_URL = 'https://myxzlfoguczihvjkvccf.supabase.co';
+const SUPABASE_ANON_KEY = 'REPLACE_WITH_YOUR_ANON_KEY';
+let supabase = null;
+let currentUser = null;
+
+function initSupabase() {
+  try {
+    if (window.supabase && SUPABASE_ANON_KEY !== 'REPLACE_WITH_YOUR_ANON_KEY') {
+      supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      checkAuthState();
+    }
+  } catch(e) {
+    console.log('Supabase not available, using localStorage');
+  }
+}
+
+async function checkAuthState() {
+  if (!supabase) return;
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+      currentUser = session.user;
+      await loadUserDataFromSupabase();
+    }
+    supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        currentUser = session.user;
+        document.getElementById('auth-overlay').style.display = 'none';
+        await loadUserDataFromSupabase();
+        updateAuthUI();
+      } else if (event === 'SIGNED_OUT') {
+        currentUser = null;
+        updateAuthUI();
+      }
+    });
+  } catch(e) {}
+}
+
+function switchAuthTab(tab) {
+  document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('auth-login-form').style.display = tab === 'login' ? 'flex' : 'none';
+  document.getElementById('auth-signup-form').style.display = tab === 'signup' ? 'flex' : 'none';
+}
+
+async function handleLogin() {
+  if (!supabase) return;
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  const msg = document.getElementById('login-msg');
+  if (!email || !password) { showAuthMsg('login-msg', 'メールアドレスとパスワードを入力してください', 'error'); return; }
+  try {
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) { showAuthMsg('login-msg', 'ログインに失敗しました: ' + error.message, 'error'); return; }
+    showAuthMsg('login-msg', 'ログイン成功！', 'success');
+  } catch(e) { showAuthMsg('login-msg', 'エラーが発生しました', 'error'); }
+}
+
+async function handleSignup() {
+  if (!supabase) return;
+  const email = document.getElementById('signup-email').value.trim();
+  const password = document.getElementById('signup-password').value;
+  const password2 = document.getElementById('signup-password2').value;
+  if (!email || !password) { showAuthMsg('signup-msg', 'メールアドレスとパスワードを入力してください', 'error'); return; }
+  if (password.length < 8) { showAuthMsg('signup-msg', 'パスワードは8文字以上にしてください', 'error'); return; }
+  if (password !== password2) { showAuthMsg('signup-msg', 'パスワードが一致しません', 'error'); return; }
+  try {
+    const { error } = await supabase.auth.signUp({ email, password });
+    if (error) { showAuthMsg('signup-msg', '登録に失敗しました: ' + error.message, 'error'); return; }
+    showAuthMsg('signup-msg', '確認メールを送信しました！メールを確認してください📧', 'success');
+  } catch(e) { showAuthMsg('signup-msg', 'エラーが発生しました', 'error'); }
+}
+
+function showAuthMsg(id, text, type) {
+  const el = document.getElementById(id);
+  el.textContent = text;
+  el.className = 'auth-msg ' + type;
+  el.style.display = 'block';
+}
+
+function skipAuth() {
+  document.getElementById('auth-overlay').style.display = 'none';
+}
+
+async function handleLogout() {
+  if (supabase) await supabase.auth.signOut();
+  currentUser = null;
+  updateAuthUI();
+  alert('ログアウトしました');
+}
+
+function updateAuthUI() {
+  const loginBtn = document.getElementById('nav-auth-btn');
+  if (loginBtn) {
+    loginBtn.textContent = currentUser ? '👤 ' + (currentUser.email || '').split('@')[0] : '🔑 ログイン';
+  }
+}
+
+// ========== Supabaseデータ保存 ==========
+async function saveToSupabase() {
+  if (!supabase || !currentUser) { saveToStorage(); return; }
+  try {
+    await supabase.from('profiles').upsert({
+      id: currentUser.id,
+      name: state.name, age: state.age,
+      height: state.height, weight: state.weight,
+      goal_weight: state.goalWeight, period: state.period,
+      exercise: state.exercise, food_worries: state.foodWorries,
+      selected_habits: state.selectedHabits, custom_habits: state.customHabits,
+      goal_created: state.goalCreated, updated_at: new Date().toISOString()
+    });
+    saveToStorage();
+  } catch(e) { saveToStorage(); }
+}
+
+async function saveTodoToSupabase(date, habit, done) {
+  if (!supabase || !currentUser) return;
+  try {
+    const existing = await supabase.from('todos')
+      .select('id').eq('user_id', currentUser.id).eq('date', date).eq('habit', habit).single();
+    if (existing.data) {
+      await supabase.from('todos').update({ done }).eq('id', existing.data.id);
+    } else {
+      await supabase.from('todos').insert({ user_id: currentUser.id, date, habit, done });
+    }
+  } catch(e) {}
+}
+
+async function saveRecordToSupabase(date, data) {
+  if (!supabase || !currentUser) return;
+  try {
+    const existing = await supabase.from('records')
+      .select('id').eq('user_id', currentUser.id).eq('date', date).single();
+    if (existing.data) {
+      await supabase.from('records').update(data).eq('id', existing.data.id);
+    } else {
+      await supabase.from('records').insert({ user_id: currentUser.id, date, ...data });
+    }
+  } catch(e) {}
+}
+
+async function saveJournalToSupabase(date, content) {
+  if (!supabase || !currentUser) return;
+  try {
+    const existing = await supabase.from('journals')
+      .select('id').eq('user_id', currentUser.id).eq('date', date).single();
+    if (existing.data) {
+      await supabase.from('journals').update({ content, updated_at: new Date().toISOString() }).eq('id', existing.data.id);
+    } else {
+      await supabase.from('journals').insert({ user_id: currentUser.id, date, content });
+    }
+  } catch(e) {}
+}
+
+async function loadUserDataFromSupabase() {
+  if (!supabase || !currentUser) return;
+  try {
+    const { data: profile } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single();
+    if (profile) {
+      state = { ...state,
+        name: profile.name || '', age: profile.age || '',
+        height: profile.height || 0, weight: profile.weight || 0,
+        goalWeight: profile.goal_weight || 55, period: profile.period || '6ヶ月',
+        exercise: profile.exercise || '', foodWorries: profile.food_worries || [],
+        selectedHabits: profile.selected_habits || [], customHabits: profile.custom_habits || [],
+        goalCreated: profile.goal_created || false
+      };
+    }
+    const { data: todos } = await supabase.from('todos').select('*').eq('user_id', currentUser.id);
+    if (todos) {
+      todos.forEach(t => {
+        if (!todoData[t.date]) todoData[t.date] = {};
+        todoData[t.date][t.habit] = t.done;
+      });
+    }
+    const { data: records } = await supabase.from('records').select('*').eq('user_id', currentUser.id);
+    if (records) {
+      records.forEach(r => {
+        recordData[r.date] = { weight: r.weight, mood: r.mood, stress: r.stress, memo: r.memo };
+      });
+    }
+    const { data: journals } = await supabase.from('journals').select('*').eq('user_id', currentUser.id);
+    if (journals) {
+      journals.forEach(j => { journalData[j.date] = j.content; });
+    }
+    calcStreak();
+    if (state.goalCreated) showGoalView();
+    renderTodo();
+    renderRecordHistory();
+    updateAuthUI();
+  } catch(e) {}
+}
+
 // ========== データ ==========
 const PRESET_HABITS = [
   '水を目標量飲む','毎日食後ウォーキング','睡眠8時間','食物繊維1日20g',
@@ -717,6 +977,7 @@ let badges = [];
 
 // ========== 初期化 ==========
 window.addEventListener('load', () => {
+  initSupabase();
   loadFromStorage();
   buildHabitSelectGrid();
   renderTodo();
@@ -769,6 +1030,19 @@ function startApp() {
   if (topPage) topPage.style.display = 'none';
   if (appBody) { appBody.style.display = 'block'; appBody.classList.add('show'); }
   window.scrollTo(0, 0);
+  if (!currentUser && supabase) {
+    setTimeout(() => {
+      document.getElementById('auth-overlay').style.display = 'flex';
+    }, 500);
+  }
+}
+
+function toggleAuth() {
+  if (currentUser) {
+    if (confirm('ログアウトしますか？')) handleLogout();
+  } else {
+    document.getElementById('auth-overlay').style.display = 'flex';
+  }
 }
 
 // ========== 目標シート ==========
@@ -945,7 +1219,7 @@ function buildResult() {
     '<div class="habit-result-item"><span>✅</span><span>' + h + '</span></div>'
   ).join('');
   state.goalCreated = true;
-  saveToStorage();
+  saveToSupabase();
 }
 
 function startTodo() {
@@ -1243,6 +1517,7 @@ function saveJournal() {
   const key = formatDate(journalDate);
   journalData[key] = text;
   saveJournalData();
+  saveJournalToSupabase(key, text);
   renderJournalHistory();
   alert('保存しました！💾');
 }
