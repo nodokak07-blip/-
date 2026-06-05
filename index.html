@@ -770,12 +770,12 @@ function initSupabase() {
 async function checkAuthState() {
   if (!supabaseClient) return;
   try {
-    const { data: { session } } = await supabase.auth.getSession();
+    const { data: { session } } = await supabaseClient.auth.getSession();
     if (session) {
       currentUser = session.user;
       await loadUserDataFromSupabase();
     }
-    supabase.auth.onAuthStateChange(async (event, session) => {
+    supabaseClient.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session) {
         currentUser = session.user;
         document.getElementById('auth-overlay').style.display = 'none';
@@ -803,7 +803,7 @@ async function handleLogin() {
   const msg = document.getElementById('login-msg');
   if (!email || !password) { showAuthMsg('login-msg', 'メールアドレスとパスワードを入力してください', 'error'); return; }
   try {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
     if (error) { showAuthMsg('login-msg', 'ログインに失敗しました: ' + error.message, 'error'); return; }
     showAuthMsg('login-msg', 'ログイン成功！', 'success');
   } catch(e) { showAuthMsg('login-msg', 'エラーが発生しました', 'error'); }
@@ -818,7 +818,7 @@ async function handleSignup() {
   if (password.length < 8) { showAuthMsg('signup-msg', 'パスワードは8文字以上にしてください', 'error'); return; }
   if (password !== password2) { showAuthMsg('signup-msg', 'パスワードが一致しません', 'error'); return; }
   try {
-    const { error } = await supabase.auth.signUp({ email, password });
+    const { error } = await supabaseClient.auth.signUp({ email, password });
     if (error) { showAuthMsg('signup-msg', '登録に失敗しました: ' + error.message, 'error'); return; }
     showAuthMsg('signup-msg', '確認メールを送信しました！メールを確認してください📧', 'success');
   } catch(e) { showAuthMsg('signup-msg', 'エラーが発生しました', 'error'); }
@@ -836,7 +836,7 @@ function skipAuth() {
 }
 
 async function handleLogout() {
-  if (supabase) await supabase.auth.signOut();
+  if (supabase) await supabaseClient.auth.signOut();
   currentUser = null;
   updateAuthUI();
   alert('ログアウトしました');
@@ -853,7 +853,7 @@ function updateAuthUI() {
 async function saveToSupabase() {
   if (!supabaseClient || !currentUser) { saveToStorage(); return; }
   try {
-    await supabase.from('profiles').upsert({
+    await supabaseClient.from('profiles').upsert({
       id: currentUser.id,
       name: state.name, age: state.age,
       height: state.height, weight: state.weight,
@@ -869,12 +869,12 @@ async function saveToSupabase() {
 async function saveTodoToSupabase(date, habit, done) {
   if (!supabaseClient || !currentUser) return;
   try {
-    const existing = await supabase.from('todos')
+    const existing = await supabaseClient.from('todos')
       .select('id').eq('user_id', currentUser.id).eq('date', date).eq('habit', habit).single();
     if (existing.data) {
-      await supabase.from('todos').update({ done }).eq('id', existing.data.id);
+      await supabaseClient.from('todos').update({ done }).eq('id', existing.data.id);
     } else {
-      await supabase.from('todos').insert({ user_id: currentUser.id, date, habit, done });
+      await supabaseClient.from('todos').insert({ user_id: currentUser.id, date, habit, done });
     }
   } catch(e) {}
 }
@@ -882,12 +882,12 @@ async function saveTodoToSupabase(date, habit, done) {
 async function saveRecordToSupabase(date, data) {
   if (!supabaseClient || !currentUser) return;
   try {
-    const existing = await supabase.from('records')
+    const existing = await supabaseClient.from('records')
       .select('id').eq('user_id', currentUser.id).eq('date', date).single();
     if (existing.data) {
-      await supabase.from('records').update(data).eq('id', existing.data.id);
+      await supabaseClient.from('records').update(data).eq('id', existing.data.id);
     } else {
-      await supabase.from('records').insert({ user_id: currentUser.id, date, ...data });
+      await supabaseClient.from('records').insert({ user_id: currentUser.id, date, ...data });
     }
   } catch(e) {}
 }
@@ -895,12 +895,12 @@ async function saveRecordToSupabase(date, data) {
 async function saveJournalToSupabase(date, content) {
   if (!supabaseClient || !currentUser) return;
   try {
-    const existing = await supabase.from('journals')
+    const existing = await supabaseClient.from('journals')
       .select('id').eq('user_id', currentUser.id).eq('date', date).single();
     if (existing.data) {
-      await supabase.from('journals').update({ content, updated_at: new Date().toISOString() }).eq('id', existing.data.id);
+      await supabaseClient.from('journals').update({ content, updated_at: new Date().toISOString() }).eq('id', existing.data.id);
     } else {
-      await supabase.from('journals').insert({ user_id: currentUser.id, date, content });
+      await supabaseClient.from('journals').insert({ user_id: currentUser.id, date, content });
     }
   } catch(e) {}
 }
@@ -908,7 +908,7 @@ async function saveJournalToSupabase(date, content) {
 async function loadUserDataFromSupabase() {
   if (!supabaseClient || !currentUser) return;
   try {
-    const { data: profile } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single();
+    const { data: profile } = await supabaseClient.from('profiles').select('*').eq('id', currentUser.id).single();
     if (profile) {
       state = { ...state,
         name: profile.name || '', age: profile.age || '',
@@ -919,20 +919,20 @@ async function loadUserDataFromSupabase() {
         goalCreated: profile.goal_created || false
       };
     }
-    const { data: todos } = await supabase.from('todos').select('*').eq('user_id', currentUser.id);
+    const { data: todos } = await supabaseClient.from('todos').select('*').eq('user_id', currentUser.id);
     if (todos) {
       todos.forEach(t => {
         if (!todoData[t.date]) todoData[t.date] = {};
         todoData[t.date][t.habit] = t.done;
       });
     }
-    const { data: records } = await supabase.from('records').select('*').eq('user_id', currentUser.id);
+    const { data: records } = await supabaseClient.from('records').select('*').eq('user_id', currentUser.id);
     if (records) {
       records.forEach(r => {
         recordData[r.date] = { weight: r.weight, mood: r.mood, stress: r.stress, memo: r.memo };
       });
     }
-    const { data: journals } = await supabase.from('journals').select('*').eq('user_id', currentUser.id);
+    const { data: journals } = await supabaseClient.from('journals').select('*').eq('user_id', currentUser.id);
     if (journals) {
       journals.forEach(j => { journalData[j.date] = j.content; });
     }
