@@ -325,6 +325,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
     <button class="nav-tab active" onclick="showPage('page-goal')">🎯 目標設定</button>
     <button class="nav-tab" onclick="showPage('page-todo')">✅ 習慣TODO</button>
     <button class="nav-tab" onclick="showPage('page-record')">📊 体調記録</button>
+    <button class="nav-tab" onclick="showPage('page-journal')">📓 ジャーナル</button>
     <button class="nav-tab" onclick="showPage('page-report')">📄 レポート</button>
   </div>
 </nav>
@@ -644,6 +645,38 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
   </div>
 </div>
 
+<!-- ========== ジャーナルページ ========== -->
+<div id="page-journal" class="page">
+  <div style="padding:16px;">
+    <div class="date-header">
+      <button class="date-nav" onclick="changeJournalDate(-1)">‹</button>
+      <div class="date-label" id="journal-date-label">今日</div>
+      <button class="date-nav" onclick="changeJournalDate(1)">›</button>
+    </div>
+    <div class="card">
+      <div class="card-title">📓 今日のジャーナル</div>
+      <div class="form-group">
+        <label class="form-label">今日の気づき・振り返り・感情を自由に書こう</label>
+        <textarea id="journal-text" placeholder="今日はどんな一日でしたか？&#10;食事・運動・気持ち・できたこと・できなかったこと...&#10;なんでも自由に書いてください🌸" rows="8" style="font-size:15px;line-height:1.8;"></textarea>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button class="btn-primary" onclick="saveJournal()" style="flex:1;">💾 保存する</button>
+        <button class="btn-sm btn-sm-outline" onclick="sendToLINE()" style="padding:14px 16px;border-radius:var(--radius-sm);font-size:14px;">💚 LINEで相談</button>
+      </div>
+    </div>
+    <div class="card" style="background:linear-gradient(135deg,#e8f8f0,#f0fff8);border:1.5px solid #7DD4A8;">
+      <div class="card-title" style="color:#2DAA71;">💚 LINEでフィードバックをもらおう</div>
+      <p style="font-size:13px;color:#4a8a6a;line-height:1.8;margin-bottom:16px;">ジャーナルを保存してからボタンを押すと、今日の記録がLINEに送信されます。あなたの記録を見てフィードバックをお返しします！</p>
+      <button onclick="sendToLINE()" style="width:100%;padding:16px;background:#06C755;color:white;border:none;border-radius:var(--radius-sm);font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;">💚 今日の記録をLINEで送る</button>
+      <p style="font-size:11px;color:#6aaa8a;text-align:center;margin-top:8px;">※LINEアプリが開き、記録内容が自動入力されます</p>
+    </div>
+    <div class="card">
+      <div class="card-title">📖 過去のジャーナル</div>
+      <div id="journal-history" style="font-size:13px;color:var(--text-mid);">記録がありません</div>
+    </div>
+  </div>
+</div>
+
 <footer class="footer">
   <p>© 2025 Bloom Journal | 美容健康ダイエット習慣サポート</p>
   <p style="margin-top:4px;">このアプリは医療的アドバイスではありません。</p>
@@ -695,6 +728,7 @@ window.addEventListener('load', () => {
 });
 
 function loadFromStorage() {
+  loadJournalData();
   try {
     const s = localStorage.getItem('bloom-state');
     if (s) state = {...state, ...JSON.parse(s)};
@@ -725,6 +759,7 @@ function showPage(id) {
   if (id === 'page-todo') renderTodo();
   if (id === 'page-record') renderRecordHistory();
   if (id === 'page-report') updateReportPage();
+  if (id === 'page-journal') { renderJournalHistory(); document.getElementById('journal-date-label').textContent = formatDateLabel(journalDate); }
   window.scrollTo(0,0);
 }
 
@@ -1176,13 +1211,389 @@ function saveReportComment() {
   alert('コメントを保存しました！');
 }
 
-function generateReport() {
-  alert('📄 レポートをPDFとして保存するには、ブラウザの「印刷」→「PDFとして保存」をご利用ください。\n\n（Ctrl+P または Cmd+P）');
+
+
+
+// ========== ジャーナル ==========
+let journalDate = new Date();
+let journalData = {};
+
+function loadJournalData() {
+  try {
+    const j = localStorage.getItem('bloom-journal');
+    if (j) journalData = JSON.parse(j);
+  } catch(e) {}
 }
 
-function downloadPDF() {
-  alert('📄 PDFとして保存するには、ブラウザの「印刷」→「PDFとして保存」をご利用ください。\n\n（Ctrl+P または Cmd+P）');
+function saveJournalData() {
+  try { localStorage.setItem('bloom-journal', JSON.stringify(journalData)); } catch(e) {}
 }
+
+function changeJournalDate(delta) {
+  journalDate.setDate(journalDate.getDate() + delta);
+  const key = formatDate(journalDate);
+  document.getElementById('journal-date-label').textContent = formatDateLabel(journalDate);
+  document.getElementById('journal-text').value = journalData[key] || '';
+  renderJournalHistory();
+}
+
+function saveJournal() {
+  const text = document.getElementById('journal-text').value.trim();
+  if (!text) { alert('内容を入力してください'); return; }
+  const key = formatDate(journalDate);
+  journalData[key] = text;
+  saveJournalData();
+  renderJournalHistory();
+  alert('保存しました！💾');
+}
+
+function renderJournalHistory() {
+  const keys = Object.keys(journalData).sort().reverse().slice(0, 10);
+  const el = document.getElementById('journal-history');
+  if (!el) return;
+  if (keys.length === 0) { el.textContent = '記録がありません'; return; }
+  el.innerHTML = keys.map(k => {
+    const text = journalData[k];
+    return '<div style="padding:12px 0;border-bottom:1px solid #F5EEF2;" onclick="loadJournalEntry(\'' + k + '\')" style="cursor:pointer">' +
+      '<div style="font-size:12px;color:var(--text-light);margin-bottom:4px;">' + k + '</div>' +
+      '<div style="font-size:13px;color:var(--text-dark);line-height:1.6;">' + text.substring(0, 60) + (text.length > 60 ? '...' : '') + '</div>' +
+      '</div>';
+  }).join('');
+}
+
+function loadJournalEntry(key) {
+  journalDate = new Date(key + 'T00:00:00');
+  document.getElementById('journal-date-label').textContent = formatDateLabel(journalDate);
+  document.getElementById('journal-text').value = journalData[key] || '';
+}
+
+function sendToLINE() {
+  const dateKey = formatDate(new Date());
+  const journalText = journalData[dateKey] || '';
+  const rec = recordData[dateKey] || {};
+  const todoDay = todoData[dateKey] || {};
+  const habits = state.selectedHabits;
+  const doneCount = habits.filter(h => todoDay[h]).length;
+  const pct = habits.length > 0 ? Math.round(doneCount / habits.length * 100) : 0;
+  const moods = ['','😢','😔','😐','🙂','😄'];
+  let msg = '【Bloom Journal 今日の記録】\n';
+  msg += '📅 ' + dateKey + '\n\n';
+  if (state.name) msg += '👤 ' + state.name + '\n\n';
+  msg += '✅ 習慣達成率：' + pct + '% (' + doneCount + '/' + habits.length + ')\n';
+  if (rec.weight) msg += '⚖️ 体重：' + rec.weight + 'kg\n';
+  if (rec.mood) msg += '💭 気分：' + moods[rec.mood] + '\n';
+  if (rec.stress) msg += '😤 ストレス：' + rec.stress + '/10\n';
+  if (rec.memo) msg += '📝 体調メモ：' + rec.memo + '\n';
+  if (journalText) msg += '\n📓 ジャーナル：\n' + journalText + '\n';
+  msg += '\n#BloomJournal #習慣記録';
+  window.open('https://lin.ee/XouXT64', '_blank');
+  setTimeout(() => {
+    navigator.clipboard.writeText(msg).then(() => {
+      alert('📋 記録内容をコピーしました！\nLINEが開いたらトークに貼り付けて送信してください\n\n--- 内容プレビュー ---\n' + msg.substring(0, 150) + '...');
+    }).catch(() => {
+      alert('LINEで以下の内容を送ってください：\n\n' + msg);
+    });
+  }, 800);
+}
+
+// ========== SNSシェア ==========
+function getShareText() {
+  const now = new Date();
+  const avgTodo = document.getElementById('report-avg-todo').textContent;
+  const streak = document.getElementById('report-streak').textContent;
+  const weightDiff = document.getElementById('report-weight-diff').textContent;
+  return '【' + now.getFullYear() + '年' + (now.getMonth()+1) + '月の記録】\n' +
+    '✅ 習慣平均達成率：' + avgTodo + '\n' +
+    '🔥 最長継続：' + streak + '\n' +
+    '⚖️ 体重変化：' + weightDiff + '\n' +
+    '\n#BloomJournal #習慣記録 #ダイエット #体質改善';
+}
+
+function shareToX() {
+  const text = getShareText();
+  const url = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent(location.href);
+  window.open(url, '_blank');
+}
+
+function shareToInstagram() {
+  const text = getShareText();
+  navigator.clipboard.writeText(text).then(() => {
+    alert('📸 インスタストーリーズ用テキストをコピーしました！\nInstagramを開いてストーリーズに貼り付けてください\n\n推奨サイズ：1080×1920px');
+  }).catch(() => alert('コピーできませんでした'));
+}
+
+function shareToThreads() {
+  const text = getShareText();
+  const url = 'https://www.threads.net/intent/post?text=' + encodeURIComponent(text);
+  window.open(url, '_blank');
+}
+
+
+function downloadPDF() {
+  try {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+    // フォント設定（日本語対応のためUnicode使用）
+    doc.setFont('helvetica');
+
+    // 背景色
+    doc.setFillColor(255, 245, 248);
+    doc.rect(0, 0, 210, 297, 'F');
+
+    // ヘッダー
+    doc.setFillColor(231, 84, 128);
+    doc.rect(0, 0, 210, 28, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(18);
+    doc.text('Bloom Journal', 20, 12);
+    doc.setFontSize(10);
+    doc.text('Beauty & Health Diet Support', 20, 20);
+
+    const today = new Date();
+    doc.setFontSize(9);
+    doc.text(today.getFullYear() + '/' + (today.getMonth()+1) + '/' + today.getDate(), 170, 16);
+
+    // タイトル
+    doc.setTextColor(44, 34, 38);
+    doc.setFontSize(16);
+    doc.text('Diet Goal Sheet', 20, 42);
+
+    // ユーザー情報
+    doc.setFontSize(10);
+    doc.setTextColor(107, 79, 87);
+    let y = 52;
+    const bmi = state.height > 0 ? (state.weight / Math.pow(state.height/100, 2)).toFixed(1) : '-';
+    const diff = (state.weight - state.goalWeight).toFixed(1);
+
+    // 情報ボックス
+    doc.setFillColor(255, 255, 255);
+    doc.roundedRect(15, y, 180, 50, 3, 3, 'F');
+    doc.setDrawColor(251, 189, 208);
+    doc.roundedRect(15, y, 180, 50, 3, 3, 'S');
+
+    doc.setTextColor(44, 34, 38);
+    doc.setFontSize(11);
+    doc.text('Name: ' + (state.name || '-'), 22, y+10);
+    doc.text('Age: ' + (state.age || '-'), 22, y+20);
+    doc.text('Height: ' + (state.height || '-') + ' cm', 22, y+30);
+    doc.text('Weight: ' + (state.weight || '-') + ' kg', 22, y+40);
+    doc.text('Goal Weight: ' + state.goalWeight + ' kg', 100, y+10);
+    doc.text('BMI: ' + bmi, 100, y+20);
+    doc.text('Difference: -' + diff + ' kg', 100, y+30);
+    doc.text('Period: ' + state.period, 100, y+40);
+
+    y += 60;
+
+    // 習慣リスト
+    doc.setFillColor(231, 84, 128);
+    doc.rect(15, y, 180, 8, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(10);
+    doc.text('Selected Habits (TODO)', 20, y+5.5);
+    y += 12;
+
+    doc.setFillColor(255, 255, 255);
+    doc.setTextColor(44, 34, 38);
+    doc.setFontSize(9);
+    const habits = state.selectedHabits;
+    habits.forEach((h, i) => {
+      if (i % 2 === 0 && i > 0) {
+        doc.setFillColor(255, 245, 248);
+      } else {
+        doc.setFillColor(255, 255, 255);
+      }
+      doc.rect(15, y + i*8, 180, 8, 'F');
+      doc.setTextColor(107, 79, 87);
+      doc.text((i+1) + '. ' + h, 22, y + i*8 + 5.5);
+      if (y + i*8 > 250) {
+        doc.addPage();
+        doc.setFillColor(255, 245, 248);
+        doc.rect(0, 0, 210, 297, 'F');
+        y = 20 - i*8;
+      }
+    });
+
+    y += habits.length * 8 + 10;
+
+    // 7大栄養素チェック
+    if (y < 240) {
+      doc.setFillColor(125, 212, 168);
+      doc.rect(15, y, 180, 8, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(10);
+      doc.text('7 Essential Nutrients', 20, y+5.5);
+      y += 12;
+      const nutrients = ['Protein','Fat','Carbohydrate','Vitamins','Minerals','Fiber','Water'];
+      doc.setFontSize(9);
+      doc.setTextColor(44, 34, 38);
+      nutrients.forEach((n, i) => {
+        doc.setFillColor(i%2===0 ? 240 : 255, i%2===0 ? 250 : 255, i%2===0 ? 245 : 255);
+        doc.rect(15, y + i*7, 180, 7, 'F');
+        doc.text((i+1) + '. ' + n, 22, y + i*7 + 5);
+      });
+    }
+
+    // フッター
+    doc.setFillColor(231, 84, 128);
+    doc.rect(0, 289, 210, 8, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(8);
+    doc.text('Bloom Journal | Beauty & Health Diet Support', 20, 294);
+
+    doc.save('bloom-journal-goal-sheet.pdf');
+  } catch(e) {
+    console.error(e);
+    window.print();
+  }
+}
+
+function generateReport() {
+  try {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+    const now = new Date();
+    const monthStr = now.getFullYear() + '/' + (now.getMonth()+1);
+    const avgTodo = document.getElementById('report-avg-todo').textContent;
+    const streak = document.getElementById('report-streak').textContent;
+    const weightDiff = document.getElementById('report-weight-diff').textContent;
+    const comment = document.getElementById('report-comment').value;
+
+    // 背景
+    doc.setFillColor(255, 245, 248);
+    doc.rect(0, 0, 210, 297, 'F');
+
+    // ヘッダー
+    doc.setFillColor(231, 84, 128);
+    doc.rect(0, 0, 210, 28, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(18);
+    doc.text('Bloom Journal', 20, 12);
+    doc.setFontSize(10);
+    doc.text('Monthly Report - ' + monthStr, 20, 20);
+    doc.setFontSize(9);
+    doc.text('Created: ' + now.getFullYear() + '/' + (now.getMonth()+1) + '/' + now.getDate(), 155, 16);
+
+    doc.setTextColor(44, 34, 38);
+    doc.setFontSize(16);
+    doc.text('Monthly Report', 20, 42);
+    if (state.name) {
+      doc.setFontSize(11);
+      doc.setTextColor(107, 79, 87);
+      doc.text(state.name, 20, 50);
+    }
+
+    let y = 58;
+
+    // 統計カード3つ
+    const stats = [
+      { label: 'Habit Rate', value: avgTodo, color: [231, 84, 128] },
+      { label: 'Best Streak', value: streak, color: [125, 212, 168] },
+      { label: 'Weight Change', value: weightDiff, color: [139, 92, 246] }
+    ];
+    stats.forEach((s, i) => {
+      const x = 15 + i * 62;
+      doc.setFillColor(255, 255, 255);
+      doc.roundedRect(x, y, 55, 30, 3, 3, 'F');
+      doc.setDrawColor(...s.color);
+      doc.setLineWidth(0.5);
+      doc.roundedRect(x, y, 55, 30, 3, 3, 'S');
+      doc.setTextColor(...s.color);
+      doc.setFontSize(16);
+      doc.text(s.value, x + 27.5, y + 16, { align: 'center' });
+      doc.setTextColor(168, 136, 154);
+      doc.setFontSize(8);
+      doc.text(s.label, x + 27.5, y + 25, { align: 'center' });
+    });
+
+    y += 40;
+
+    // 習慣達成グラフ（棒グラフ風）
+    doc.setFillColor(231, 84, 128);
+    doc.rect(15, y, 180, 8, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(10);
+    doc.text('This Month Habit Achievement', 20, y+5.5);
+    y += 12;
+
+    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+    const days = [];
+    for (let d = new Date(firstDay); d <= now; d.setDate(d.getDate()+1)) {
+      days.push(formatDate(new Date(d)));
+    }
+    const habits = state.selectedHabits;
+    const barW = Math.min(5, 170 / days.length);
+    days.forEach((k, i) => {
+      const dayData = todoData[k] || {};
+      const done = habits.filter(h => dayData[h]).length;
+      const pct = habits.length > 0 ? done / habits.length : 0;
+      const barH = pct * 30;
+      doc.setFillColor(
+        pct >= 0.8 ? 125 : pct >= 0.5 ? 251 : 231,
+        pct >= 0.8 ? 212 : pct >= 0.5 ? 189 : 84,
+        pct >= 0.8 ? 168 : pct >= 0.5 ? 208 : 128
+      );
+      doc.rect(15 + i * barW, y + 30 - barH, barW - 0.5, barH, 'F');
+    });
+    y += 42;
+
+    // コメント欄
+    if (comment) {
+      doc.setFillColor(255, 255, 255);
+      doc.roundedRect(15, y, 180, 50, 3, 3, 'F');
+      doc.setDrawColor(251, 189, 208);
+      doc.roundedRect(15, y, 180, 50, 3, 3, 'S');
+      doc.setTextColor(231, 84, 128);
+      doc.setFontSize(10);
+      doc.text('My Comment', 22, y+8);
+      doc.setTextColor(44, 34, 38);
+      doc.setFontSize(9);
+      const lines = doc.splitTextToSize(comment, 165);
+      lines.slice(0, 4).forEach((line, i) => {
+        doc.text(line, 22, y + 16 + i * 7);
+      });
+      y += 55;
+    }
+
+    // 7大栄養素リマインダー
+    doc.setFillColor(125, 212, 168);
+    doc.rect(15, y, 180, 8, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(10);
+    doc.text('7 Essential Nutrients Reminder', 20, y+5.5);
+    y += 12;
+    const nutrients = [
+      'Protein - Body building material',
+      'Fat - Energy & hormones',
+      'Carbohydrate - Brain & body fuel',
+      'Vitamins - Metabolism support',
+      'Minerals - Bone & balance',
+      'Fiber - Gut health',
+      'Water - Transport & metabolism'
+    ];
+    doc.setFontSize(8);
+    nutrients.forEach((n, i) => {
+      doc.setFillColor(i%2===0 ? 240 : 255, i%2===0 ? 250 : 255, i%2===0 ? 245 : 255);
+      doc.rect(15, y + i*7, 180, 7, 'F');
+      doc.setTextColor(44, 34, 38);
+      doc.text((i+1) + '. ' + n, 22, y + i*7 + 5);
+    });
+
+    // フッター
+    doc.setFillColor(231, 84, 128);
+    doc.rect(0, 289, 210, 8, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(8);
+    doc.text('Bloom Journal | Beauty & Health Diet Support', 20, 294);
+
+    doc.save('bloom-journal-report-' + now.getFullYear() + '-' + (now.getMonth()+1) + '.pdf');
+  } catch(e) {
+    console.error(e);
+    window.print();
+  }
+}
+
 </script>
 </body>
 </html>
