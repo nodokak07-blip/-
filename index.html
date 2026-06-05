@@ -752,14 +752,13 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
 
 // ========== Supabase設定 ==========
 const SUPABASE_URL = 'https://myxzlfoguczihvjkvccf.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_kT1EbqgWCGwmxNEDWF1HpA_xthbUAKWmxNEDWF1HpA_xthbUAKW';
-let supabaseClient = null;
+const SUPABASE_ANON_KEY = 'sb_publishable_kT1EbqgWCGwmxNEDWF1HpA_xthbUAKW';
 let currentUser = null;
 
 function initSupabase() {
   try {
-    if (window.supabase && SUPABASE_ANON_KEY !== 'sb_publishable_kT1EbqgWCGwmxNEDWF1HpA_xthbUAKWmxNEDWF1HpA_xthbUAKW') {
-      supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    if (window.supabase && SUPABASE_ANON_KEY !== 'sb_publishable_kT1EbqgWCGwmxNEDWF1HpA_xthbUAKW') {
+      supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       checkAuthState();
     }
   } catch(e) {
@@ -836,7 +835,7 @@ function skipAuth() {
 }
 
 async function handleLogout() {
-  if (supabase) await supabaseClient.auth.signOut();
+  if (supabaseClient) await supabaseClient.auth.signOut();
   currentUser = null;
   updateAuthUI();
   alert('ログアウトしました');
@@ -1030,10 +1029,9 @@ function startApp() {
   if (topPage) topPage.style.display = 'none';
   if (appBody) { appBody.style.display = 'block'; appBody.classList.add('show'); }
   window.scrollTo(0, 0);
-  if (!currentUser) {
+  if (!currentUser && supabaseClient) {
     setTimeout(() => {
-      const overlay = document.getElementById('auth-overlay');
-      if (overlay) overlay.style.display = 'flex';
+      document.getElementById('auth-overlay').style.display = 'flex';
     }, 500);
   }
 }
