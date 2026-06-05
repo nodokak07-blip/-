@@ -752,13 +752,13 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
 
 // ========== Supabase設定 ==========
 const SUPABASE_URL = 'https://myxzlfoguczihvjkvccf.supabase.co';
-const SUPABASE_ANON_KEY = 'REPLACE_WITH_YOUR_ANON_KEY';
+const SUPABASE_ANON_KEY = 'sb_publishable_kT1EbqgWCGwmxNEDWF1HpA_xthbUAKWmxNEDWF1HpA_xthbUAKW';
 let supabase = null;
 let currentUser = null;
 
 function initSupabase() {
   try {
-    if (window.supabase && SUPABASE_ANON_KEY !== 'REPLACE_WITH_YOUR_ANON_KEY') {
+    if (window.supabase && SUPABASE_ANON_KEY !== 'sb_publishable_kT1EbqgWCGwmxNEDWF1HpA_xthbUAKWmxNEDWF1HpA_xthbUAKW') {
       supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       checkAuthState();
     }
