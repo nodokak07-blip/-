@@ -768,7 +768,7 @@ function initSupabase() {
 }
 
 async function checkAuthState() {
-  if (!supabase) return;
+  if (!supabaseClient) return;
   try {
     const { data: { session } } = await supabase.auth.getSession();
     if (session) {
@@ -797,7 +797,7 @@ function switchAuthTab(tab) {
 }
 
 async function handleLogin() {
-  if (!supabase) return;
+  if (!supabaseClient) return;
   const email = document.getElementById('login-email').value.trim();
   const password = document.getElementById('login-password').value;
   const msg = document.getElementById('login-msg');
@@ -810,7 +810,7 @@ async function handleLogin() {
 }
 
 async function handleSignup() {
-  if (!supabase) return;
+  if (!supabaseClient) return;
   const email = document.getElementById('signup-email').value.trim();
   const password = document.getElementById('signup-password').value;
   const password2 = document.getElementById('signup-password2').value;
