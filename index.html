@@ -835,12 +835,12 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
 // ========== Supabase設定 ==========
 const SUPABASE_URL = 'https://myxzlfoguczihvjkvccf.supabase.co';
 let supabaseClient = null;
-const SUPABASE_ANON_KEY = 'sb_publishable_kT1EbqgWCGwmxNEDWF1HpA_xthbUAKW'
+const SUPABASE_ANON_KEY = 'sb_publishable_kT1EbqgWCGwmxNEDWF1HpA_xthbUAKW';
 let currentUser = null;
 
 function initSupabase() {
   try {
-    if (window.supabase && SUPABASE_ANON_KEY !== 'REPLACE_WITH_YOUR_ANON_KEY') {
+    if (window.supabase && SUPABASE_ANON_KEY !== 'sb_publishable_kT1EbqgWCGwmxNEDWF1HpA_xthbUAKW') {
       supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       checkAuthState();
     }
@@ -879,7 +879,7 @@ function switchAuthTab(tab) {
 }
 
 async function handleLogin() {
-  if (!supabaseClient) { alert('接続中です。少し待ってから再試行してください'); return; }
+  if (!supabaseClient) return;
   const email = document.getElementById('login-email').value.trim();
   const password = document.getElementById('login-password').value;
   const msg = document.getElementById('login-msg');
