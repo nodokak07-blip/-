@@ -879,7 +879,7 @@ function switchAuthTab(tab) {
 }
 
 async function handleLogin() {
-  if (!supabaseClient) return;
+  if (!supabaseClient) { alert('接続中です。少し待ってから再試行してください'); return; }
   const email = document.getElementById('login-email').value.trim();
   const password = document.getElementById('login-password').value;
   const msg = document.getElementById('login-msg');
