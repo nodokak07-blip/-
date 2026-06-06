@@ -355,19 +355,45 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
 </div>
 
 <!-- プロフィール設定モーダル -->
-<div id="profile-modal" style="display:none;position:fixed;inset:0;background:rgba(253,250,246,0.97);z-index:300;display:none;align-items:center;justify-content:center;padding:20px;">
-  <div style="background:white;border-radius:20px;padding:32px;width:100%;max-width:420px;box-shadow:0 8px 48px rgba(200,100,130,0.15);">
+<div id="profile-modal" style="display:none;position:fixed;inset:0;background:rgba(253,250,246,0.97);z-index:300;display:none;align-items:center;justify-content:center;padding:20px;overflow-y:auto;">
+  <div style="background:white;border-radius:20px;padding:32px;width:100%;max-width:420px;box-shadow:0 8px 48px rgba(200,100,130,0.15);margin:auto;">
     <div style="font-family:'Noto Serif JP',serif;font-size:20px;font-weight:600;color:#c07090;margin-bottom:20px;text-align:center;">👤 プロフィール設定</div>
+
+    <!-- アイコン種別タブ -->
     <div class="form-group">
-      <label class="form-label">アイコン（絵文字）</label>
-      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;" id="icon-picker">
-        <span onclick="selectIcon('🌸')">🌸</span> <span onclick="selectIcon('🌺')">🌺</span> <span onclick="selectIcon('🌻')">🌻</span> <span onclick="selectIcon('🌹')">🌹</span> <span onclick="selectIcon('💐')">💐</span> <span onclick="selectIcon('🌷')">🌷</span> <span onclick="selectIcon('🌼')">🌼</span> <span onclick="selectIcon('🦋')">🦋</span> <span onclick="selectIcon('🍀')">🍀</span> <span onclick="selectIcon('⭐')">⭐</span> <span onclick="selectIcon('🌙')">🌙</span> <span onclick="selectIcon('☀️')">☀️</span> <span onclick="selectIcon('🎀')">🎀</span> <span onclick="selectIcon('💝')">💝</span> <span onclick="selectIcon('🌈')">🌈</span> <span onclick="selectIcon('🍓')">🍓</span> <span onclick="selectIcon('🍑')">🍑</span> <span onclick="selectIcon('🌊')">🌊</span> <span onclick="selectIcon('🦄')">🦄</span> <span onclick="selectIcon('🐱')">🐱</span>
+      <label class="form-label">アイコン</label>
+      <div style="display:flex;gap:0;margin-bottom:14px;border-radius:10px;overflow:hidden;border:1.5px solid #F0D8E2;">
+        <button id="icon-tab-emoji" onclick="switchIconTab('emoji')" style="flex:1;padding:9px;border:none;background:var(--pink-strong);color:white;font-size:13px;font-weight:500;cursor:pointer;font-family:'Noto Sans JP',sans-serif;">絵文字</button>
+        <button id="icon-tab-photo" onclick="switchIconTab('photo')" style="flex:1;padding:9px;border:none;background:#FFF0F3;color:var(--text-mid);font-size:13px;cursor:pointer;font-family:'Noto Sans JP',sans-serif;">写真</button>
       </div>
-      <div style="display:flex;gap:8px;align-items:center;">
-        <div id="selected-icon-preview" style="font-size:36px;width:48px;height:48px;background:#FFF0F3;border-radius:50%;display:flex;align-items:center;justify-content:center;">🌸</div>
-        <input type="text" id="profile-icon" placeholder="絵文字を入力" maxlength="2" style="width:80px;">
+
+      <!-- 絵文字パネル -->
+      <div id="icon-panel-emoji">
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;" id="icon-picker">
+          <span onclick="selectIcon('🌸')">🌸</span> <span onclick="selectIcon('🌺')">🌺</span> <span onclick="selectIcon('🌻')">🌻</span> <span onclick="selectIcon('🌹')">🌹</span> <span onclick="selectIcon('💐')">💐</span> <span onclick="selectIcon('🌷')">🌷</span> <span onclick="selectIcon('🌼')">🌼</span> <span onclick="selectIcon('🦋')">🦋</span> <span onclick="selectIcon('🍀')">🍀</span> <span onclick="selectIcon('⭐')">⭐</span> <span onclick="selectIcon('🌙')">🌙</span> <span onclick="selectIcon('☀️')">☀️</span> <span onclick="selectIcon('🎀')">🎀</span> <span onclick="selectIcon('💝')">💝</span> <span onclick="selectIcon('🌈')">🌈</span> <span onclick="selectIcon('🍓')">🍓</span> <span onclick="selectIcon('🍑')">🍑</span> <span onclick="selectIcon('🌊')">🌊</span> <span onclick="selectIcon('🦄')">🦄</span> <span onclick="selectIcon('🐱')">🐱</span>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <div id="selected-icon-preview" style="font-size:36px;width:52px;height:52px;background:#FFF0F3;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;">🌸</div>
+          <input type="text" id="profile-icon" placeholder="絵文字を直接入力" maxlength="2" style="width:120px;" oninput="document.getElementById('selected-icon-preview').textContent=this.value||'🌸'">
+        </div>
+      </div>
+
+      <!-- 写真パネル -->
+      <div id="icon-panel-photo" style="display:none;">
+        <div id="photo-upload-area" onclick="document.getElementById('profile-photo-input').click()" style="border:2px dashed #F0D8E2;border-radius:12px;padding:20px;text-align:center;cursor:pointer;background:#FFF8FA;transition:all .2s;margin-bottom:10px;">
+          <div id="photo-upload-placeholder">
+            <div style="font-size:32px;margin-bottom:6px;">📷</div>
+            <div style="font-size:13px;color:var(--text-light);">タップして写真を選択</div>
+            <div style="font-size:11px;color:#c0b0b8;margin-top:4px;">JPG / PNG（自動で200KB以下に圧縮）</div>
+          </div>
+          <img id="profile-photo-preview" style="display:none;width:80px;height:80px;border-radius:50%;object-fit:cover;margin:0 auto;border:3px solid #F0D8E2;">
+        </div>
+        <input type="file" id="profile-photo-input" accept="image/*" style="display:none;" onchange="previewProfilePhoto(this)">
+        <div id="photo-upload-status" style="font-size:12px;color:var(--text-light);text-align:center;display:none;"></div>
+        <button onclick="removeProfilePhoto()" id="photo-remove-btn" style="display:none;width:100%;padding:8px;background:#FFF0F3;border:1.5px solid #F0D8E2;border-radius:8px;font-size:13px;color:#E75480;cursor:pointer;font-family:'Noto Sans JP',sans-serif;margin-top:4px;">🗑️ 写真を削除して絵文字に戻す</button>
       </div>
     </div>
+
     <div class="form-group">
       <label class="form-label">アカウント名</label>
       <input type="text" id="profile-username" placeholder="例：のどか" maxlength="20">
@@ -452,7 +478,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
     <span class="nav-logo">Bloom Journal</span>
     <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
       <button id="nav-auth-btn" onclick="toggleAuth()" style="padding:6px 14px;border-radius:20px;border:1.5px solid #F0D8E2;background:white;font-size:12px;cursor:pointer;color:var(--text-mid);display:flex;align-items:center;gap:6px;">
-        <span id="nav-icon">🔑</span><span id="nav-name">ログイン</span>
+        <span id="nav-icon" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;overflow:hidden;flex-shrink:0;">🔑</span><span id="nav-name">ログイン</span>
       </button>
     </div>
   </div>
@@ -988,9 +1014,16 @@ function updateAuthUI() {
   const navIcon = document.getElementById('nav-icon');
   const navName = document.getElementById('nav-name');
   if (currentUser) {
+    const photoUrl = localStorage.getItem('bloom-profile-photo') || '';
     const icon = localStorage.getItem('bloom-profile-icon') || '🌸';
     const username = localStorage.getItem('bloom-profile-username') || (currentUser.email || '').split('@')[0];
-    if (navIcon) navIcon.textContent = icon;
+    if (navIcon) {
+      if (photoUrl) {
+        navIcon.innerHTML = '<img src="' + photoUrl + '" style="width:22px;height:22px;border-radius:50%;object-fit:cover;">';
+      } else {
+        navIcon.textContent = icon;
+      }
+    }
     if (navName) navName.textContent = username;
   } else {
     if (navIcon) navIcon.textContent = '🔑';
@@ -1207,15 +1240,51 @@ function openProfileModal() {
     modal.style.display = 'flex';
     const savedIcon = localStorage.getItem('bloom-profile-icon') || '🌸';
     const savedName = localStorage.getItem('bloom-profile-username') || '';
+    const savedPhoto = localStorage.getItem('bloom-profile-photo') || '';
     document.getElementById('profile-icon').value = savedIcon;
     document.getElementById('profile-username').value = savedName;
-    document.getElementById('selected-icon-preview').textContent = savedIcon;
+    // 写真が保存されていれば写真タブを表示
+    if (savedPhoto) {
+      switchIconTab('photo');
+      const preview = document.getElementById('profile-photo-preview');
+      const placeholder = document.getElementById('photo-upload-placeholder');
+      preview.src = savedPhoto;
+      preview.style.display = 'block';
+      placeholder.style.display = 'none';
+      document.getElementById('photo-remove-btn').style.display = 'block';
+    } else {
+      switchIconTab('emoji');
+      const preview = document.getElementById('selected-icon-preview');
+      preview.textContent = savedIcon;
+    }
   }
 }
 
 function closeProfileModal() {
   const modal = document.getElementById('profile-modal');
   if (modal) modal.style.display = 'none';
+}
+
+function switchIconTab(tab) {
+  const emojiPanel = document.getElementById('icon-panel-emoji');
+  const photoPanel = document.getElementById('icon-panel-photo');
+  const emojiTab = document.getElementById('icon-tab-emoji');
+  const photoTab = document.getElementById('icon-tab-photo');
+  if (tab === 'emoji') {
+    emojiPanel.style.display = 'block';
+    photoPanel.style.display = 'none';
+    emojiTab.style.background = 'var(--pink-strong)';
+    emojiTab.style.color = 'white';
+    photoTab.style.background = '#FFF0F3';
+    photoTab.style.color = 'var(--text-mid)';
+  } else {
+    emojiPanel.style.display = 'none';
+    photoPanel.style.display = 'block';
+    emojiTab.style.background = '#FFF0F3';
+    emojiTab.style.color = 'var(--text-mid)';
+    photoTab.style.background = 'var(--pink-strong)';
+    photoTab.style.color = 'white';
+  }
 }
 
 function selectIcon(emoji) {
@@ -1225,14 +1294,129 @@ function selectIcon(emoji) {
   event.target.classList.add('selected');
 }
 
-function saveProfile() {
+function previewProfilePhoto(input) {
+  if (!input.files[0]) return;
+  const file = input.files[0];
+  const statusEl = document.getElementById('photo-upload-status');
+  statusEl.textContent = '圧縮中...';
+  statusEl.style.display = 'block';
+  compressImage(file, 200).then(dataUrl => {
+    const preview = document.getElementById('profile-photo-preview');
+    const placeholder = document.getElementById('photo-upload-placeholder');
+    preview.src = dataUrl;
+    preview.style.display = 'block';
+    placeholder.style.display = 'none';
+    document.getElementById('photo-remove-btn').style.display = 'block';
+    statusEl.textContent = '✅ 写真を選択しました（保存するボタンで確定）';
+    // 一時的にdataUrlをセット（保存時にStorageへアップ）
+    window._pendingProfilePhoto = dataUrl;
+    window._pendingProfilePhotoFile = file;
+  }).catch(() => {
+    statusEl.textContent = '❌ 画像の読み込みに失敗しました';
+  });
+}
+
+function removeProfilePhoto() {
+  window._pendingProfilePhoto = null;
+  window._pendingProfilePhotoFile = null;
+  window._removeProfilePhoto = true;
+  document.getElementById('profile-photo-preview').style.display = 'none';
+  document.getElementById('profile-photo-preview').src = '';
+  document.getElementById('photo-upload-placeholder').style.display = 'block';
+  document.getElementById('photo-remove-btn').style.display = 'none';
+  document.getElementById('photo-upload-status').style.display = 'none';
+  document.getElementById('profile-photo-input').value = '';
+  switchIconTab('emoji');
+}
+
+// 画像圧縮（Canvas API使用・maxKB以下に圧縮）
+function compressImage(file, maxKB) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let w = img.width, h = img.height;
+        // 最大600pxにリサイズ
+        const maxSize = 600;
+        if (w > h && w > maxSize) { h = h * maxSize / w; w = maxSize; }
+        else if (h > maxSize) { w = w * maxSize / h; h = maxSize; }
+        canvas.width = w; canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        // 品質を下げながら目標サイズ以下になるまで圧縮
+        let quality = 0.85;
+        let dataUrl = canvas.toDataURL('image/jpeg', quality);
+        while (dataUrl.length > maxKB * 1024 * 1.37 && quality > 0.1) {
+          quality -= 0.1;
+          dataUrl = canvas.toDataURL('image/jpeg', quality);
+        }
+        resolve(dataUrl);
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+async function saveProfile() {
   const icon = document.getElementById('profile-icon').value || '🌸';
   const username = document.getElementById('profile-username').value.trim() || (currentUser ? currentUser.email.split('@')[0] : 'ゲスト');
+  const statusEl = document.getElementById('photo-upload-status');
+
+  // 写真削除が指定された場合
+  if (window._removeProfilePhoto) {
+    window._removeProfilePhoto = false;
+    localStorage.removeItem('bloom-profile-photo');
+    // Supabase Storageの古い写真を削除
+    if (supabaseClient && currentUser) {
+      try {
+        await supabaseClient.storage.from('avatars').remove([currentUser.id + '/avatar.jpg']);
+      } catch(e) {}
+    }
+  }
+
+  // 新しい写真がある場合はStorageにアップロード
+  if (window._pendingProfilePhotoFile && supabaseClient && currentUser) {
+    if (statusEl) { statusEl.textContent = 'アップロード中...'; statusEl.style.display = 'block'; }
+    try {
+      const file = window._pendingProfilePhotoFile;
+      const compressed = await compressImage(file, 200);
+      // base64をBlobに変換
+      const res = await fetch(compressed);
+      const blob = await res.blob();
+      const path = currentUser.id + '/avatar.jpg';
+      const { error: upErr } = await supabaseClient.storage.from('avatars').upload(path, blob, { upsert: true, contentType: 'image/jpeg' });
+      if (upErr) throw upErr;
+      const { data: urlData } = supabaseClient.storage.from('avatars').getPublicUrl(path);
+      const photoUrl = urlData.publicUrl + '?t=' + Date.now(); // キャッシュバスター
+      localStorage.setItem('bloom-profile-photo', photoUrl);
+      window._pendingProfilePhoto = null;
+      window._pendingProfilePhotoFile = null;
+    } catch(e) {
+      console.error('写真アップロードエラー:', e);
+      // アップロード失敗時はdataUrlをlocalStorageに保存（フォールバック）
+      if (window._pendingProfilePhoto) {
+        localStorage.setItem('bloom-profile-photo', window._pendingProfilePhoto);
+        window._pendingProfilePhoto = null;
+        window._pendingProfilePhotoFile = null;
+      }
+    }
+  } else if (window._pendingProfilePhoto) {
+    // ログインなしの場合はdataUrlをlocalStorageに保存
+    localStorage.setItem('bloom-profile-photo', window._pendingProfilePhoto);
+    window._pendingProfilePhoto = null;
+    window._pendingProfilePhotoFile = null;
+  }
+
   localStorage.setItem('bloom-profile-icon', icon);
   localStorage.setItem('bloom-profile-username', username);
   updateAuthUI();
   closeProfileModal();
-  alert('プロフィールを保存しました！');
+  alert('プロフィールを保存しました！🌸');
 }
 
 // ========== 目標シート ==========
@@ -2240,10 +2424,15 @@ async function submitPost() {
       const { data: urlData } = supabaseClient.storage.from('posts').getPublicUrl(fileName);
       imageUrl = urlData.publicUrl;
     }
-    const expiresAt = new Date();
-    expiresAt.setDate(expiresAt.getDate() + 30);
+    // expires_atを翌月1日0時（暦の月ごとにリセット）
+    const now2 = new Date();
+    const expiresAt = new Date(now2.getFullYear(), now2.getMonth() + 1, 1, 0, 0, 0);
+    const postUserName = localStorage.getItem('bloom-profile-username') || currentUser.email.split('@')[0];
+    const postAvatarUrl = localStorage.getItem('bloom-profile-photo') || null;
     const { error } = await supabaseClient.from('posts').insert({
       user_id: currentUser.id,
+      user_name: postUserName,
+      avatar_url: postAvatarUrl,
       image_url: imageUrl,
       caption: caption,
       expires_at: expiresAt.toISOString()
@@ -2313,19 +2502,22 @@ function renderPost(post, likes, comments) {
   const now = new Date();
   const daysLeft = Math.ceil((expiresAt - now) / (1000 * 60 * 60 * 24));
   const timeStr = formatTimeAgo(createdAt);
-  const userName = post.user_id.substring(0, 6) + '...';
+  const userName = post.user_name || post.user_id.substring(0, 6) + '...';
   const avatarEmojis = ['🌸','🌺','🌻','🌹','💐','🌷','🌼'];
   const avatarEmoji = avatarEmojis[post.user_id.charCodeAt(0) % avatarEmojis.length];
+  const avatarHtml = post.avatar_url
+    ? '<img src="' + post.avatar_url + '" style="width:36px;height:36px;border-radius:50%;object-fit:cover;">'
+    : avatarEmoji;
 
   const commentsHtml = comments.slice(-3).map(c => {
-    const cUser = c.user_id.substring(0, 6) + '...';
-    return '<div class="comment-item"><span class="comment-user">' + cUser + '</span>' + escapeHtml(c.content) + '</div>';
+    const cUser = c.user_name || c.user_id.substring(0, 6) + '...';
+    return '<div class="comment-item"><span class="comment-user">' + escapeHtml(cUser) + '</span>' + escapeHtml(c.content) + '</div>';
   }).join('');
 
   return '<div class="post-card" id="post-' + post.id + '">' +
     '<div class="post-header">' +
-    '<div class="post-avatar">' + avatarEmoji + '</div>' +
-    '<div><div class="post-username">' + userName + '</div><div class="post-time">' + timeStr + '</div></div>' +
+    '<div class="post-avatar">' + avatarHtml + '</div>' +
+    '<div><div class="post-username">' + escapeHtml(userName) + '</div><div class="post-time">' + timeStr + '</div></div>' +
     '<div class="post-expires">残り' + daysLeft + '日</div>' +
     '</div>' +
     (post.image_url ? '<img class="post-image" src="' + post.image_url + '" alt="投稿画像" loading="lazy">' :
@@ -2381,16 +2573,16 @@ async function addComment(postId) {
   const input = document.getElementById('comment-input-' + postId);
   const content = input.value.trim();
   if (!content) return;
+  const commentUserName = localStorage.getItem('bloom-profile-username') || currentUser.email.split('@')[0];
   try {
     const { data, error } = await supabaseClient.from('comments').insert({
-      post_id: postId, user_id: currentUser.id, content
+      post_id: postId, user_id: currentUser.id, user_name: commentUserName, content
     }).select().single();
     if (error) throw error;
     input.value = '';
     const commentsEl = document.getElementById('comments-' + postId);
     if (commentsEl) {
-      const userName = currentUser.id.substring(0, 6) + '...';
-      commentsEl.innerHTML += '<div class="comment-item"><span class="comment-user">' + userName + '</span>' + escapeHtml(content) + '</div>';
+      commentsEl.innerHTML += '<div class="comment-item"><span class="comment-user">' + escapeHtml(commentUserName) + '</span>' + escapeHtml(content) + '</div>';
     }
   } catch(e) { console.error(e); }
 }
