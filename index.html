@@ -273,6 +273,44 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
 .hero-sub { font-size:13px;color:var(--text-mid);line-height:1.8;margin-bottom:20px; }
 .progress-wrap { margin-bottom:20px; }
 .progress-text { font-size:12px;color:var(--text-light);margin-bottom:4px;display:flex;justify-content:space-between; }
+
+/* ========== SNS（インスタンツ）========== */
+.sns-feed { display:flex;flex-direction:column;gap:16px;padding:16px; }
+.post-card { background:white;border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden; }
+.post-header { display:flex;align-items:center;gap:10px;padding:12px 16px; }
+.post-avatar { width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#f0a0b8,#d4b8e8);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0; }
+.post-username { font-size:13px;font-weight:600;color:var(--text-dark); }
+.post-time { font-size:11px;color:var(--text-light);margin-top:2px; }
+.post-expires { font-size:10px;color:#E75480;margin-left:auto;background:#FFF0F3;padding:3px 8px;border-radius:10px; }
+.post-image { width:100%;aspect-ratio:1;object-fit:cover;display:block;background:#F5EEF2; }
+.post-image-placeholder { width:100%;aspect-ratio:1;background:linear-gradient(135deg,#FFF0F3,#F5F0FF);display:flex;align-items:center;justify-content:center;font-size:48px; }
+.post-actions { display:flex;align-items:center;gap:16px;padding:12px 16px 8px; }
+.post-action-btn { background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-mid);transition:all .2s;padding:4px; }
+.post-action-btn:hover { color:var(--pink-strong); }
+.post-action-btn.liked { color:var(--pink-strong); }
+.post-caption { padding:0 16px 8px;font-size:14px;color:var(--text-dark);line-height:1.6; }
+.post-comments { padding:0 16px 12px; }
+.comment-item { font-size:13px;color:var(--text-mid);padding:4px 0;border-bottom:1px solid #F5EEF2;line-height:1.5; }
+.comment-item:last-child { border:none; }
+.comment-user { font-weight:600;color:var(--text-dark);margin-right:6px; }
+.comment-input-row { display:flex;gap:8px;padding:8px 16px 12px;border-top:1px solid #F5EEF2; }
+.comment-input { flex:1;padding:8px 12px;border:1.5px solid #F0D8E2;border-radius:20px;font-size:13px;outline:none;font-family:'Noto Sans JP',sans-serif; }
+.comment-input:focus { border-color:var(--pink-strong); }
+.comment-send-btn { background:var(--pink-strong);color:white;border:none;border-radius:20px;padding:8px 16px;font-size:13px;cursor:pointer;white-space:nowrap; }
+
+/* 投稿作成 */
+.post-create-card { background:white;border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;margin:16px; }
+.post-create-title { font-family:'Noto Serif JP',serif;font-size:16px;font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:8px; }
+.image-upload-area { border:2px dashed #F0D8E2;border-radius:var(--radius-sm);padding:32px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:12px;background:#FFF8FA; }
+.image-upload-area:hover { border-color:var(--pink-strong);background:#FFF0F3; }
+.image-upload-area.has-image { padding:0;border:none; }
+.image-preview { width:100%;border-radius:var(--radius-sm);display:block; }
+.expires-badge { display:inline-block;background:#FFF0F3;color:var(--pink-strong);font-size:11px;padding:4px 10px;border-radius:10px;border:1px solid var(--pink-mid);margin-bottom:12px; }
+.sns-tabs { display:flex;gap:0;margin:16px;border-radius:10px;overflow:hidden;border:1.5px solid #F0D8E2; }
+.sns-tab { flex:1;padding:10px;border:none;background:#FFF0F3;font-size:13px;cursor:pointer;font-family:'Noto Sans JP',sans-serif;transition:all .2s; }
+.sns-tab.active { background:var(--pink-strong);color:white;font-weight:500; }
+.no-posts { text-align:center;padding:48px 20px;color:var(--text-light); }
+.no-posts-icon { font-size:48px;margin-bottom:12px; }
 </style>
 </head>
 <body>
@@ -392,6 +430,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
     <button class="nav-tab" onclick="showPage('page-record')">📊 体調記録</button>
     <button class="nav-tab" onclick="showPage('page-journal')">📓 ジャーナル</button>
     <button class="nav-tab" onclick="showPage('page-report')">📄 レポート</button>
+    <button class="nav-tab" onclick="showPage('page-sns')">📸 みんなの記録</button>
   </div>
 </nav>
 
@@ -742,6 +781,49 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
   </div>
 </div>
 
+
+<!-- ========== SNSページ（インスタンツ）========== -->
+<div id="page-sns" class="page">
+
+  <!-- SNSタブ（フィード/投稿） -->
+  <div class="sns-tabs">
+    <button class="sns-tab active" onclick="switchSnsTab('feed')">📸 みんなの記録</button>
+    <button class="sns-tab" onclick="switchSnsTab('post')">✏️ 投稿する</button>
+  </div>
+
+  <!-- フィード -->
+  <div id="sns-feed" class="sns-feed">
+    <div id="posts-container"></div>
+    <div id="posts-loading" style="text-align:center;padding:32px;color:var(--text-light);">読み込み中...</div>
+  </div>
+
+  <!-- 投稿作成 -->
+  <div id="sns-post" style="display:none;">
+    <div class="post-create-card">
+      <div class="post-create-title">📸 今日の取り組みをシェア</div>
+      <div class="expires-badge">⏰ 投稿は30日後に自動削除されます</div>
+
+      <div class="image-upload-area" id="upload-area" onclick="document.getElementById('post-image-input').click()">
+        <div id="upload-placeholder">
+          <div style="font-size:36px;margin-bottom:8px;">📷</div>
+          <div style="font-size:14px;color:var(--text-mid);">写真を選択</div>
+          <div style="font-size:12px;color:var(--text-light);margin-top:4px;">タップして追加</div>
+        </div>
+        <img id="post-image-preview" class="image-preview" style="display:none;">
+      </div>
+      <input type="file" id="post-image-input" accept="image/*" style="display:none;" onchange="previewImage(this)">
+
+      <div class="form-group" style="margin-top:12px;">
+        <textarea id="post-caption" placeholder="今日の取り組みを書こう🌸&#10;例：ウォーキング30分達成！" rows="3" style="font-size:14px;"></textarea>
+      </div>
+
+      <button class="btn-primary" onclick="submitPost()">投稿する 🌸</button>
+      <div id="post-msg" style="font-size:13px;margin-top:8px;text-align:center;display:none;"></div>
+    </div>
+  </div>
+
+</div>
+
 <footer class="footer">
   <p>© 2025 Bloom Journal | 美容健康ダイエット習慣サポート</p>
   <p style="margin-top:4px;">このアプリは医療的アドバイスではありません。</p>
@@ -753,20 +835,17 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
 // ========== Supabase設定 ==========
 const SUPABASE_URL = 'https://myxzlfoguczihvjkvccf.supabase.co';
 let supabaseClient = null;
-const SUPABASE_ANON_KEY = 'sb_publishable_kT1EbqgWCGwmxNEDWF1HpA_xthbUAKW';
+constsb_publishable_kT1EbqgWCGwmxNEDWF1HpA_xthbUAKW 'REPLACE_WITH_YOUR_ANON_KEY';
 let currentUser = null;
 
 function initSupabase() {
   try {
-    if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
-      supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-      console.log('Supabase initialized successfully');
+    if (window.supabase && SUPABASE_ANON_KEY !== 'REPLACE_WITH_YOUR_ANON_KEY') {
+      supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       checkAuthState();
-    } else {
-      setTimeout(initSupabase, 1000);
     }
   } catch(e) {
-    console.error('Supabase init error:', e);
+    console.log('Supabase not available, using localStorage');
   }
 }
 
@@ -1024,6 +1103,7 @@ function showPage(id) {
   if (id === 'page-record') renderRecordHistory();
   if (id === 'page-report') updateReportPage();
   if (id === 'page-journal') { renderJournalHistory(); document.getElementById('journal-date-label').textContent = formatDateLabel(journalDate); }
+  if (id === 'page-sns') { loadPosts(); }
   window.scrollTo(0,0);
 }
 
@@ -1871,6 +1951,247 @@ function generateReport() {
     window.print();
   }
 }
+
+
+// ========== SNS機能 ==========
+let snsCurrentTab = 'feed';
+let postsCache = [];
+
+function switchSnsTab(tab) {
+  snsCurrentTab = tab;
+  document.querySelectorAll('.sns-tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('sns-feed').style.display = tab === 'feed' ? 'flex' : 'none';
+  document.getElementById('sns-post').style.display = tab === 'post' ? 'block' : 'none';
+  if (tab === 'feed') loadPosts();
+}
+
+function previewImage(input) {
+  if (!input.files || !input.files[0]) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const preview = document.getElementById('post-image-preview');
+    const placeholder = document.getElementById('upload-placeholder');
+    preview.src = e.target.result;
+    preview.style.display = 'block';
+    placeholder.style.display = 'none';
+    document.getElementById('upload-area').classList.add('has-image');
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+async function submitPost() {
+  if (!supabaseClient || !currentUser) {
+    alert('投稿するにはログインが必要です');
+    document.getElementById('auth-overlay').style.display = 'flex';
+    return;
+  }
+  const caption = document.getElementById('post-caption').value.trim();
+  const imageInput = document.getElementById('post-image-input');
+  const msg = document.getElementById('post-msg');
+  if (!caption && !imageInput.files[0]) {
+    msg.textContent = '写真かキャプションを入力してください';
+    msg.style.color = '#E74C3C';
+    msg.style.display = 'block';
+    return;
+  }
+  msg.textContent = '投稿中...';
+  msg.style.color = 'var(--text-mid)';
+  msg.style.display = 'block';
+  try {
+    let imageUrl = null;
+    if (imageInput.files[0]) {
+      const file = imageInput.files[0];
+      const fileName = currentUser.id + '/' + Date.now() + '.' + file.name.split('.').pop();
+      const { data: uploadData, error: uploadError } = await supabaseClient.storage
+        .from('posts').upload(fileName, file);
+      if (uploadError) throw uploadError;
+      const { data: urlData } = supabaseClient.storage.from('posts').getPublicUrl(fileName);
+      imageUrl = urlData.publicUrl;
+    }
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 30);
+    const { error } = await supabaseClient.from('posts').insert({
+      user_id: currentUser.id,
+      image_url: imageUrl,
+      caption: caption,
+      expires_at: expiresAt.toISOString()
+    });
+    if (error) throw error;
+    msg.textContent = '投稿しました！🌸';
+    msg.style.color = 'var(--green-strong)';
+    document.getElementById('post-caption').value = '';
+    document.getElementById('post-image-preview').style.display = 'none';
+    document.getElementById('upload-placeholder').style.display = 'block';
+    document.getElementById('upload-area').classList.remove('has-image');
+    imageInput.value = '';
+    setTimeout(() => {
+      switchSnsTab('feed');
+      document.querySelectorAll('.sns-tab')[0].classList.add('active');
+      document.querySelectorAll('.sns-tab')[1].classList.remove('active');
+    }, 1000);
+  } catch(e) {
+    msg.textContent = 'エラーが発生しました: ' + e.message;
+    msg.style.color = '#E74C3C';
+  }
+}
+
+async function loadPosts() {
+  const container = document.getElementById('posts-container');
+  const loading = document.getElementById('posts-loading');
+  if (!supabaseClient) {
+    loading.textContent = 'ログインして投稿を見よう！';
+    return;
+  }
+  loading.style.display = 'block';
+  loading.textContent = '読み込み中...';
+  try {
+    const now = new Date().toISOString();
+    const { data: posts, error } = await supabaseClient
+      .from('posts').select('*')
+      .gt('expires_at', now)
+      .order('created_at', { ascending: false })
+      .limit(20);
+    if (error) throw error;
+    loading.style.display = 'none';
+    if (!posts || posts.length === 0) {
+      container.innerHTML = '<div class="no-posts"><div class="no-posts-icon">🌱</div><div style="font-size:14px;font-weight:500;margin-bottom:8px;">まだ投稿がありません</div><div style="font-size:13px;">最初の投稿をしてみよう！</div></div>';
+      return;
+    }
+    postsCache = posts;
+    const likesData = {};
+    const commentsData = {};
+    for (const post of posts) {
+      const { data: likes } = await supabaseClient.from('likes').select('user_id').eq('post_id', post.id);
+      likesData[post.id] = likes || [];
+      const { data: comments } = await supabaseClient.from('comments').select('*').eq('post_id', post.id).order('created_at');
+      commentsData[post.id] = comments || [];
+    }
+    container.innerHTML = posts.map(post => renderPost(post, likesData[post.id], commentsData[post.id])).join('');
+  } catch(e) {
+    loading.textContent = 'エラーが発生しました';
+    console.error(e);
+  }
+}
+
+function renderPost(post, likes, comments) {
+  const isLiked = currentUser && likes.some(l => l.user_id === currentUser.id);
+  const likeCount = likes.length;
+  const createdAt = new Date(post.created_at);
+  const expiresAt = new Date(post.expires_at);
+  const now = new Date();
+  const daysLeft = Math.ceil((expiresAt - now) / (1000 * 60 * 60 * 24));
+  const timeStr = formatTimeAgo(createdAt);
+  const userName = post.user_id.substring(0, 6) + '...';
+  const avatarEmojis = ['🌸','🌺','🌻','🌹','💐','🌷','🌼'];
+  const avatarEmoji = avatarEmojis[post.user_id.charCodeAt(0) % avatarEmojis.length];
+
+  const commentsHtml = comments.slice(-3).map(c => {
+    const cUser = c.user_id.substring(0, 6) + '...';
+    return '<div class="comment-item"><span class="comment-user">' + cUser + '</span>' + escapeHtml(c.content) + '</div>';
+  }).join('');
+
+  return '<div class="post-card" id="post-' + post.id + '">' +
+    '<div class="post-header">' +
+    '<div class="post-avatar">' + avatarEmoji + '</div>' +
+    '<div><div class="post-username">' + userName + '</div><div class="post-time">' + timeStr + '</div></div>' +
+    '<div class="post-expires">残り' + daysLeft + '日</div>' +
+    '</div>' +
+    (post.image_url ? '<img class="post-image" src="' + post.image_url + '" alt="投稿画像" loading="lazy">' :
+      '<div class="post-image-placeholder">🌸</div>') +
+    '<div class="post-actions">' +
+    '<button class="post-action-btn ' + (isLiked ? 'liked' : '') + '" onclick="toggleLike(\'' + post.id + '\', ' + isLiked + ')">' +
+    (isLiked ? '❤️' : '🤍') + ' <span id="like-count-' + post.id + '">' + likeCount + '</span>' +
+    '</button>' +
+    '<button class="post-action-btn" onclick="focusComment(\'' + post.id + '\')">💬 ' + comments.length + '</button>' +
+    (currentUser && post.user_id === currentUser.id ?
+      '<button class="post-action-btn" onclick="deletePost(\'' + post.id + '\')" style="margin-left:auto;color:#E74C3C;">🗑️</button>' : '') +
+    '</div>' +
+    (post.caption ? '<div class="post-caption">' + escapeHtml(post.caption) + '</div>' : '') +
+    '<div class="post-comments" id="comments-' + post.id + '">' + commentsHtml + '</div>' +
+    '<div class="comment-input-row">' +
+    '<input type="text" class="comment-input" id="comment-input-' + post.id + '" placeholder="コメントを追加...">' +
+    '<button class="comment-send-btn" onclick="addComment(\'' + post.id + '\')">送信</button>' +
+    '</div>' +
+    '</div>';
+}
+
+async function toggleLike(postId, isLiked) {
+  if (!supabaseClient || !currentUser) {
+    alert('ログインが必要です');
+    return;
+  }
+  try {
+    if (isLiked) {
+      await supabaseClient.from('likes').delete().eq('post_id', postId).eq('user_id', currentUser.id);
+    } else {
+      await supabaseClient.from('likes').insert({ post_id: postId, user_id: currentUser.id });
+    }
+    const countEl = document.getElementById('like-count-' + postId);
+    if (countEl) {
+      const current = parseInt(countEl.textContent);
+      countEl.textContent = isLiked ? current - 1 : current + 1;
+    }
+    const btn = document.querySelector('#post-' + postId + ' .post-action-btn');
+    if (btn) {
+      btn.classList.toggle('liked');
+      btn.innerHTML = (isLiked ? '🤍' : '❤️') + ' <span id="like-count-' + postId + '">' +
+        (document.getElementById('like-count-' + postId) ? document.getElementById('like-count-' + postId).textContent : '0') + '</span>';
+      btn.onclick = () => toggleLike(postId, !isLiked);
+    }
+  } catch(e) { console.error(e); }
+}
+
+async function addComment(postId) {
+  if (!supabaseClient || !currentUser) {
+    alert('ログインが必要です');
+    return;
+  }
+  const input = document.getElementById('comment-input-' + postId);
+  const content = input.value.trim();
+  if (!content) return;
+  try {
+    const { data, error } = await supabaseClient.from('comments').insert({
+      post_id: postId, user_id: currentUser.id, content
+    }).select().single();
+    if (error) throw error;
+    input.value = '';
+    const commentsEl = document.getElementById('comments-' + postId);
+    if (commentsEl) {
+      const userName = currentUser.id.substring(0, 6) + '...';
+      commentsEl.innerHTML += '<div class="comment-item"><span class="comment-user">' + userName + '</span>' + escapeHtml(content) + '</div>';
+    }
+  } catch(e) { console.error(e); }
+}
+
+function focusComment(postId) {
+  const input = document.getElementById('comment-input-' + postId);
+  if (input) input.focus();
+}
+
+async function deletePost(postId) {
+  if (!confirm('この投稿を削除しますか？')) return;
+  try {
+    await supabaseClient.from('posts').delete().eq('id', postId);
+    const postEl = document.getElementById('post-' + postId);
+    if (postEl) postEl.remove();
+  } catch(e) { console.error(e); }
+}
+
+function formatTimeAgo(date) {
+  const now = new Date();
+  const diff = Math.floor((now - date) / 1000);
+  if (diff < 60) return 'たった今';
+  if (diff < 3600) return Math.floor(diff / 60) + '分前';
+  if (diff < 86400) return Math.floor(diff / 3600) + '時間前';
+  return Math.floor(diff / 86400) + '日前';
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
 
 </script>
 </body>
