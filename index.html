@@ -1113,9 +1113,10 @@ function startApp() {
   if (topPage) topPage.style.display = 'none';
   if (appBody) { appBody.style.display = 'block'; appBody.classList.add('show'); }
   window.scrollTo(0, 0);
-  if (!currentUser && supabaseClient) {
+  if (!currentUser) {
     setTimeout(() => {
-      document.getElementById('auth-overlay').style.display = 'flex';
+      var overlay = document.getElementById('auth-overlay');
+      if (overlay) overlay.style.display = 'flex';
     }, 500);
   }
 }
