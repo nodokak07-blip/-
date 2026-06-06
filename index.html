@@ -1755,33 +1755,21 @@ function sendMonthlyReportToLINE() {
   const journalDays = document.getElementById('report-journal-days').textContent;
   const comment = document.getElementById('report-comment').value;
 
-  let msg = '【Bloom Journal 月次レポート】
-';
-  msg += '📅 ' + monthStr + '
-';
-  if (state.name) msg += '👤 ' + state.name + '
-';
-  msg += '
-';
-  msg += '✅ 習慣平均達成率：' + avgTodo + '
-';
-  msg += '🔥 最長継続：' + streak + '
-';
-  msg += '⚖️ 体重変化：' + weightDiff + '
-';
-  msg += '📊 記録日数：' + recordDays + '
-';
-  msg += '😤 平均ストレス：' + avgStress + '
-';
-  msg += '📓 ジャーナル：' + journalDays + '
-';
+  let msg = '【Bloom Journal 月次レポート】\n';
+  msg += '📅 ' + monthStr + '\n';
+  if (state.name) msg += '👤 ' + state.name + '\n';
+  msg += '\n';
+  msg += '✅ 習慣平均達成率：' + avgTodo + '\n';
+  msg += '🔥 最長継続：' + streak + '\n';
+  msg += '⚖️ 体重変化：' + weightDiff + '\n';
+  msg += '📊 記録日数：' + recordDays + '\n';
+  msg += '😤 平均ストレス：' + avgStress + '\n';
+  msg += '📓 ジャーナル：' + journalDays + '\n';
 
   // 習慣別達成率
   const habits = state.selectedHabits;
   if (habits.length > 0) {
-    msg += '
-🌿 習慣別達成率：
-';
+    msg += '\n🌿 習慣別達成率：\n';
     const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
     const days = [];
     for (let d = new Date(firstDay); d <= now; d.setDate(d.getDate()+1)) {
@@ -1790,26 +1778,18 @@ function sendMonthlyReportToLINE() {
     habits.forEach(h => {
       const doneDays = days.filter(k => todoData[k] && todoData[k][h]).length;
       const pct = days.length > 0 ? Math.round(doneDays / days.length * 100) : 0;
-      msg += '  ・' + h + '：' + pct + '%
-';
+      msg += '  ・' + h + '：' + pct + '%\n';
     });
   }
-  if (comment) msg += '
-💬 コメント：
-' + comment + '
-';
-  msg += '
-#BloomJournal #月次レポート';
+  if (comment) msg += '\n💬 コメント：\n' + comment + '\n';
+  msg += '\n#BloomJournal #月次レポート';
 
   window.open('https://lin.ee/5EYolb7', '_blank');
   setTimeout(() => {
     navigator.clipboard.writeText(msg).then(() => {
-      alert('📋 月次レポートをコピーしました！
-LINEでそのままペーストして送信してください🌸');
+      alert('📋 月次レポートをコピーしました！\nLINEでそのままペーストして送信してください🌸');
     }).catch(() => {
-      alert('月次レポート：
-
-' + msg);
+      alert('月次レポート：\n\n' + msg);
     });
   }, 800);
 }
