@@ -1190,10 +1190,7 @@ function startApp() {
 
 function toggleAuth() {
   if (currentUser) {
-    const action = confirm('プロフィール設定をしますか？
-
-OK → プロフィール設定
-キャンセル → ログアウト');
+    const action = confirm('プロフィール設定をしますか？\nOK → プロフィール設定\nキャンセル → ログアウト');
     if (action) {
       openProfileModal();
     } else {
