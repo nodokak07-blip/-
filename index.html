@@ -316,6 +316,37 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
 #icon-picker span { font-size:24px;cursor:pointer;padding:4px;border-radius:8px;transition:all .2s; }
 #icon-picker span:hover { background:#FFF0F3;transform:scale(1.2); }
 #icon-picker span.selected { background:#FFD0E0; }
+/* ========== コラムページ ========== */
+.col-cat-btn { flex-shrink:0;padding:7px 14px;border:1.5px solid #F0D8E2;border-radius:20px;background:white;font-size:12px;color:var(--text-mid);cursor:pointer;font-family:'Noto Sans JP',sans-serif;transition:all .2s;white-space:nowrap; }
+.col-cat-btn.active { background:var(--pink-strong);border-color:var(--pink-strong);color:white;font-weight:500; }
+.col-cat-btn:hover { border-color:var(--pink-strong); }
+.col-article-card { background:white;border-radius:16px;box-shadow:var(--shadow);margin-bottom:14px;overflow:hidden;cursor:pointer;transition:all .2s;border:1.5px solid transparent; }
+.col-article-card:hover { transform:translateY(-2px);border-color:#F0D8E2; }
+.col-article-inner { padding:18px; }
+.col-article-badge { display:inline-block;font-size:11px;padding:3px 10px;border-radius:10px;font-weight:500;margin-bottom:10px; }
+.col-article-title { font-size:15px;font-weight:700;color:var(--text-dark);line-height:1.5;margin-bottom:8px; }
+.col-article-desc { font-size:13px;color:var(--text-light);line-height:1.7;margin-bottom:10px; }
+.col-article-meta { display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--text-light); }
+.col-article-tag { font-size:11px;padding:2px 8px;background:#FFF0F3;color:var(--pink-strong);border-radius:6px; }
+.col-new-badge { display:inline-block;background:#E75480;color:white;font-size:10px;padding:2px 6px;border-radius:4px;margin-left:6px;vertical-align:middle;font-weight:700; }
+
+/* ========== 外部入力ページ（クイック記録）========== */
+.quick-input-overlay { position:fixed;inset:0;background:var(--cream);z-index:400;display:none;overflow-y:auto; }
+.quick-input-overlay.show { display:block; }
+.quick-header { background:white;border-bottom:1px solid #F5E0EA;padding:14px 20px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10; }
+.quick-logo { font-family:'Noto Serif JP',serif;font-size:16px;font-weight:600;color:#c07090; }
+.quick-close-btn { margin-left:auto;background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-light);padding:4px; }
+.quick-body { max-width:480px;margin:0 auto;padding:20px 16px 60px; }
+.quick-date-bar { display:flex;align-items:center;justify-content:center;gap:12px;background:white;border-radius:12px;padding:12px 16px;margin-bottom:16px;box-shadow:var(--shadow); }
+.quick-habit-item { display:flex;align-items:center;gap:12px;padding:14px 16px;background:white;border-radius:12px;margin-bottom:8px;box-shadow:0 2px 12px rgba(200,100,130,0.06);cursor:pointer;transition:all .2s;border:1.5px solid transparent; }
+.quick-habit-item.done { background:#FFF0F3;border-color:#F0C0D0; }
+.quick-habit-check { width:24px;height:24px;border-radius:50%;border:2px solid #F0D8E2;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .2s;flex-shrink:0; }
+.quick-habit-item.done .quick-habit-check { background:var(--pink-strong);border-color:var(--pink-strong);color:white; }
+.quick-habit-name { font-size:14px;color:var(--text-dark);flex:1; }
+.quick-habit-item.done .quick-habit-name { color:var(--pink-strong);font-weight:500; }
+.quick-save-btn { width:100%;padding:16px;background:linear-gradient(135deg,#f0a0b8,#d4b8e8);color:white;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;font-family:'Noto Sans JP',sans-serif;margin-top:16px;transition:all .2s; }
+.quick-save-btn:active { transform:scale(0.98); }
+
 </style>
 </head>
 <body>
@@ -464,6 +495,58 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
 </div>
 
 <!-- ========== アプリ本体 ========== -->
+<!-- ========== クイック習慣入力（外部からアクセス用） ========== -->
+<div id="quick-input-overlay" class="quick-input-overlay">
+  <div class="quick-header">
+    <span style="font-size:20px;">🌸</span>
+    <span class="quick-logo">Bloom Journal</span>
+    <span style="font-size:12px;background:#FFF0F3;color:var(--pink-strong);padding:3px 10px;border-radius:10px;font-weight:500;">クイック記録</span>
+    <button class="quick-close-btn" onclick="closeQuickInput()">✕</button>
+  </div>
+  <div class="quick-body">
+    <div class="quick-date-bar">
+      <button class="date-nav" onclick="changeQuickDate(-1)">‹</button>
+      <div class="date-label" id="quick-date-label">今日</div>
+      <button class="date-nav" onclick="changeQuickDate(1)">›</button>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;">
+      <div class="card-title" style="font-size:15px;">✅ 今日の習慣チェック</div>
+      <div id="quick-habit-list">
+        <div style="text-align:center;padding:20px;color:var(--text-light);font-size:14px;">習慣を読み込み中...</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;">
+      <div class="card-title" style="font-size:15px;">📊 体重・気分（任意）</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div>
+          <label class="form-label">体重 (kg)</label>
+          <input type="number" id="quick-weight" placeholder="55.0" step="0.1" style="font-size:16px;">
+        </div>
+        <div>
+          <label class="form-label">気分</label>
+          <select id="quick-mood" style="font-size:15px;">
+            <option value="">選択</option>
+            <option value="5">😄 最高</option>
+            <option value="4">🙂 良い</option>
+            <option value="3">😐 普通</option>
+            <option value="2">😔 悪い</option>
+            <option value="1">😢 最悪</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <button class="quick-save-btn" onclick="saveQuickInput()">💾 記録を保存する</button>
+    <div id="quick-save-msg" style="text-align:center;font-size:13px;margin-top:10px;display:none;"></div>
+
+    <div style="text-align:center;margin-top:20px;">
+      <button onclick="closeQuickInput()" style="background:none;border:none;font-size:13px;color:var(--text-light);cursor:pointer;text-decoration:underline;">アプリ全体を開く →</button>
+    </div>
+  </div>
+</div>
+
 <div id="app-body" class="app-body">
 
 <div class="loading-overlay" id="loading">
@@ -489,6 +572,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
     <button class="nav-tab" onclick="showPage('page-journal')">📓 ジャーナル</button>
     <button class="nav-tab" onclick="showPage('page-report')">📄 レポート</button>
     <button class="nav-tab" onclick="showPage('page-sns')">📸 みんなの記録</button>
+    <button class="nav-tab" onclick="showPage('page-column')">📖 コラム</button>
   </div>
 </nav>
 
@@ -884,7 +968,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
   <div id="sns-post" style="display:none;">
     <div class="post-create-card">
       <div class="post-create-title">📸 今日の取り組みをシェア</div>
-      <div class="expires-badge">⏰ 投稿は30日後に自動削除されます</div>
+      <div class="expires-badge">⏰ 投稿は翌月1日に自動削除されます</div>
 
       <div class="image-upload-area" id="upload-area" onclick="document.getElementById('post-image-input').click()">
         <div id="upload-placeholder">
@@ -905,6 +989,52 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
     </div>
   </div>
 
+</div>
+
+<!-- ========== コラムページ ========== -->
+<div id="page-column" class="page">
+  <div style="padding:16px 16px 40px;">
+
+    <!-- ヘッダー -->
+    <div style="text-align:center;padding:24px 0 20px;">
+      <div style="font-size:28px;margin-bottom:6px;">🌿</div>
+      <div style="font-family:'Noto Serif JP',serif;font-size:22px;font-weight:600;color:#c07090;margin-bottom:6px;">Bloom Column</div>
+      <div style="font-size:13px;color:var(--text-light);line-height:1.7;">栄養・美容・ダイエットのお役立ち情報を<br>定期配信しています</div>
+    </div>
+
+    <!-- ブログへのリンクバナー -->
+    <div id="column-blog-banner" onclick="openBlog()" style="background:linear-gradient(135deg,#fde8f0 0%,#ede8ff 100%);border-radius:16px;padding:20px;margin-bottom:20px;cursor:pointer;display:flex;align-items:center;gap:14px;border:1.5px solid #f0d8e8;transition:all .2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+      <div style="font-size:36px;flex-shrink:0;">✍️</div>
+      <div style="flex:1;">
+        <div style="font-size:13px;color:#d4a0b8;letter-spacing:.1em;margin-bottom:2px;">OFFICIAL BLOG</div>
+        <div style="font-size:15px;font-weight:700;color:#3a2030;margin-bottom:4px;">のどかのBeauty Note</div>
+        <div style="font-size:12px;color:#9a7080;line-height:1.6;">美容・栄養・ダイエットの本音トーク。<br>毎週更新中 → タップしてチェック📖</div>
+      </div>
+      <div style="font-size:20px;color:#d4a0b8;">›</div>
+    </div>
+
+    <!-- カテゴリフィルター -->
+    <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:16px;scrollbar-width:none;" id="column-category-bar">
+      <button class="col-cat-btn active" onclick="filterColumn('all', this)">すべて</button>
+      <button class="col-cat-btn" onclick="filterColumn('nutrition', this)">🥗 栄養</button>
+      <button class="col-cat-btn" onclick="filterColumn('beauty', this)">💄 美容</button>
+      <button class="col-cat-btn" onclick="filterColumn('diet', this)">⚖️ ダイエット</button>
+      <button class="col-cat-btn" onclick="filterColumn('lifestyle', this)">🌿 ライフスタイル</button>
+      <button class="col-cat-btn" onclick="filterColumn('trend', this)">✨ トレンド</button>
+    </div>
+
+    <!-- 記事カード一覧 -->
+    <div id="column-list"></div>
+
+    <!-- コミュニティ誘導バナー -->
+    <div style="background:linear-gradient(135deg,#f0f8ff 0%,#f5f0ff 100%);border-radius:16px;padding:20px;margin-top:8px;text-align:center;border:1.5px solid #e0d8f0;">
+      <div style="font-size:24px;margin-bottom:8px;">💬</div>
+      <div style="font-size:15px;font-weight:700;color:#3a2030;margin-bottom:6px;">コミュニティに参加しよう</div>
+      <div style="font-size:13px;color:#9a7080;line-height:1.7;margin-bottom:14px;">同じ目標を持つ仲間と繋がれる場所。<br>ゆくゆくはDiscordでオープン予定🌸</div>
+      <button onclick="openCommunity()" style="background:linear-gradient(135deg,#a0c4f8,#d4b8e8);color:white;border:none;border-radius:20px;padding:10px 28px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Noto Sans JP',sans-serif;">参加登録（準備中）</button>
+    </div>
+
+  </div>
 </div>
 
 <footer class="footer">
@@ -1168,6 +1298,7 @@ window.addEventListener('load', () => {
   if (state.goalCreated) {
     showGoalView();
   }
+  checkUrlParams();
 });
 
 function loadFromStorage() {
@@ -1197,13 +1328,14 @@ function showPage(id) {
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   const tabs = document.querySelectorAll('.nav-tab');
-  const map = {'page-goal':0,'page-todo':1,'page-record':2,'page-report':3};
+  const map = {'page-goal':0,'page-todo':1,'page-record':2,'page-journal':3,'page-report':4,'page-sns':5,'page-column':6};
   if (map[id] !== undefined) tabs[map[id]].classList.add('active');
   if (id === 'page-todo') renderTodo();
   if (id === 'page-record') renderRecordHistory();
   if (id === 'page-report') updateReportPage();
   if (id === 'page-journal') { renderJournalHistory(); document.getElementById('journal-date-label').textContent = formatDateLabel(journalDate); }
   if (id === 'page-sns') { loadPosts(); }
+  if (id === 'page-column') { renderColumnPage(); }
   window.scrollTo(0,0);
 }
 
@@ -2609,6 +2741,232 @@ function formatTimeAgo(date) {
   if (diff < 86400) return Math.floor(diff / 3600) + '時間前';
   return Math.floor(diff / 86400) + '日前';
 }
+
+// ========== コラムページ ==========
+// ★ ブログURLをここで一元管理。移行後はこの1行だけ変更すればOK
+const BLOG_URL = 'https://note.com/bloom_journal';
+const COMMUNITY_URL = ''; // Discord開設後にURLをここに入力
+
+const COLUMN_ARTICLES = [
+  {
+    id: 1, category: 'nutrition',
+    badge: '🥗 栄養', badgeColor: '#E8F5E9', badgeText: '#2DAA71',
+    title: 'たんぱく質が美容の鍵？1日に必要な量と摂り方',
+    desc: 'ダイエット中でも筋肉と肌を守るために欠かせないたんぱく質。体重×1gが目安。食事での上手な摂り方を解説します。',
+    date: '2025.06.01', readTime: '3分', isNew: true,
+    url: BLOG_URL
+  },
+  {
+    id: 2, category: 'beauty',
+    badge: '💄 美容', badgeColor: '#FCE4EC', badgeText: '#E75480',
+    title: '腸活で肌が変わった！私が続けている5つの習慣',
+    desc: '腸と肌は直結している。ヨーグルト・食物繊維・水分補給など、実際に効果を感じたルーティンをシェアします。',
+    date: '2025.05.25', readTime: '4分', isNew: true,
+    url: BLOG_URL
+  },
+  {
+    id: 3, category: 'diet',
+    badge: '⚖️ ダイエット', badgeColor: '#FFF8E1', badgeText: '#F59E0B',
+    title: '「食べないダイエット」が逆効果な本当の理由',
+    desc: '極端な食事制限は代謝を落とし、リバウンドを招く。栄養学的な視点から、正しい食事量の考え方を解説します。',
+    date: '2025.05.18', readTime: '5分', isNew: false,
+    url: BLOG_URL
+  },
+  {
+    id: 4, category: 'trend',
+    badge: '✨ トレンド', badgeColor: '#F3E5FF', badgeText: '#8B5CF6',
+    title: '今話題の「GLP-1ダイエット」って実際どうなの？',
+    desc: '医療ダイエットとして注目されているGLP-1受容体作動薬。メリット・デメリットを正直にまとめました。',
+    date: '2025.05.10', readTime: '6分', isNew: false,
+    url: BLOG_URL
+  },
+  {
+    id: 5, category: 'nutrition',
+    badge: '🥗 栄養', badgeColor: '#E8F5E9', badgeText: '#2DAA71',
+    title: '美容サプリの選び方：本当に効くものと無駄なもの',
+    desc: 'コラーゲン・ビタミンC・鉄分・葉酸…。成分ごとに「飲む意味があるもの」を栄養士目線で徹底解説。',
+    date: '2025.05.03', readTime: '5分', isNew: false,
+    url: BLOG_URL
+  },
+  {
+    id: 6, category: 'lifestyle',
+    badge: '🌿 ライフスタイル', badgeColor: '#E0F7F4', badgeText: '#0D9488',
+    title: '睡眠とダイエットの関係：寝るだけで痩せやすくなる？',
+    desc: '睡眠不足はグレリン（食欲増進ホルモン）を増やし、ダイエットの大敵に。質の良い睡眠習慣の作り方を紹介します。',
+    date: '2025.04.27', readTime: '4分', isNew: false,
+    url: BLOG_URL
+  },
+  {
+    id: 7, category: 'beauty',
+    badge: '💄 美容', badgeColor: '#FCE4EC', badgeText: '#E75480',
+    title: 'のどかの本音：ダイエットで一番つらかった時期の話',
+    desc: '数字ばかり気にしていた20代前半。食事が怖くなっていたあの頃から、今の習慣に変わるまでの正直な記録です。',
+    date: '2025.04.20', readTime: '7分', isNew: false,
+    url: BLOG_URL
+  }
+];
+
+let columnCurrentCategory = 'all';
+
+function renderColumnPage() {
+  const filtered = columnCurrentCategory === 'all'
+    ? COLUMN_ARTICLES
+    : COLUMN_ARTICLES.filter(a => a.category === columnCurrentCategory);
+
+  const container = document.getElementById('column-list');
+  if (!container) return;
+
+  if (filtered.length === 0) {
+    container.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text-light);font-size:14px;">この カテゴリの記事は準備中です🌱</div>';
+    return;
+  }
+
+  container.innerHTML = filtered.map(article => {
+    const newBadge = article.isNew ? '<span class="col-new-badge">NEW</span>' : '';
+    return '<div class="col-article-card" onclick="openArticle(\'' + article.url + '\')">' +
+      '<div class="col-article-inner">' +
+      '<span class="col-article-badge" style="background:' + article.badgeColor + ';color:' + article.badgeText + ';">' + article.badge + '</span>' +
+      '<div class="col-article-title">' + article.title + newBadge + '</div>' +
+      '<div class="col-article-desc">' + article.desc + '</div>' +
+      '<div class="col-article-meta">' +
+      '<span>' + article.date + ' · ' + article.readTime + 'で読める</span>' +
+      '<span class="col-article-tag">続きを読む →</span>' +
+      '</div>' +
+      '</div>' +
+      '</div>';
+  }).join('');
+}
+
+function filterColumn(category, btn) {
+  columnCurrentCategory = category;
+  document.querySelectorAll('.col-cat-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderColumnPage();
+}
+
+function openArticle(url) {
+  window.open(url, '_blank');
+}
+
+function openBlog() {
+  window.open(BLOG_URL, '_blank');
+}
+
+function openCommunity() {
+  if (COMMUNITY_URL) {
+    window.open(COMMUNITY_URL, '_blank');
+  } else {
+    alert('コミュニティは現在準備中です🌸\nオープンしたらアプリ内でお知らせします！');
+  }
+}
+
+// ========== クイック入力（外部アクセス用） ==========
+let quickDate = new Date();
+
+function openQuickInput() {
+  quickDate = new Date();
+  document.getElementById('quick-input-overlay').classList.add('show');
+  renderQuickHabits();
+  updateQuickDateLabel();
+}
+
+function closeQuickInput() {
+  document.getElementById('quick-input-overlay').classList.remove('show');
+}
+
+function changeQuickDate(delta) {
+  quickDate.setDate(quickDate.getDate() + delta);
+  updateQuickDateLabel();
+  renderQuickHabits();
+}
+
+function updateQuickDateLabel() {
+  document.getElementById('quick-date-label').textContent = formatDateLabel(quickDate);
+}
+
+function renderQuickHabits() {
+  const habits = [...(state.selectedHabits || []), ...(state.customHabits || [])];
+  const dateKey = formatDate(quickDate);
+  const todayData = todoData[dateKey] || {};
+  const container = document.getElementById('quick-habit-list');
+  if (!container) return;
+
+  if (habits.length === 0) {
+    container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-light);font-size:14px;">習慣TODO管理タブで習慣を設定してください 🌸</div>';
+    return;
+  }
+
+  container.innerHTML = habits.map(h => {
+    const done = !!todayData[h];
+    return '<div class="quick-habit-item' + (done ? ' done' : '') + '" onclick="toggleQuickHabit(\'' + h.replace(/'/g, "\\'") + '\')" data-habit="' + h.replace(/"/g, '&quot;') + '">' +
+      '<div class="quick-habit-check">' + (done ? '✓' : '') + '</div>' +
+      '<div class="quick-habit-name">' + h + '</div>' +
+      '</div>';
+  }).join('');
+}
+
+function toggleQuickHabit(habit) {
+  const dateKey = formatDate(quickDate);
+  if (!todoData[dateKey]) todoData[dateKey] = {};
+  todoData[dateKey][habit] = !todoData[dateKey][habit];
+  renderQuickHabits();
+}
+
+async function saveQuickInput() {
+  const dateKey = formatDate(quickDate);
+  const weight = parseFloat(document.getElementById('quick-weight').value) || 0;
+  const mood = parseInt(document.getElementById('quick-mood').value) || 0;
+  const msgEl = document.getElementById('quick-save-msg');
+
+  // 習慣データ保存
+  saveToStorage();
+  if (supabaseClient && currentUser) {
+    const habits = [...(state.selectedHabits || []), ...(state.customHabits || [])];
+    for (const h of habits) {
+      const done = !!(todoData[dateKey] && todoData[dateKey][h]);
+      await saveTodoToSupabase(dateKey, h, done);
+    }
+    // 体重・気分も保存
+    if (weight || mood) {
+      if (!recordData[dateKey]) recordData[dateKey] = {};
+      if (weight) recordData[dateKey].weight = weight;
+      if (mood) recordData[dateKey].mood = mood;
+      await saveRecordToSupabase(dateKey, recordData[dateKey]);
+    }
+  }
+
+  msgEl.textContent = '✅ 記録を保存しました！';
+  msgEl.style.color = 'var(--green-strong)';
+  msgEl.style.display = 'block';
+  setTimeout(() => { msgEl.style.display = 'none'; }, 2500);
+}
+
+// 起動時にURLパラメータを確認してクイック入力を自動表示
+function checkUrlParams() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('quick') === '1') {
+    // LPをスキップして即座にアプリ＋クイック入力を表示
+    const topPage = document.getElementById('top-page');
+    const appBody = document.getElementById('app-body');
+    if (topPage) topPage.style.display = 'none';
+    if (appBody) { appBody.style.display = 'block'; appBody.classList.add('show'); }
+    openQuickInput();
+  }
+}
+
+// URLパラメータチェックはDOMが準備でき次第すぐ実行（loadより先）
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('quick') === '1') {
+    document.addEventListener('DOMContentLoaded', function() {
+      const topPage = document.getElementById('top-page');
+      const appBody = document.getElementById('app-body');
+      if (topPage) topPage.style.display = 'none';
+      if (appBody) { appBody.style.display = 'block'; appBody.classList.add('show'); }
+    });
+  }
+})();
+
 
 function escapeHtml(str) {
   if (!str) return '';
