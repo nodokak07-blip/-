@@ -1387,17 +1387,21 @@ function updateHabitsPreview() {
   preview.innerHTML = '<div style="font-size:12px;color:var(--text-light);margin-bottom:10px;font-weight:500;">選択中 ' + all.length + ' 個 — 頻度を設定してください</div>' +
     all.map(h => {
       const freq = state.habitFreq[h] || '毎日';
-      return '<div style="background:white;border:1.5px solid #F0D8E2;border-radius:10px;padding:10px 12px;margin-bottom:8px;">' +
+      return '<div style="background:white;border:1.5px solid #F0D8E2;border-radius:10px;padding:10px 12px;margin-bottom:8px;" data-habit="' + h.replace(/"/g,'&quot;') + '">' +
         '<div style="font-size:13px;font-weight:500;margin-bottom:6px;">✅ ' + h + '</div>' +
         '<div style="display:flex;flex-wrap:wrap;gap:6px;">' +
-        freqOptions.map(f => '<button class="freq-btn ' + (freq === f ? 'selected' : '') + '" onclick="setHabitFreq('' + h.replace(/'/g,"\'") + '','' + f + '')">' + f + '</button>').join('') +
+        freqOptions.map(f => { const sel = freq === f ? 'selected' : ''; return '<button class="freq-btn ' + sel + '" onclick="setHabitFreq(this,&quot;' + f + '&quot;)">' + f + '</button>'; }).join('') +
         '</div></div>';
     }).join('');
 }
 
-function setHabitFreq(habit, freq) {
-  state.habitFreq[habit] = freq;
-  updateHabitsPreview();
+function setHabitFreq(btn, freq) {
+  const card = btn.closest('[data-habit]');
+  if (card) {
+    state.habitFreq[card.dataset.habit] = freq;
+    saveToStorage();
+    updateHabitsPreview();
+  }
 }
 
 function buildResult() {
