@@ -327,39 +327,38 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
   display:flex; flex-direction:column;
 }
 .share-canvas-header {
-  background:linear-gradient(135deg,#f0a0b8,#d4b8e8);
-  padding:48px 64px 36px;
+  background:linear-gradient(135deg,#f0a0b8,#e8d5c0);
+  padding:32px 64px 24px;
   color:white;
   position:relative;
 }
-.share-canvas-logo { font-family:'Noto Serif JP',serif;font-size:36px;font-weight:600;margin-bottom:6px;letter-spacing:.04em; }
-.share-canvas-tagline { font-size:18px;opacity:.85; }
-.share-canvas-body { flex:1;padding:48px 64px;display:flex;flex-direction:column;gap:28px; }
-.share-canvas-title { font-family:'Noto Serif JP',serif;font-size:42px;font-weight:600;color:#3a2030;line-height:1.4; }
-.share-canvas-month { font-size:22px;color:#c07090;font-weight:500;margin-top:4px; }
-.share-stat-grid { display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px; }
+.share-canvas-logo { font-family:'Noto Serif JP',serif;font-size:34px;font-weight:600;margin-bottom:4px;letter-spacing:.04em; }
+.share-canvas-tagline { font-size:16px;opacity:.85; }
+.share-canvas-body { flex:1;padding:28px 56px;display:flex;flex-direction:column;gap:20px; }
+.share-canvas-title { font-family:'Noto Serif JP',serif;font-size:44px;font-weight:600;color:#3a2030;line-height:1.3; }
+.share-canvas-month { font-size:22px;color:#c07090;font-weight:500;margin-top:2px; }
+.share-stat-grid { display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px; }
 .share-stat-box {
-  background:white;border-radius:20px;padding:24px 16px;text-align:center;
+  background:white;border-radius:20px;padding:28px 16px;text-align:center;
   box-shadow:0 4px 24px rgba(200,100,130,0.1);
 }
-.share-stat-num { font-size:40px;font-weight:700;color:#E75480;line-height:1; }
+.share-stat-num { font-size:52px;font-weight:700;color:#E75480;line-height:1; }
 .share-stat-label { font-size:16px;color:#a88898;margin-top:8px; }
-.share-habit-list { background:white;border-radius:20px;padding:28px 32px;box-shadow:0 4px 24px rgba(200,100,130,0.08); }
-.share-habit-title { font-size:22px;font-weight:600;color:#3a2030;margin-bottom:16px;display:flex;align-items:center;gap:10px; }
-.share-habit-item { display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #f5e8f0;font-size:18px;color:#5a3848; }
+.share-habit-list { background:white;border-radius:20px;padding:22px 28px;box-shadow:0 4px 24px rgba(200,100,130,0.08); }
+.share-habit-title { font-size:22px;font-weight:600;color:#3a2030;margin-bottom:12px;display:flex;align-items:center;gap:10px; }
+.share-habit-item { display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid #f5e8f0;font-size:18px;color:#5a3848; }
 .share-habit-item:last-child { border:none; }
 .share-habit-bar { flex:1;height:8px;background:#f0d8e2;border-radius:4px;overflow:hidden;margin:0 12px; }
-.share-habit-bar-fill { height:100%;border-radius:4px;background:linear-gradient(90deg,#f0a0b8,#d4b8e8); }
+.share-habit-bar-fill { height:100%;border-radius:4px;background:linear-gradient(90deg,#f0a0b8,#e8d5c0); }
 .share-habit-pct { font-size:16px;font-weight:600;color:#E75480;width:44px;text-align:right; }
 .share-canvas-footer {
-  background:linear-gradient(135deg,#f0a0b8,#d4b8e8);
-  padding:28px 64px;
+  background:linear-gradient(135deg,#f0a0b8,#e8d5c0);
+  padding:22px 64px;
   display:flex;align-items:center;justify-content:space-between;
   color:white;
 }
-.share-footer-tag { font-size:18px;opacity:.85; }
+.share-footer-tag { font-size:17px;opacity:.85; }
 .share-footer-logo { font-family:'Noto Serif JP',serif;font-size:22px;font-weight:600; }
-/* デコレーション */
 .share-deco { position:absolute;pointer-events:none;opacity:.15;font-size:80px; }
 
 </style>
@@ -2490,7 +2489,6 @@ function formatTimeAgo(date) {
 // 共通：canvasをPNG画像としてダウンロード
 async function renderShareCanvas(filename) {
   const canvas = document.getElementById('share-canvas');
-  // 一時的に可視化してhtml2canvasでキャプチャ
   const wrap = document.getElementById('share-canvas-wrap');
   wrap.style.left = '0';
   wrap.style.top = '0';
@@ -2507,18 +2505,17 @@ async function renderShareCanvas(filename) {
       backgroundColor: null,
       logging: false
     });
+    const dataUrl = c.toDataURL('image/png');
+    // PCもスマホも共通：aタグでダウンロード
     const link = document.createElement('a');
     link.download = filename;
-    link.href = c.toDataURL('image/png');
+    link.href = dataUrl;
+    document.body.appendChild(link);
     link.click();
-    // スマホ向け：画像を新しいタブで開く（長押し保存）
-    const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
-    if (isIOS) {
-      window.open(c.toDataURL('image/png'), '_blank');
-      alert('📸 画像が開きました！\n長押し→「写真に追加」でカメラロールに保存できます🌸');
-    } else {
-      alert('📸 画像を保存しました！\nインスタグラム・スレッズにそのまま投稿できます🌸\n\n推奨：インスタ投稿（4:5）またはストーリーズ');
-    }
+    document.body.removeChild(link);
+    setTimeout(() => {
+      alert('📸 画像を保存しました！\nインスタグラム・スレッズにそのまま投稿できます🌸');
+    }, 500);
   } catch(e) {
     console.error(e);
     alert('画像の生成に失敗しました。もう一度お試しください。');
