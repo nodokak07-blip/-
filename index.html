@@ -334,7 +334,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
 }
 .share-canvas-logo { font-family:'Noto Serif JP',serif;font-size:34px;font-weight:600;margin-bottom:4px;letter-spacing:.04em; }
 .share-canvas-tagline { font-size:16px;opacity:.85; }
-.share-canvas-body { flex:1;padding:28px 56px;display:flex;flex-direction:column;gap:20px; }
+.share-canvas-body { flex:1;padding:20px 48px;display:flex;flex-direction:column;gap:16px; }
 .share-canvas-title { font-family:'Noto Serif JP',serif;font-size:44px;font-weight:600;color:#3a2030;line-height:1.3; }
 .share-canvas-month { font-size:22px;color:#c07090;font-weight:500;margin-top:2px; }
 .share-stat-grid { display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px; }
@@ -747,7 +747,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
       <div id="badges-empty" style="font-size:13px;color:var(--text-light);">習慣を続けるとバッジが獲得できます</div>
     </div>
 
-    <button onclick="saveTodoAsImage()" style="width:100%;padding:14px;background:linear-gradient(135deg,#f0a0b8,#c0392b);color:white;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:700;cursor:pointer;margin-top:4px;display:flex;align-items:center;justify-content:center;gap:8px;">📸 SNSでシェアする(画像保存)</button>
+    <button onclick="saveTodoAsImage()" style="width:100%;padding:14px;background:linear-gradient(135deg,#f0a0b8,#e8d5c0);color:white;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:700;cursor:pointer;margin-top:4px;display:flex;align-items:center;justify-content:center;gap:8px;">📸 SNSでシェアする(画像保存)</button>
   </div>
 </div>
 
@@ -843,7 +843,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
         <button class="btn-pdf" onclick="generateReport()">📄 PDFで出力</button>
         <button class="btn-share" onclick="saveReportComment()">💾 保存</button>
       </div>
-      <button onclick="saveReportAsImage()" style="width:100%;padding:14px;background:linear-gradient(135deg,#f0a0b8,#c0392b);color:white;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:700;cursor:pointer;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:8px;">📸 SNSでシェアする(画像保存)</button>
+      <button onclick="saveReportAsImage()" style="width:100%;padding:14px;background:linear-gradient(135deg,#f0a0b8,#e8d5c0);color:white;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:700;cursor:pointer;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:8px;">📸 SNSでシェアする(画像保存)</button>
       <button onclick="sendMonthlyReportToLINE()" style="width:100%;padding:14px;background:#06C755;color:white;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:700;cursor:pointer;margin-top:10px;">💚 月次レポートをLINEで送る</button>
     </div>
   </div>
@@ -2514,7 +2514,7 @@ async function renderShareCanvas(filename) {
     link.click();
     document.body.removeChild(link);
     setTimeout(() => {
-      alert('📸 画像を保存しました！\nインスタグラム・スレッズにそのまま投稿できます🌸');
+      alert('📸 画像を保存しました！\nダウンロードフォルダに保存されています。\nギャラリーアプリの「ダウンロード」フォルダをご確認ください📁');
     }, 500);
   } catch(e) {
     console.error(e);
@@ -2606,38 +2606,41 @@ function saveTodoAsImage() {
 
   const body = document.getElementById('share-canvas-body');
   body.innerHTML = `
-    <div class="share-canvas-title">習慣チェック<div class="share-canvas-month">📅 ${dateStr}</div></div>
+    <div style="text-align:center;">
+      <div style="font-family:'Noto Serif JP',serif;font-size:52px;font-weight:600;color:#3a2030;line-height:1.2;">習慣チェック</div>
+      <div style="font-size:26px;color:#c07090;font-weight:500;margin-top:6px;">📅 ${dateStr}</div>
+    </div>
 
-    <div class="share-stat-grid">
-      <div class="share-stat-box">
-        <div class="share-stat-num" style="color:#E75480;">${pct}%</div>
-        <div class="share-stat-label">達成率</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+      <div style="background:white;border-radius:20px;padding:28px 16px;text-align:center;box-shadow:0 4px 24px rgba(200,100,130,0.1);">
+        <div style="font-size:64px;font-weight:700;color:#E75480;line-height:1;">${pct}%</div>
+        <div style="font-size:18px;color:#a88898;margin-top:8px;">達成率</div>
       </div>
-      <div class="share-stat-box">
-        <div class="share-stat-num" style="color:#F59E0B;">${doneCount}/${habits.length}</div>
-        <div class="share-stat-label">完了 / 全体</div>
+      <div style="background:white;border-radius:20px;padding:28px 16px;text-align:center;box-shadow:0 4px 24px rgba(200,100,130,0.1);">
+        <div style="font-size:64px;font-weight:700;color:#F59E0B;line-height:1;">${doneCount}/${habits.length}</div>
+        <div style="font-size:18px;color:#a88898;margin-top:8px;">完了 / 全体</div>
       </div>
-      <div class="share-stat-box">
-        <div class="share-stat-num" style="color:#2DAA71;">${streakCount}日</div>
-        <div class="share-stat-label">継続中</div>
+      <div style="background:white;border-radius:20px;padding:28px 16px;text-align:center;box-shadow:0 4px 24px rgba(200,100,130,0.1);">
+        <div style="font-size:64px;font-weight:700;color:#2DAA71;line-height:1;">${streakCount}日</div>
+        <div style="font-size:18px;color:#a88898;margin-top:8px;">継続中</div>
       </div>
     </div>
 
-    <div class="share-habit-list">
-      <div class="share-habit-title">✅ 今日の習慣</div>
-      ${habits.slice(0, 7).map(h => {
+    <div style="background:white;border-radius:20px;padding:24px 32px;box-shadow:0 4px 24px rgba(200,100,130,0.08);">
+      <div style="font-size:28px;font-weight:600;color:#3a2030;margin-bottom:14px;text-align:center;">✅ 今日の習慣</div>
+      ${habits.slice(0, 6).map(h => {
         const done = !!dayData[h];
-        return `<div class="share-habit-item">
-          <span style="font-size:18px;">${done ? '✅' : '⬜'}</span>
-          <span style="flex:1;font-size:17px;${done ? 'color:#2DAA71;font-weight:500;' : 'color:#a88898;'}">${h}</span>
+        return `<div style="display:flex;align-items:center;gap:16px;padding:12px 0;border-bottom:1px solid #f5e8f0;text-align:center;">
+          <span style="font-size:26px;">${done ? '✅' : '⬜'}</span>
+          <span style="flex:1;font-size:24px;${done ? 'color:#2DAA71;font-weight:600;' : 'color:#9a7080;'}">${h}</span>
         </div>`;
       }).join('')}
     </div>
 
-    <div style="text-align:center;background:white;border-radius:20px;padding:28px;box-shadow:0 4px 24px rgba(200,100,130,0.08);">
-      <div style="font-size:72px;margin-bottom:12px;">${flower}</div>
-      <div style="font-size:20px;color:#c07090;font-weight:500;">${streakCount}日連続達成中 🔥</div>
-      ${state.name ? `<div style="font-size:18px;color:#a88898;margin-top:8px;">${state.name}さん、継続中！</div>` : ''}
+    <div style="text-align:center;background:white;border-radius:20px;padding:24px;box-shadow:0 4px 24px rgba(200,100,130,0.08);">
+      <div style="font-size:80px;margin-bottom:8px;">${flower}</div>
+      <div style="font-size:26px;color:#c07090;font-weight:600;">${streakCount}日連続達成中 🔥</div>
+      ${state.name ? `<div style="font-size:22px;color:#a88898;margin-top:6px;">${state.name}さん、継続中！</div>` : ''}
     </div>
   `;
 
