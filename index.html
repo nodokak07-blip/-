@@ -2603,44 +2603,51 @@ function saveTodoAsImage() {
   const flowerEmojis = ['🌱','🌿','🌸','🌺','🌻','🌹','💐'];
   const flowerIdx = Math.min(Math.floor(streakCount / 5), flowerEmojis.length - 1);
   const flower = flowerEmojis[flowerIdx];
+  const doneHabits = habits.filter(h => !!dayData[h]);
+  const notDoneHabits = habits.filter(h => !dayData[h]);
 
   const body = document.getElementById('share-canvas-body');
   body.innerHTML = `
     <div style="text-align:center;">
       <div style="font-family:'Noto Serif JP',serif;font-size:52px;font-weight:600;color:#3a2030;line-height:1.2;">習慣チェック</div>
-      <div style="font-size:26px;color:#c07090;font-weight:500;margin-top:6px;">📅 ${dateStr}</div>
+      <div style="font-size:24px;color:#c07090;font-weight:500;margin-top:4px;">📅 ${dateStr}</div>
     </div>
 
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
-      <div style="background:white;border-radius:20px;padding:28px 16px;text-align:center;box-shadow:0 4px 24px rgba(200,100,130,0.1);">
-        <div style="font-size:64px;font-weight:700;color:#E75480;line-height:1;">${pct}%</div>
-        <div style="font-size:18px;color:#a88898;margin-top:8px;">達成率</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+      <div style="background:white;border-radius:18px;padding:22px 12px;text-align:center;box-shadow:0 4px 20px rgba(200,100,130,0.1);">
+        <div style="font-size:60px;font-weight:700;color:#E75480;line-height:1;">${pct}%</div>
+        <div style="font-size:17px;color:#a88898;margin-top:6px;">達成率</div>
       </div>
-      <div style="background:white;border-radius:20px;padding:28px 16px;text-align:center;box-shadow:0 4px 24px rgba(200,100,130,0.1);">
-        <div style="font-size:64px;font-weight:700;color:#F59E0B;line-height:1;">${doneCount}/${habits.length}</div>
-        <div style="font-size:18px;color:#a88898;margin-top:8px;">完了 / 全体</div>
+      <div style="background:white;border-radius:18px;padding:22px 12px;text-align:center;box-shadow:0 4px 20px rgba(200,100,130,0.1);">
+        <div style="font-size:60px;font-weight:700;color:#F59E0B;line-height:1;">${doneCount}/${habits.length}</div>
+        <div style="font-size:17px;color:#a88898;margin-top:6px;">完了 / 全体</div>
       </div>
-      <div style="background:white;border-radius:20px;padding:28px 16px;text-align:center;box-shadow:0 4px 24px rgba(200,100,130,0.1);">
-        <div style="font-size:64px;font-weight:700;color:#2DAA71;line-height:1;">${streakCount}日</div>
-        <div style="font-size:18px;color:#a88898;margin-top:8px;">継続中</div>
+      <div style="background:white;border-radius:18px;padding:22px 12px;text-align:center;box-shadow:0 4px 20px rgba(200,100,130,0.1);">
+        <div style="font-size:60px;font-weight:700;color:#2DAA71;line-height:1;">${streakCount}日</div>
+        <div style="font-size:17px;color:#a88898;margin-top:6px;">継続中</div>
       </div>
     </div>
 
-    <div style="background:white;border-radius:20px;padding:24px 32px;box-shadow:0 4px 24px rgba(200,100,130,0.08);">
-      <div style="font-size:28px;font-weight:600;color:#3a2030;margin-bottom:14px;text-align:center;">✅ 今日の習慣</div>
-      ${habits.slice(0, 6).map(h => {
-        const done = !!dayData[h];
-        return `<div style="display:flex;align-items:center;gap:16px;padding:12px 0;border-bottom:1px solid #f5e8f0;text-align:center;">
-          <span style="font-size:26px;">${done ? '✅' : '⬜'}</span>
-          <span style="flex:1;font-size:24px;${done ? 'color:#2DAA71;font-weight:600;' : 'color:#9a7080;'}">${h}</span>
-        </div>`;
-      }).join('')}
-    </div>
+    ${doneHabits.length > 0 ? `
+    <div style="background:white;border-radius:18px;padding:20px 28px;box-shadow:0 4px 20px rgba(200,100,130,0.08);">
+      <div style="font-size:24px;font-weight:600;color:#2DAA71;margin-bottom:10px;text-align:center;">✅ 達成した習慣</div>
+      ${doneHabits.slice(0,6).map(h => `
+        <div style="text-align:center;font-size:22px;font-weight:600;color:#2DAA71;padding:8px 0;border-bottom:1px solid #f0faf5;">${h}</div>
+      `).join('')}
+    </div>` : ''}
 
-    <div style="text-align:center;background:white;border-radius:20px;padding:24px;box-shadow:0 4px 24px rgba(200,100,130,0.08);">
-      <div style="font-size:80px;margin-bottom:8px;">${flower}</div>
-      <div style="font-size:26px;color:#c07090;font-weight:600;">${streakCount}日連続達成中 🔥</div>
-      ${state.name ? `<div style="font-size:22px;color:#a88898;margin-top:6px;">${state.name}さん、継続中！</div>` : ''}
+    ${notDoneHabits.length > 0 ? `
+    <div style="background:white;border-radius:18px;padding:20px 28px;box-shadow:0 4px 20px rgba(200,100,130,0.08);">
+      <div style="font-size:24px;font-weight:600;color:#c07090;margin-bottom:10px;text-align:center;">🌱 明日チャレンジ</div>
+      ${notDoneHabits.slice(0,4).map(h => `
+        <div style="text-align:center;font-size:20px;color:#c0a0b0;padding:7px 0;border-bottom:1px solid #fdf0f5;">${h}</div>
+      `).join('')}
+    </div>` : ''}
+
+    <div style="text-align:center;background:white;border-radius:18px;padding:20px;box-shadow:0 4px 20px rgba(200,100,130,0.08);">
+      <div style="font-size:72px;margin-bottom:6px;">${flower}</div>
+      <div style="font-size:24px;color:#c07090;font-weight:600;">${streakCount}日連続達成中 🔥</div>
+      ${state.name ? `<div style="font-size:20px;color:#a88898;margin-top:4px;">${state.name}さん、継続中！</div>` : ''}
     </div>
   `;
 
