@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8">
+<!-- saved from url=(0046)file:///C:/Users/nodok/Downloads/index_32.html -->
+<html lang="ja"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bloom Journal | 美容健康ダイエット習慣サポート</title>
 <meta name="description" content="美容健康ダイエット習慣サポートアプリ。目標設定・習慣TODO管理・体調記録。">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link href="./Bloom Journal _ 美容健康ダイエット習慣サポート_files/css2" rel="stylesheet">
+<script src="./Bloom Journal _ 美容健康ダイエット習慣サポート_files/supabase-js@2"></script>
+<script src="./Bloom Journal _ 美容健康ダイエット習慣サポート_files/html2canvas.min.js.ダウンロード"></script>
 <style>
 :root {
   --pink-light: #FFF0F3; --pink-mid: #FBBDD0; --pink-strong: #E75480; --pink-dark: #C0395D;
@@ -316,50 +317,50 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
 #icon-picker span { font-size:24px;cursor:pointer;padding:4px;border-radius:8px;transition:all .2s; }
 #icon-picker span:hover { background:#FFF0F3;transform:scale(1.2); }
 #icon-picker span.selected { background:#FFD0E0; }
-/* ========== コラムページ ========== */
-/* カテゴリバー：横スクロール＋両端フェード */
-.col-cat-wrap { position:relative;margin-bottom:18px; }
-.col-cat-wrap::after { content:'';position:absolute;right:0;top:0;bottom:8px;width:32px;background:linear-gradient(to right,transparent,#FAF6F0);pointer-events:none;border-radius:0 20px 20px 0; }
-.col-cat-bar { display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;padding-right:32px;scrollbar-width:none; }
-.col-cat-bar::-webkit-scrollbar { display:none; }
-.col-cat-btn { flex-shrink:0;padding:7px 13px;border:1.5px solid #E8D8CC;border-radius:20px;background:#FFFAF5;font-size:12px;color:#8a6858;cursor:pointer;font-family:'Noto Sans JP',sans-serif;transition:all .2s;white-space:nowrap; }
-.col-cat-btn.active { background:linear-gradient(135deg,#f0a0b8,#d4b8e8);border-color:transparent;color:white;font-weight:600;box-shadow:0 3px 12px rgba(200,140,180,0.3); }
-.col-cat-btn:hover:not(.active) { border-color:#d4b0a0;background:#FFF5EE; }
-
-/* 記事カード：ベージュ×パステル */
-.col-article-card { background:linear-gradient(160deg,#FFFDF9 0%,#FFF8F5 100%);border-radius:18px;box-shadow:0 3px 20px rgba(180,130,110,0.08);margin-bottom:14px;overflow:hidden;cursor:pointer;transition:all .25s;border:1.5px solid #F0E4DC; }
-.col-article-card:hover { transform:translateY(-3px);box-shadow:0 8px 32px rgba(180,130,110,0.14);border-color:#E8C8B8; }
-.col-article-inner { padding:20px 18px; }
-.col-article-badge { display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:4px 12px;border-radius:20px;font-weight:600;margin-bottom:12px;letter-spacing:.02em; }
-.col-article-title { font-size:15px;font-weight:700;color:#3a2820;line-height:1.6;margin-bottom:8px; }
-.col-article-desc { font-size:13px;color:#9a7868;line-height:1.75;margin-bottom:12px; }
-.col-article-meta { display:flex;align-items:center;justify-content:space-between;font-size:11px;color:#b8a090; }
-.col-article-tag { font-size:11px;padding:4px 10px;background:linear-gradient(135deg,#fde8f0,#ede8ff);color:#c07090;border-radius:8px;font-weight:500; }
-.col-new-badge { display:inline-block;background:linear-gradient(135deg,#f0a0b8,#d4b8e8);color:white;font-size:10px;padding:2px 7px;border-radius:4px;margin-left:6px;vertical-align:middle;font-weight:700;letter-spacing:.03em; }
-
-/* ブログバナー：ベージュベース */
-.col-blog-banner { background:linear-gradient(135deg,#FFF5EE 0%,#FDF0F8 50%,#F5F0FF 100%);border-radius:18px;padding:20px;margin-bottom:20px;cursor:pointer;display:flex;align-items:center;gap:14px;border:1.5px solid #F0DDD4;transition:all .25s;box-shadow:0 3px 16px rgba(180,130,110,0.08); }
-.col-blog-banner:hover { transform:translateY(-2px);box-shadow:0 8px 28px rgba(180,130,110,0.14); }
-
-/* コミュニティバナー */
-.col-community-banner { background:linear-gradient(135deg,#F0F8FF 0%,#F5F0FF 100%);border-radius:18px;padding:22px;margin-top:8px;text-align:center;border:1.5px solid #DDD8F0; }
-
-/* ========== 外部入力ページ（クイック記録）========== */
-.quick-input-overlay { position:fixed;inset:0;background:var(--cream);z-index:400;display:none;overflow-y:auto; }
-.quick-input-overlay.show { display:block; }
-.quick-header { background:white;border-bottom:1px solid #F5E0EA;padding:14px 20px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10; }
-.quick-logo { font-family:'Noto Serif JP',serif;font-size:16px;font-weight:600;color:#c07090; }
-.quick-close-btn { margin-left:auto;background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-light);padding:4px; }
-.quick-body { max-width:480px;margin:0 auto;padding:20px 16px 60px; }
-.quick-date-bar { display:flex;align-items:center;justify-content:center;gap:12px;background:white;border-radius:12px;padding:12px 16px;margin-bottom:16px;box-shadow:var(--shadow); }
-.quick-habit-item { display:flex;align-items:center;gap:12px;padding:14px 16px;background:white;border-radius:12px;margin-bottom:8px;box-shadow:0 2px 12px rgba(200,100,130,0.06);cursor:pointer;transition:all .2s;border:1.5px solid transparent; }
-.quick-habit-item.done { background:#FFF0F3;border-color:#F0C0D0; }
-.quick-habit-check { width:24px;height:24px;border-radius:50%;border:2px solid #F0D8E2;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .2s;flex-shrink:0; }
-.quick-habit-item.done .quick-habit-check { background:var(--pink-strong);border-color:var(--pink-strong);color:white; }
-.quick-habit-name { font-size:14px;color:var(--text-dark);flex:1; }
-.quick-habit-item.done .quick-habit-name { color:var(--pink-strong);font-weight:500; }
-.quick-save-btn { width:100%;padding:16px;background:linear-gradient(135deg,#f0a0b8,#d4b8e8);color:white;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;font-family:'Noto Sans JP',sans-serif;margin-top:16px;transition:all .2s; }
-.quick-save-btn:active { transform:scale(0.98); }
+/* ========== シェア画像生成（1080×1350） ========== */
+.share-img-wrap { position:fixed;left:-9999px;top:0;z-index:-1; }
+.share-canvas {
+  width:1080px; height:1350px;
+  background:linear-gradient(160deg,#fff5f8 0%,#fef0f8 40%,#f5f0ff 70%,#f0f8ff 100%);
+  font-family:'Noto Sans JP',sans-serif;
+  overflow:hidden; position:relative;
+  display:flex; flex-direction:column;
+}
+.share-canvas-header {
+  background:linear-gradient(135deg,#f0a0b8,#d4b8e8);
+  padding:48px 64px 36px;
+  color:white;
+  position:relative;
+}
+.share-canvas-logo { font-family:'Noto Serif JP',serif;font-size:36px;font-weight:600;margin-bottom:6px;letter-spacing:.04em; }
+.share-canvas-tagline { font-size:18px;opacity:.85; }
+.share-canvas-body { flex:1;padding:48px 64px;display:flex;flex-direction:column;gap:28px; }
+.share-canvas-title { font-family:'Noto Serif JP',serif;font-size:42px;font-weight:600;color:#3a2030;line-height:1.4; }
+.share-canvas-month { font-size:22px;color:#c07090;font-weight:500;margin-top:4px; }
+.share-stat-grid { display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px; }
+.share-stat-box {
+  background:white;border-radius:20px;padding:24px 16px;text-align:center;
+  box-shadow:0 4px 24px rgba(200,100,130,0.1);
+}
+.share-stat-num { font-size:40px;font-weight:700;color:#E75480;line-height:1; }
+.share-stat-label { font-size:16px;color:#a88898;margin-top:8px; }
+.share-habit-list { background:white;border-radius:20px;padding:28px 32px;box-shadow:0 4px 24px rgba(200,100,130,0.08); }
+.share-habit-title { font-size:22px;font-weight:600;color:#3a2030;margin-bottom:16px;display:flex;align-items:center;gap:10px; }
+.share-habit-item { display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #f5e8f0;font-size:18px;color:#5a3848; }
+.share-habit-item:last-child { border:none; }
+.share-habit-bar { flex:1;height:8px;background:#f0d8e2;border-radius:4px;overflow:hidden;margin:0 12px; }
+.share-habit-bar-fill { height:100%;border-radius:4px;background:linear-gradient(90deg,#f0a0b8,#d4b8e8); }
+.share-habit-pct { font-size:16px;font-weight:600;color:#E75480;width:44px;text-align:right; }
+.share-canvas-footer {
+  background:linear-gradient(135deg,#f0a0b8,#d4b8e8);
+  padding:28px 64px;
+  display:flex;align-items:center;justify-content:space-between;
+  color:white;
+}
+.share-footer-tag { font-size:18px;opacity:.85; }
+.share-footer-logo { font-family:'Noto Serif JP',serif;font-size:22px;font-weight:600; }
+/* デコレーション */
+.share-deco { position:absolute;pointer-events:none;opacity:.15;font-size:80px; }
 
 </style>
 </head>
@@ -372,8 +373,8 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
     <div class="auth-tagline">美容健康ダイエット習慣サポート</div>
 
     <div class="auth-tabs">
-      <button class="auth-tab active" onclick="switchAuthTab('login')">ログイン</button>
-      <button class="auth-tab" onclick="switchAuthTab('signup')">新規登録</button>
+      <button class="auth-tab active" onclick="switchAuthTab(&#39;login&#39;)">ログイン</button>
+      <button class="auth-tab" onclick="switchAuthTab(&#39;signup&#39;)">新規登録</button>
     </div>
 
     <div id="auth-login-form" class="auth-form">
@@ -400,45 +401,19 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
 </div>
 
 <!-- プロフィール設定モーダル -->
-<div id="profile-modal" style="display:none;position:fixed;inset:0;background:rgba(253,250,246,0.97);z-index:300;display:none;align-items:center;justify-content:center;padding:20px;overflow-y:auto;">
-  <div style="background:white;border-radius:20px;padding:32px;width:100%;max-width:420px;box-shadow:0 8px 48px rgba(200,100,130,0.15);margin:auto;">
-    <div style="font-family:'Noto Serif JP',serif;font-size:20px;font-weight:600;color:#c07090;margin-bottom:20px;text-align:center;">👤 プロフィール設定</div>
-
-    <!-- アイコン種別タブ -->
+<div id="profile-modal" style="display:none;position:fixed;inset:0;background:rgba(253,250,246,0.97);z-index:300;display:none;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:white;border-radius:20px;padding:32px;width:100%;max-width:420px;box-shadow:0 8px 48px rgba(200,100,130,0.15);">
+    <div style="font-family:&#39;Noto Serif JP&#39;,serif;font-size:20px;font-weight:600;color:#c07090;margin-bottom:20px;text-align:center;">👤 プロフィール設定</div>
     <div class="form-group">
-      <label class="form-label">アイコン</label>
-      <div style="display:flex;gap:0;margin-bottom:14px;border-radius:10px;overflow:hidden;border:1.5px solid #F0D8E2;">
-        <button id="icon-tab-emoji" onclick="switchIconTab('emoji')" style="flex:1;padding:9px;border:none;background:var(--pink-strong);color:white;font-size:13px;font-weight:500;cursor:pointer;font-family:'Noto Sans JP',sans-serif;">絵文字</button>
-        <button id="icon-tab-photo" onclick="switchIconTab('photo')" style="flex:1;padding:9px;border:none;background:#FFF0F3;color:var(--text-mid);font-size:13px;cursor:pointer;font-family:'Noto Sans JP',sans-serif;">写真</button>
+      <label class="form-label">アイコン（絵文字）</label>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;" id="icon-picker">
+        <span onclick="selectIcon(&#39;🌸&#39;)">🌸</span> <span onclick="selectIcon(&#39;🌺&#39;)">🌺</span> <span onclick="selectIcon(&#39;🌻&#39;)">🌻</span> <span onclick="selectIcon(&#39;🌹&#39;)">🌹</span> <span onclick="selectIcon(&#39;💐&#39;)">💐</span> <span onclick="selectIcon(&#39;🌷&#39;)">🌷</span> <span onclick="selectIcon(&#39;🌼&#39;)">🌼</span> <span onclick="selectIcon(&#39;🦋&#39;)">🦋</span> <span onclick="selectIcon(&#39;🍀&#39;)">🍀</span> <span onclick="selectIcon(&#39;⭐&#39;)">⭐</span> <span onclick="selectIcon(&#39;🌙&#39;)">🌙</span> <span onclick="selectIcon(&#39;☀️&#39;)">☀️</span> <span onclick="selectIcon(&#39;🎀&#39;)">🎀</span> <span onclick="selectIcon(&#39;💝&#39;)">💝</span> <span onclick="selectIcon(&#39;🌈&#39;)">🌈</span> <span onclick="selectIcon(&#39;🍓&#39;)">🍓</span> <span onclick="selectIcon(&#39;🍑&#39;)">🍑</span> <span onclick="selectIcon(&#39;🌊&#39;)">🌊</span> <span onclick="selectIcon(&#39;🦄&#39;)">🦄</span> <span onclick="selectIcon(&#39;🐱&#39;)">🐱</span>
       </div>
-
-      <!-- 絵文字パネル -->
-      <div id="icon-panel-emoji">
-        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;" id="icon-picker">
-          <span onclick="selectIcon('🌸')">🌸</span> <span onclick="selectIcon('🌺')">🌺</span> <span onclick="selectIcon('🌻')">🌻</span> <span onclick="selectIcon('🌹')">🌹</span> <span onclick="selectIcon('💐')">💐</span> <span onclick="selectIcon('🌷')">🌷</span> <span onclick="selectIcon('🌼')">🌼</span> <span onclick="selectIcon('🦋')">🦋</span> <span onclick="selectIcon('🍀')">🍀</span> <span onclick="selectIcon('⭐')">⭐</span> <span onclick="selectIcon('🌙')">🌙</span> <span onclick="selectIcon('☀️')">☀️</span> <span onclick="selectIcon('🎀')">🎀</span> <span onclick="selectIcon('💝')">💝</span> <span onclick="selectIcon('🌈')">🌈</span> <span onclick="selectIcon('🍓')">🍓</span> <span onclick="selectIcon('🍑')">🍑</span> <span onclick="selectIcon('🌊')">🌊</span> <span onclick="selectIcon('🦄')">🦄</span> <span onclick="selectIcon('🐱')">🐱</span>
-        </div>
-        <div style="display:flex;gap:8px;align-items:center;">
-          <div id="selected-icon-preview" style="font-size:36px;width:52px;height:52px;background:#FFF0F3;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;">🌸</div>
-          <input type="text" id="profile-icon" placeholder="絵文字を直接入力" maxlength="2" style="width:120px;" oninput="document.getElementById('selected-icon-preview').textContent=this.value||'🌸'">
-        </div>
-      </div>
-
-      <!-- 写真パネル -->
-      <div id="icon-panel-photo" style="display:none;">
-        <div id="photo-upload-area" onclick="document.getElementById('profile-photo-input').click()" style="border:2px dashed #F0D8E2;border-radius:12px;padding:20px;text-align:center;cursor:pointer;background:#FFF8FA;transition:all .2s;margin-bottom:10px;">
-          <div id="photo-upload-placeholder">
-            <div style="font-size:32px;margin-bottom:6px;">📷</div>
-            <div style="font-size:13px;color:var(--text-light);">タップして写真を選択</div>
-            <div style="font-size:11px;color:#c0b0b8;margin-top:4px;">JPG / PNG（自動で200KB以下に圧縮）</div>
-          </div>
-          <img id="profile-photo-preview" style="display:none;width:80px;height:80px;border-radius:50%;object-fit:cover;margin:0 auto;border:3px solid #F0D8E2;">
-        </div>
-        <input type="file" id="profile-photo-input" accept="image/*" style="display:none;" onchange="previewProfilePhoto(this)">
-        <div id="photo-upload-status" style="font-size:12px;color:var(--text-light);text-align:center;display:none;"></div>
-        <button onclick="removeProfilePhoto()" id="photo-remove-btn" style="display:none;width:100%;padding:8px;background:#FFF0F3;border:1.5px solid #F0D8E2;border-radius:8px;font-size:13px;color:#E75480;cursor:pointer;font-family:'Noto Sans JP',sans-serif;margin-top:4px;">🗑️ 写真を削除して絵文字に戻す</button>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <div id="selected-icon-preview" style="font-size:36px;width:48px;height:48px;background:#FFF0F3;border-radius:50%;display:flex;align-items:center;justify-content:center;">🌸</div>
+        <input type="text" id="profile-icon" placeholder="絵文字を入力" maxlength="2" style="width:80px;">
       </div>
     </div>
-
     <div class="form-group">
       <label class="form-label">アカウント名</label>
       <input type="text" id="profile-username" placeholder="例：のどか" maxlength="20">
@@ -509,58 +484,6 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
 </div>
 
 <!-- ========== アプリ本体 ========== -->
-<!-- ========== クイック習慣入力（外部からアクセス用） ========== -->
-<div id="quick-input-overlay" class="quick-input-overlay">
-  <div class="quick-header">
-    <span style="font-size:20px;">🌸</span>
-    <span class="quick-logo">Bloom Journal</span>
-    <span style="font-size:12px;background:#FFF0F3;color:var(--pink-strong);padding:3px 10px;border-radius:10px;font-weight:500;">クイック記録</span>
-    <button class="quick-close-btn" onclick="closeQuickInput()">✕</button>
-  </div>
-  <div class="quick-body">
-    <div class="quick-date-bar">
-      <button class="date-nav" onclick="changeQuickDate(-1)">‹</button>
-      <div class="date-label" id="quick-date-label">今日</div>
-      <button class="date-nav" onclick="changeQuickDate(1)">›</button>
-    </div>
-
-    <div class="card" style="margin-bottom:14px;">
-      <div class="card-title" style="font-size:15px;">✅ 今日の習慣チェック</div>
-      <div id="quick-habit-list">
-        <div style="text-align:center;padding:20px;color:var(--text-light);font-size:14px;">習慣を読み込み中...</div>
-      </div>
-    </div>
-
-    <div class="card" style="margin-bottom:14px;">
-      <div class="card-title" style="font-size:15px;">📊 体重・気分（任意）</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-        <div>
-          <label class="form-label">体重 (kg)</label>
-          <input type="number" id="quick-weight" placeholder="55.0" step="0.1" style="font-size:16px;">
-        </div>
-        <div>
-          <label class="form-label">気分</label>
-          <select id="quick-mood" style="font-size:15px;">
-            <option value="">選択</option>
-            <option value="5">😄 最高</option>
-            <option value="4">🙂 良い</option>
-            <option value="3">😐 普通</option>
-            <option value="2">😔 悪い</option>
-            <option value="1">😢 最悪</option>
-          </select>
-        </div>
-      </div>
-    </div>
-
-    <button class="quick-save-btn" onclick="saveQuickInput()">💾 記録を保存する</button>
-    <div id="quick-save-msg" style="text-align:center;font-size:13px;margin-top:10px;display:none;"></div>
-
-    <div style="text-align:center;margin-top:20px;">
-      <button onclick="closeQuickInput()" style="background:none;border:none;font-size:13px;color:var(--text-light);cursor:pointer;text-decoration:underline;">アプリ全体を開く →</button>
-    </div>
-  </div>
-</div>
-
 <div id="app-body" class="app-body">
 
 <div class="loading-overlay" id="loading">
@@ -575,18 +498,17 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
     <span class="nav-logo">Bloom Journal</span>
     <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
       <button id="nav-auth-btn" onclick="toggleAuth()" style="padding:6px 14px;border-radius:20px;border:1.5px solid #F0D8E2;background:white;font-size:12px;cursor:pointer;color:var(--text-mid);display:flex;align-items:center;gap:6px;">
-        <span id="nav-icon" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;overflow:hidden;flex-shrink:0;">🔑</span><span id="nav-name">ログイン</span>
+        <span id="nav-icon">🔑</span><span id="nav-name">ログイン</span>
       </button>
     </div>
   </div>
   <div class="nav-tabs">
-    <button class="nav-tab active" onclick="showPage('page-goal')">🎯 目標設定</button>
-    <button class="nav-tab" onclick="showPage('page-todo')">✅ 習慣TODO</button>
-    <button class="nav-tab" onclick="showPage('page-record')">📊 体調記録</button>
-    <button class="nav-tab" onclick="showPage('page-journal')">📓 ジャーナル</button>
-    <button class="nav-tab" onclick="showPage('page-report')">📄 レポート</button>
-    <button class="nav-tab" onclick="showPage('page-sns')">📸 みんなの記録</button>
-    <button class="nav-tab" onclick="showPage('page-column')">📖 コラム</button>
+    <button class="nav-tab active" onclick="showPage(&#39;page-goal&#39;)">🎯 目標設定</button>
+    <button class="nav-tab" onclick="showPage(&#39;page-todo&#39;)">✅ 習慣TODO</button>
+    <button class="nav-tab" onclick="showPage(&#39;page-record&#39;)">📊 体調記録</button>
+    <button class="nav-tab" onclick="showPage(&#39;page-journal&#39;)">📓 ジャーナル</button>
+    <button class="nav-tab" onclick="showPage(&#39;page-report&#39;)">📄 レポート</button>
+    <button class="nav-tab" onclick="showPage(&#39;page-sns&#39;)">📸 みんなの記録</button>
   </div>
 </nav>
 
@@ -671,10 +593,10 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
         <div class="form-group">
           <label class="form-label">目標期間</label>
           <div class="radio-group" id="rg-period">
-            <label class="radio-item" onclick="selectRadio(this,'rg-period')"><input type="radio" name="period" value="1ヶ月"><div class="radio-dot"></div><div><div class="radio-label">1ヶ月</div><div class="radio-sub">体を慣らすスタート期間</div></div></label>
-            <label class="radio-item" onclick="selectRadio(this,'rg-period')"><input type="radio" name="period" value="3ヶ月"><div class="radio-dot"></div><div><div class="radio-label">3ヶ月</div><div class="radio-sub">習慣が定着しやすい期間</div></div></label>
-            <label class="radio-item selected" onclick="selectRadio(this,'rg-period')"><input type="radio" name="period" value="6ヶ月" checked><div class="radio-dot"></div><div><div class="radio-label">6ヶ月</div><div class="radio-sub">体質改善に最適な期間 ✨</div></div></label>
-            <label class="radio-item" onclick="selectRadio(this,'rg-period')"><input type="radio" name="period" value="1年"><div class="radio-dot"></div><div><div class="radio-label">1年</div><div class="radio-sub">じっくりリバウンドなし</div></div></label>
+            <label class="radio-item" onclick="selectRadio(this,&#39;rg-period&#39;)"><input type="radio" name="period" value="1ヶ月"><div class="radio-dot"></div><div><div class="radio-label">1ヶ月</div><div class="radio-sub">体を慣らすスタート期間</div></div></label>
+            <label class="radio-item" onclick="selectRadio(this,&#39;rg-period&#39;)"><input type="radio" name="period" value="3ヶ月"><div class="radio-dot"></div><div><div class="radio-label">3ヶ月</div><div class="radio-sub">習慣が定着しやすい期間</div></div></label>
+            <label class="radio-item selected" onclick="selectRadio(this,&#39;rg-period&#39;)"><input type="radio" name="period" value="6ヶ月" checked=""><div class="radio-dot"></div><div><div class="radio-label">6ヶ月</div><div class="radio-sub">体質改善に最適な期間 ✨</div></div></label>
+            <label class="radio-item" onclick="selectRadio(this,&#39;rg-period&#39;)"><input type="radio" name="period" value="1年"><div class="radio-dot"></div><div><div class="radio-label">1年</div><div class="radio-sub">じっくりリバウンドなし</div></div></label>
           </div>
         </div>
         <button class="btn-primary" onclick="goStep(2)">次へ →</button>
@@ -689,10 +611,10 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
         <div class="form-group">
           <label class="form-label">運動習慣</label>
           <div class="radio-group" id="rg-exercise">
-            <label class="radio-item" onclick="selectRadio(this,'rg-exercise')"><input type="radio" name="exercise" value="ほぼしない"><div class="radio-dot"></div><div><div class="radio-label">ほぼしない</div><div class="radio-sub">デスクワーク・家事のみ</div></div></label>
-            <label class="radio-item" onclick="selectRadio(this,'rg-exercise')"><input type="radio" name="exercise" value="週1〜2回"><div class="radio-dot"></div><div><div class="radio-label">週1〜2回</div><div class="radio-sub">軽いウォーキングなど</div></div></label>
-            <label class="radio-item" onclick="selectRadio(this,'rg-exercise')"><input type="radio" name="exercise" value="週3〜4回"><div class="radio-dot"></div><div><div class="radio-label">週3〜4回</div><div class="radio-sub">定期的に体を動かしている</div></div></label>
-            <label class="radio-item" onclick="selectRadio(this,'rg-exercise')"><input type="radio" name="exercise" value="ほぼ毎日"><div class="radio-dot"></div><div><div class="radio-label">ほぼ毎日</div><div class="radio-sub">アクティブな生活</div></div></label>
+            <label class="radio-item" onclick="selectRadio(this,&#39;rg-exercise&#39;)"><input type="radio" name="exercise" value="ほぼしない"><div class="radio-dot"></div><div><div class="radio-label">ほぼしない</div><div class="radio-sub">デスクワーク・家事のみ</div></div></label>
+            <label class="radio-item" onclick="selectRadio(this,&#39;rg-exercise&#39;)"><input type="radio" name="exercise" value="週1〜2回"><div class="radio-dot"></div><div><div class="radio-label">週1〜2回</div><div class="radio-sub">軽いウォーキングなど</div></div></label>
+            <label class="radio-item" onclick="selectRadio(this,&#39;rg-exercise&#39;)"><input type="radio" name="exercise" value="週3〜4回"><div class="radio-dot"></div><div><div class="radio-label">週3〜4回</div><div class="radio-sub">定期的に体を動かしている</div></div></label>
+            <label class="radio-item" onclick="selectRadio(this,&#39;rg-exercise&#39;)"><input type="radio" name="exercise" value="ほぼ毎日"><div class="radio-dot"></div><div><div class="radio-label">ほぼ毎日</div><div class="radio-sub">アクティブな生活</div></div></label>
           </div>
         </div>
         <div class="form-group">
@@ -714,7 +636,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
         <div class="step-num">STEP 04</div>
         <div class="step-title">習慣TODOを選ぼう</div>
         <div class="step-desc">続けたい習慣を3〜10個選んでください。頻度も設定できます。</div>
-        <div class="habit-select-grid" id="habit-select-grid"></div>
+        <div class="habit-select-grid" id="habit-select-grid"><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;水を目標量飲む&#39;)">水を目標量飲む</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;毎日食後ウォーキング&#39;)">毎日食後ウォーキング</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;睡眠8時間&#39;)">睡眠8時間</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;食物繊維1日20g&#39;)">食物繊維1日20g</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;ストレッチ3分&#39;)">ストレッチ3分</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;バランスメニュー&#39;)">バランスメニュー</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;筋膜リリース5分&#39;)">筋膜リリース5分</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;ピラティス&#39;)">ピラティス</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;16時間ファスティング&#39;)">16時間ファスティング</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;グルテンフリー&#39;)">グルテンフリー</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;サプリメント&#39;)">サプリメント</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;食事の順番の意識(ベジファースト)&#39;)">食事の順番の意識(ベジファースト)</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;食事をよく噛む（1口30回目安）&#39;)">食事をよく噛む（1口30回目安）</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;栄養バランスの取れた食事&#39;)">栄養バランスの取れた食事</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;食後3時間開けて就寝&#39;)">食後3時間開けて就寝</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;食後4時間開けて就寝&#39;)">食後4時間開けて就寝</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;食事の間隔を4時間あける&#39;)">食事の間隔を4時間あける</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;飲酒後3時間開けて就寝&#39;)">飲酒後3時間開けて就寝</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;ウォーキング&#39;)">ウォーキング</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;朝10分ヨガ&#39;)">朝10分ヨガ</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;朝風呂&#39;)">朝風呂</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;毎日1万歩以上&#39;)">毎日1万歩以上</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;竹踏み&#39;)">竹踏み</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;ヨガ&#39;)">ヨガ</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;ジム（筋トレ等）&#39;)">ジム（筋トレ等）</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;ランニング&#39;)">ランニング</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;筋トレ&#39;)">筋トレ</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;ヴィーガンメニュー&#39;)">ヴィーガンメニュー</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;必須ミネラル補給&#39;)">必須ミネラル補給</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;白砂糖を避ける&#39;)">白砂糖を避ける</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;瞑想&#39;)">瞑想</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;朝の白湯&#39;)">朝の白湯</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;緑茶を飲む&#39;)">緑茶を飲む</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;腹八分目を意識&#39;)">腹八分目を意識</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;食事を記録する&#39;)">食事を記録する</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;湯船につかる&#39;)">湯船につかる</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;階段を使う&#39;)">階段を使う</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;夜21時以降食べない&#39;)">夜21時以降食べない</div></div>
         <div style="margin-top:16px;">
           <label class="form-label">カスタム習慣を追加</label>
           <div class="custom-add-row">
@@ -732,7 +654,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
       <div class="step-card" id="step-4">
         <div class="result-hero">
           <div style="font-size:13px;opacity:.85;margin-bottom:4px;" id="res-name-greeting">こんにちは！</div>
-          <div style="font-family:'Noto Serif JP',serif;font-size:20px;font-weight:600;margin-bottom:16px;">あなた専用<br>ダイエット目標シート 🌸</div>
+          <div style="font-family:&#39;Noto Serif JP&#39;,serif;font-size:20px;font-weight:600;margin-bottom:16px;">あなた専用<br>ダイエット目標シート 🌸</div>
           <div class="result-stats">
             <div style="text-align:center;"><div class="result-stat-num" id="res-current">—</div><div class="result-stat-label">現在の体重</div></div>
             <div style="font-size:20px;opacity:.6;align-self:center;">→</div>
@@ -751,11 +673,11 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
         <div class="line-banner">
           <div style="font-size:15px;font-weight:700;margin-bottom:8px;">📲 LINEで毎日サポート！</div>
           <div style="font-size:13px;opacity:.9;margin-bottom:12px;">毎朝の応援メッセージをお届けします。</div>
-          <a href="#" class="btn-line" onclick="alert('LINEのURLを設定してください')">LINEで受け取る 🎁</a>
+          <a href="file:///C:/Users/nodok/Downloads/index_32.html#" class="btn-line" onclick="alert(&#39;LINEのURLを設定してください&#39;)">LINEで受け取る 🎁</a>
         </div>
         <div class="action-row">
           <button class="btn-pdf" onclick="downloadPDF()">📄 PDFで保存</button>
-          <button class="btn-share" onclick="showPage('page-report')">📊 レポートへ</button>
+          <button class="btn-share" onclick="showPage(&#39;page-report&#39;)">📊 レポートへ</button>
         </div>
         <button class="btn-secondary" onclick="goStep(3)" style="margin-top:10px;">← 習慣を変更する</button>
         <button class="btn-primary" onclick="startTodo()" style="margin-top:10px;background:var(--green-strong);">✅ 習慣TODOを始める</button>
@@ -767,7 +689,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
   <div id="goal-view" style="display:none;padding:16px;">
     <div class="result-hero">
       <div style="font-size:13px;opacity:.85;margin-bottom:4px;" id="goal-view-name"></div>
-      <div style="font-family:'Noto Serif JP',serif;font-size:20px;font-weight:600;margin-bottom:16px;">ダイエット目標シート 🌸</div>
+      <div style="font-family:&#39;Noto Serif JP&#39;,serif;font-size:20px;font-weight:600;margin-bottom:16px;">ダイエット目標シート 🌸</div>
       <div class="result-stats">
         <div style="text-align:center;"><div class="result-stat-num" id="gv-current">—</div><div class="result-stat-label">現在の体重</div></div>
         <div style="font-size:20px;opacity:.6;align-self:center;">→</div>
@@ -788,7 +710,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
   <div style="padding:16px;">
     <div class="date-header">
       <button class="date-nav" onclick="changeDate(-1)">‹</button>
-      <div class="date-label" id="todo-date-label">今日</div>
+      <div class="date-label" id="todo-date-label">今日 (6/8)</div>
       <button class="date-nav" onclick="changeDate(1)">›</button>
     </div>
 
@@ -805,7 +727,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
     <div class="card">
       <div class="card-title">✅ 今日の習慣チェック</div>
       <div id="todo-list"></div>
-      <div id="todo-empty" style="text-align:center;padding:20px;color:var(--text-light);font-size:14px;display:none;">
+      <div id="todo-empty" style="text-align: center; padding: 20px; color: var(--text-light); font-size: 14px; display: block;">
         目標シートで習慣を設定してください 🌸
       </div>
     </div>
@@ -825,6 +747,8 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
       <div id="badges-list" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
       <div id="badges-empty" style="font-size:13px;color:var(--text-light);">習慣を続けるとバッジが獲得できます</div>
     </div>
+
+    <button onclick="saveTodoAsImage()" style="width:100%;padding:14px;background:linear-gradient(135deg,#f0a0b8,#d4b8e8);color:white;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:700;cursor:pointer;margin-top:4px;display:flex;align-items:center;justify-content:center;gap:8px;">📸 インスタ・スレッズ用画像を保存（1080×1350）</button>
   </div>
 </div>
 
@@ -833,7 +757,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
   <div style="padding:16px;">
     <div class="date-header">
       <button class="date-nav" onclick="changeRecordDate(-1)">‹</button>
-      <div class="date-label" id="record-date-label">今日</div>
+      <div class="date-label" id="record-date-label">今日 (6/8)</div>
       <button class="date-nav" onclick="changeRecordDate(1)">›</button>
     </div>
 
@@ -885,19 +809,19 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
   <div style="padding:16px;">
     <div class="card">
       <div class="card-title">📄 月次レポート</div>
-      <div style="font-size:13px;color:var(--text-mid);margin-bottom:16px;" id="report-period"></div>
+      <div style="font-size:13px;color:var(--text-mid);margin-bottom:16px;" id="report-period">2026年6月のレポート</div>
 
       <div class="stats-row">
-        <div class="stat-card"><div class="stat-num" id="report-avg-todo">—</div><div class="stat-label">平均達成率</div></div>
-        <div class="stat-card"><div class="stat-num" id="report-streak">—</div><div class="stat-label">最長継続</div></div>
+        <div class="stat-card"><div class="stat-num" id="report-avg-todo">0%</div><div class="stat-label">平均達成率</div></div>
+        <div class="stat-card"><div class="stat-num" id="report-streak">0日</div><div class="stat-label">最長継続</div></div>
         <div class="stat-card"><div class="stat-num" id="report-weight-diff">—</div><div class="stat-label">体重変化</div></div>
       </div>
 
       <!-- 追加統計 -->
       <div class="stats-row" style="margin-top:8px;">
-        <div class="stat-card"><div class="stat-num" id="report-record-days">—</div><div class="stat-label">記録日数</div></div>
+        <div class="stat-card"><div class="stat-num" id="report-record-days">0日</div><div class="stat-label">記録日数</div></div>
         <div class="stat-card"><div class="stat-num" id="report-avg-stress">—</div><div class="stat-label">平均ストレス</div></div>
-        <div class="stat-card"><div class="stat-num" id="report-journal-days">—</div><div class="stat-label">ジャーナル数</div></div>
+        <div class="stat-card"><div class="stat-num" id="report-journal-days">0件</div><div class="stat-label">ジャーナル数</div></div>
       </div>
 
       <!-- 習慣別達成率 -->
@@ -920,6 +844,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
         <button class="btn-pdf" onclick="generateReport()">📄 PDFで出力</button>
         <button class="btn-share" onclick="saveReportComment()">💾 保存</button>
       </div>
+      <button onclick="saveReportAsImage()" style="width:100%;padding:14px;background:linear-gradient(135deg,#f0a0b8,#d4b8e8);color:white;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:700;cursor:pointer;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:8px;">📸 インスタ・スレッズ用画像を保存（1080×1350）</button>
       <button onclick="sendMonthlyReportToLINE()" style="width:100%;padding:14px;background:#06C755;color:white;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:700;cursor:pointer;margin-top:10px;">💚 月次レポートをLINEで送る</button>
     </div>
   </div>
@@ -937,7 +862,9 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
       <div class="card-title">📓 今日のジャーナル</div>
       <div class="form-group">
         <label class="form-label">今日の気づき・振り返り・感情を自由に書こう</label>
-        <textarea id="journal-text" placeholder="今日はどんな一日でしたか？&#10;食事・運動・気持ち・できたこと・できなかったこと...&#10;なんでも自由に書いてください🌸" rows="8" style="font-size:15px;line-height:1.8;"></textarea>
+        <textarea id="journal-text" placeholder="今日はどんな一日でしたか？
+食事・運動・気持ち・できたこと・できなかったこと...
+なんでも自由に書いてください🌸" rows="8" style="font-size:15px;line-height:1.8;"></textarea>
       </div>
       <div style="display:flex;gap:10px;">
         <button class="btn-primary" onclick="saveJournal()" style="flex:1;">💾 保存する</button>
@@ -968,8 +895,8 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
 
   <!-- SNSタブ（フィード/投稿） -->
   <div class="sns-tabs">
-    <button class="sns-tab active" onclick="switchSnsTab('feed')">📸 みんなの記録</button>
-    <button class="sns-tab" onclick="switchSnsTab('post')">✏️ 投稿する</button>
+    <button class="sns-tab active" onclick="switchSnsTab(&#39;feed&#39;)">📸 みんなの記録</button>
+    <button class="sns-tab" onclick="switchSnsTab(&#39;post&#39;)">✏️ 投稿する</button>
   </div>
 
   <!-- フィード -->
@@ -982,9 +909,9 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
   <div id="sns-post" style="display:none;">
     <div class="post-create-card">
       <div class="post-create-title">📸 今日の取り組みをシェア</div>
-      <div class="expires-badge">⏰ 投稿は翌月1日に自動削除されます</div>
+      <div class="expires-badge">⏰ 投稿は30日後に自動削除されます</div>
 
-      <div class="image-upload-area" id="upload-area" onclick="document.getElementById('post-image-input').click()">
+      <div class="image-upload-area" id="upload-area" onclick="document.getElementById(&#39;post-image-input&#39;).click()">
         <div id="upload-placeholder">
           <div style="font-size:36px;margin-bottom:8px;">📷</div>
           <div style="font-size:14px;color:var(--text-mid);">写真を選択</div>
@@ -995,7 +922,8 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
       <input type="file" id="post-image-input" accept="image/*" style="display:none;" onchange="previewImage(this)">
 
       <div class="form-group" style="margin-top:12px;">
-        <textarea id="post-caption" placeholder="今日の取り組みを書こう🌸&#10;例：ウォーキング30分達成！" rows="3" style="font-size:14px;"></textarea>
+        <textarea id="post-caption" placeholder="今日の取り組みを書こう🌸
+例：ウォーキング30分達成！" rows="3" style="font-size:14px;"></textarea>
       </div>
 
       <button class="btn-primary" onclick="submitPost()">投稿する 🌸</button>
@@ -1005,58 +933,28 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
 
 </div>
 
-<!-- ========== コラムページ ========== -->
-<div id="page-column" class="page">
-  <div style="padding:16px 16px 48px;background:linear-gradient(180deg,#FAF6F0 0%,#FDFAF6 100%);min-height:100vh;">
-
-    <!-- ヘッダー -->
-    <div style="text-align:center;padding:28px 0 22px;">
-      <div style="font-size:30px;margin-bottom:8px;">🌿</div>
-      <div style="font-family:'Noto Serif JP',serif;font-size:24px;font-weight:600;background:linear-gradient(135deg,#c07090,#9070c0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px;">Bloom Column</div>
-      <div style="font-size:13px;color:#b09080;line-height:1.8;">栄養・美容・ダイエットのお役立ち情報を<br>定期配信しています</div>
-    </div>
-
-    <!-- ブログへのリンクバナー -->
-    <div class="col-blog-banner" onclick="openBlog()">
-      <div style="width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#fde8f0,#ede8ff);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;">✍️</div>
-      <div style="flex:1;">
-        <div style="font-size:11px;color:#c4a0b0;letter-spacing:.12em;margin-bottom:3px;font-weight:500;">OFFICIAL BLOG</div>
-        <div style="font-size:15px;font-weight:700;color:#3a2820;margin-bottom:4px;">のどかのBeauty Note</div>
-        <div style="font-size:12px;color:#a08070;line-height:1.65;">美容・栄養・ダイエットの本音トーク。<br>毎週更新中 → タップしてチェック📖</div>
-      </div>
-      <div style="font-size:22px;color:#d4a0b8;flex-shrink:0;">›</div>
-    </div>
-
-    <!-- カテゴリフィルター -->
-    <div class="col-cat-wrap">
-      <div class="col-cat-bar" id="column-category-bar">
-        <button class="col-cat-btn active" onclick="filterColumn('all', this)">すべて</button>
-        <button class="col-cat-btn" onclick="filterColumn('nutrition', this)">🥗 栄養</button>
-        <button class="col-cat-btn" onclick="filterColumn('beauty', this)">💄 美容</button>
-        <button class="col-cat-btn" onclick="filterColumn('diet', this)">⚖️ ダイエット</button>
-        <button class="col-cat-btn" onclick="filterColumn('lifestyle', this)">🌿 ライフスタイル</button>
-        <button class="col-cat-btn" onclick="filterColumn('trend', this)">✨ トレンド</button>
-      </div>
-    </div>
-
-    <!-- 記事カード一覧 -->
-    <div id="column-list"></div>
-
-    <!-- コミュニティ誘導バナー -->
-    <div class="col-community-banner">
-      <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#dde8ff,#ede8ff);display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 12px;">💬</div>
-      <div style="font-family:'Noto Serif JP',serif;font-size:16px;font-weight:600;color:#3a2820;margin-bottom:8px;">コミュニティに参加しよう</div>
-      <div style="font-size:13px;color:#9a8898;line-height:1.8;margin-bottom:16px;">同じ目標を持つ仲間と繋がれる場所。<br>ゆくゆくはDiscordでオープン予定🌸</div>
-      <button onclick="openCommunity()" style="background:linear-gradient(135deg,#b0c8f8,#d4b8e8);color:white;border:none;border-radius:20px;padding:11px 32px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Noto Sans JP',sans-serif;box-shadow:0 4px 16px rgba(160,140,200,0.3);transition:all .2s;">参加登録（準備中）</button>
-    </div>
-
-  </div>
-</div>
-
 <footer class="footer">
   <p>© 2025 Bloom Journal | 美容健康ダイエット習慣サポート</p>
   <p style="margin-top:4px;">このアプリは医療的アドバイスではありません。</p>
 </footer>
+
+<!-- ========== シェア画像キャンバス（非表示） ========== -->
+<div class="share-img-wrap" id="share-canvas-wrap">
+  <div class="share-canvas" id="share-canvas">
+    <div class="share-canvas-header">
+      <span class="share-deco" style="right:40px;top:20px;">🌸</span>
+      <div class="share-canvas-logo">Bloom Journal</div>
+      <div class="share-canvas-tagline">美容健康ダイエット習慣サポート</div>
+    </div>
+    <div class="share-canvas-body" id="share-canvas-body">
+      <!-- JSで動的に生成 -->
+    </div>
+    <div class="share-canvas-footer">
+      <div class="share-footer-tag" id="share-footer-tag">#BloomJournal</div>
+      <div class="share-footer-logo">🌸 Bloom Journal</div>
+    </div>
+  </div>
+</div>
 </div>
 
 <script>
@@ -1160,16 +1058,9 @@ function updateAuthUI() {
   const navIcon = document.getElementById('nav-icon');
   const navName = document.getElementById('nav-name');
   if (currentUser) {
-    const photoUrl = localStorage.getItem('bloom-profile-photo') || '';
     const icon = localStorage.getItem('bloom-profile-icon') || '🌸';
     const username = localStorage.getItem('bloom-profile-username') || (currentUser.email || '').split('@')[0];
-    if (navIcon) {
-      if (photoUrl) {
-        navIcon.innerHTML = '<img src="' + photoUrl + '" style="width:22px;height:22px;border-radius:50%;object-fit:cover;">';
-      } else {
-        navIcon.textContent = icon;
-      }
-    }
+    if (navIcon) navIcon.textContent = icon;
     if (navName) navName.textContent = username;
   } else {
     if (navIcon) navIcon.textContent = '🔑';
@@ -1314,7 +1205,6 @@ window.addEventListener('load', () => {
   if (state.goalCreated) {
     showGoalView();
   }
-  checkUrlParams();
 });
 
 function loadFromStorage() {
@@ -1344,14 +1234,13 @@ function showPage(id) {
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   const tabs = document.querySelectorAll('.nav-tab');
-  const map = {'page-goal':0,'page-todo':1,'page-record':2,'page-journal':3,'page-report':4,'page-sns':5,'page-column':6};
+  const map = {'page-goal':0,'page-todo':1,'page-record':2,'page-report':3};
   if (map[id] !== undefined) tabs[map[id]].classList.add('active');
   if (id === 'page-todo') renderTodo();
   if (id === 'page-record') renderRecordHistory();
   if (id === 'page-report') updateReportPage();
   if (id === 'page-journal') { renderJournalHistory(); document.getElementById('journal-date-label').textContent = formatDateLabel(journalDate); }
   if (id === 'page-sns') { loadPosts(); }
-  if (id === 'page-column') { renderColumnPage(); }
   window.scrollTo(0,0);
 }
 
@@ -1388,51 +1277,15 @@ function openProfileModal() {
     modal.style.display = 'flex';
     const savedIcon = localStorage.getItem('bloom-profile-icon') || '🌸';
     const savedName = localStorage.getItem('bloom-profile-username') || '';
-    const savedPhoto = localStorage.getItem('bloom-profile-photo') || '';
     document.getElementById('profile-icon').value = savedIcon;
     document.getElementById('profile-username').value = savedName;
-    // 写真が保存されていれば写真タブを表示
-    if (savedPhoto) {
-      switchIconTab('photo');
-      const preview = document.getElementById('profile-photo-preview');
-      const placeholder = document.getElementById('photo-upload-placeholder');
-      preview.src = savedPhoto;
-      preview.style.display = 'block';
-      placeholder.style.display = 'none';
-      document.getElementById('photo-remove-btn').style.display = 'block';
-    } else {
-      switchIconTab('emoji');
-      const preview = document.getElementById('selected-icon-preview');
-      preview.textContent = savedIcon;
-    }
+    document.getElementById('selected-icon-preview').textContent = savedIcon;
   }
 }
 
 function closeProfileModal() {
   const modal = document.getElementById('profile-modal');
   if (modal) modal.style.display = 'none';
-}
-
-function switchIconTab(tab) {
-  const emojiPanel = document.getElementById('icon-panel-emoji');
-  const photoPanel = document.getElementById('icon-panel-photo');
-  const emojiTab = document.getElementById('icon-tab-emoji');
-  const photoTab = document.getElementById('icon-tab-photo');
-  if (tab === 'emoji') {
-    emojiPanel.style.display = 'block';
-    photoPanel.style.display = 'none';
-    emojiTab.style.background = 'var(--pink-strong)';
-    emojiTab.style.color = 'white';
-    photoTab.style.background = '#FFF0F3';
-    photoTab.style.color = 'var(--text-mid)';
-  } else {
-    emojiPanel.style.display = 'none';
-    photoPanel.style.display = 'block';
-    emojiTab.style.background = '#FFF0F3';
-    emojiTab.style.color = 'var(--text-mid)';
-    photoTab.style.background = 'var(--pink-strong)';
-    photoTab.style.color = 'white';
-  }
 }
 
 function selectIcon(emoji) {
@@ -1442,129 +1295,14 @@ function selectIcon(emoji) {
   event.target.classList.add('selected');
 }
 
-function previewProfilePhoto(input) {
-  if (!input.files[0]) return;
-  const file = input.files[0];
-  const statusEl = document.getElementById('photo-upload-status');
-  statusEl.textContent = '圧縮中...';
-  statusEl.style.display = 'block';
-  compressImage(file, 200).then(dataUrl => {
-    const preview = document.getElementById('profile-photo-preview');
-    const placeholder = document.getElementById('photo-upload-placeholder');
-    preview.src = dataUrl;
-    preview.style.display = 'block';
-    placeholder.style.display = 'none';
-    document.getElementById('photo-remove-btn').style.display = 'block';
-    statusEl.textContent = '✅ 写真を選択しました（保存するボタンで確定）';
-    // 一時的にdataUrlをセット（保存時にStorageへアップ）
-    window._pendingProfilePhoto = dataUrl;
-    window._pendingProfilePhotoFile = file;
-  }).catch(() => {
-    statusEl.textContent = '❌ 画像の読み込みに失敗しました';
-  });
-}
-
-function removeProfilePhoto() {
-  window._pendingProfilePhoto = null;
-  window._pendingProfilePhotoFile = null;
-  window._removeProfilePhoto = true;
-  document.getElementById('profile-photo-preview').style.display = 'none';
-  document.getElementById('profile-photo-preview').src = '';
-  document.getElementById('photo-upload-placeholder').style.display = 'block';
-  document.getElementById('photo-remove-btn').style.display = 'none';
-  document.getElementById('photo-upload-status').style.display = 'none';
-  document.getElementById('profile-photo-input').value = '';
-  switchIconTab('emoji');
-}
-
-// 画像圧縮（Canvas API使用・maxKB以下に圧縮）
-function compressImage(file, maxKB) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = e => {
-      const img = new Image();
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        let w = img.width, h = img.height;
-        // 最大600pxにリサイズ
-        const maxSize = 600;
-        if (w > h && w > maxSize) { h = h * maxSize / w; w = maxSize; }
-        else if (h > maxSize) { w = w * maxSize / h; h = maxSize; }
-        canvas.width = w; canvas.height = h;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, w, h);
-        // 品質を下げながら目標サイズ以下になるまで圧縮
-        let quality = 0.85;
-        let dataUrl = canvas.toDataURL('image/jpeg', quality);
-        while (dataUrl.length > maxKB * 1024 * 1.37 && quality > 0.1) {
-          quality -= 0.1;
-          dataUrl = canvas.toDataURL('image/jpeg', quality);
-        }
-        resolve(dataUrl);
-      };
-      img.onerror = reject;
-      img.src = e.target.result;
-    };
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
-
-async function saveProfile() {
+function saveProfile() {
   const icon = document.getElementById('profile-icon').value || '🌸';
   const username = document.getElementById('profile-username').value.trim() || (currentUser ? currentUser.email.split('@')[0] : 'ゲスト');
-  const statusEl = document.getElementById('photo-upload-status');
-
-  // 写真削除が指定された場合
-  if (window._removeProfilePhoto) {
-    window._removeProfilePhoto = false;
-    localStorage.removeItem('bloom-profile-photo');
-    // Supabase Storageの古い写真を削除
-    if (supabaseClient && currentUser) {
-      try {
-        await supabaseClient.storage.from('avatars').remove([currentUser.id + '/avatar.jpg']);
-      } catch(e) {}
-    }
-  }
-
-  // 新しい写真がある場合はStorageにアップロード
-  if (window._pendingProfilePhotoFile && supabaseClient && currentUser) {
-    if (statusEl) { statusEl.textContent = 'アップロード中...'; statusEl.style.display = 'block'; }
-    try {
-      const file = window._pendingProfilePhotoFile;
-      const compressed = await compressImage(file, 200);
-      // base64をBlobに変換
-      const res = await fetch(compressed);
-      const blob = await res.blob();
-      const path = currentUser.id + '/avatar.jpg';
-      const { error: upErr } = await supabaseClient.storage.from('avatars').upload(path, blob, { upsert: true, contentType: 'image/jpeg' });
-      if (upErr) throw upErr;
-      const { data: urlData } = supabaseClient.storage.from('avatars').getPublicUrl(path);
-      const photoUrl = urlData.publicUrl + '?t=' + Date.now(); // キャッシュバスター
-      localStorage.setItem('bloom-profile-photo', photoUrl);
-      window._pendingProfilePhoto = null;
-      window._pendingProfilePhotoFile = null;
-    } catch(e) {
-      console.error('写真アップロードエラー:', e);
-      // アップロード失敗時はdataUrlをlocalStorageに保存（フォールバック）
-      if (window._pendingProfilePhoto) {
-        localStorage.setItem('bloom-profile-photo', window._pendingProfilePhoto);
-        window._pendingProfilePhoto = null;
-        window._pendingProfilePhotoFile = null;
-      }
-    }
-  } else if (window._pendingProfilePhoto) {
-    // ログインなしの場合はdataUrlをlocalStorageに保存
-    localStorage.setItem('bloom-profile-photo', window._pendingProfilePhoto);
-    window._pendingProfilePhoto = null;
-    window._pendingProfilePhotoFile = null;
-  }
-
   localStorage.setItem('bloom-profile-icon', icon);
   localStorage.setItem('bloom-profile-username', username);
   updateAuthUI();
   closeProfileModal();
-  alert('プロフィールを保存しました！🌸');
+  alert('プロフィールを保存しました！');
 }
 
 // ========== 目標シート ==========
@@ -2572,15 +2310,10 @@ async function submitPost() {
       const { data: urlData } = supabaseClient.storage.from('posts').getPublicUrl(fileName);
       imageUrl = urlData.publicUrl;
     }
-    // expires_atを翌月1日0時（暦の月ごとにリセット）
-    const now2 = new Date();
-    const expiresAt = new Date(now2.getFullYear(), now2.getMonth() + 1, 1, 0, 0, 0);
-    const postUserName = localStorage.getItem('bloom-profile-username') || currentUser.email.split('@')[0];
-    const postAvatarUrl = localStorage.getItem('bloom-profile-photo') || null;
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 30);
     const { error } = await supabaseClient.from('posts').insert({
       user_id: currentUser.id,
-      user_name: postUserName,
-      avatar_url: postAvatarUrl,
       image_url: imageUrl,
       caption: caption,
       expires_at: expiresAt.toISOString()
@@ -2650,22 +2383,19 @@ function renderPost(post, likes, comments) {
   const now = new Date();
   const daysLeft = Math.ceil((expiresAt - now) / (1000 * 60 * 60 * 24));
   const timeStr = formatTimeAgo(createdAt);
-  const userName = post.user_name || post.user_id.substring(0, 6) + '...';
+  const userName = post.user_id.substring(0, 6) + '...';
   const avatarEmojis = ['🌸','🌺','🌻','🌹','💐','🌷','🌼'];
   const avatarEmoji = avatarEmojis[post.user_id.charCodeAt(0) % avatarEmojis.length];
-  const avatarHtml = post.avatar_url
-    ? '<img src="' + post.avatar_url + '" style="width:36px;height:36px;border-radius:50%;object-fit:cover;">'
-    : avatarEmoji;
 
   const commentsHtml = comments.slice(-3).map(c => {
-    const cUser = c.user_name || c.user_id.substring(0, 6) + '...';
-    return '<div class="comment-item"><span class="comment-user">' + escapeHtml(cUser) + '</span>' + escapeHtml(c.content) + '</div>';
+    const cUser = c.user_id.substring(0, 6) + '...';
+    return '<div class="comment-item"><span class="comment-user">' + cUser + '</span>' + escapeHtml(c.content) + '</div>';
   }).join('');
 
   return '<div class="post-card" id="post-' + post.id + '">' +
     '<div class="post-header">' +
-    '<div class="post-avatar">' + avatarHtml + '</div>' +
-    '<div><div class="post-username">' + escapeHtml(userName) + '</div><div class="post-time">' + timeStr + '</div></div>' +
+    '<div class="post-avatar">' + avatarEmoji + '</div>' +
+    '<div><div class="post-username">' + userName + '</div><div class="post-time">' + timeStr + '</div></div>' +
     '<div class="post-expires">残り' + daysLeft + '日</div>' +
     '</div>' +
     (post.image_url ? '<img class="post-image" src="' + post.image_url + '" alt="投稿画像" loading="lazy">' :
@@ -2721,16 +2451,16 @@ async function addComment(postId) {
   const input = document.getElementById('comment-input-' + postId);
   const content = input.value.trim();
   if (!content) return;
-  const commentUserName = localStorage.getItem('bloom-profile-username') || currentUser.email.split('@')[0];
   try {
     const { data, error } = await supabaseClient.from('comments').insert({
-      post_id: postId, user_id: currentUser.id, user_name: commentUserName, content
+      post_id: postId, user_id: currentUser.id, content
     }).select().single();
     if (error) throw error;
     input.value = '';
     const commentsEl = document.getElementById('comments-' + postId);
     if (commentsEl) {
-      commentsEl.innerHTML += '<div class="comment-item"><span class="comment-user">' + escapeHtml(commentUserName) + '</span>' + escapeHtml(content) + '</div>';
+      const userName = currentUser.id.substring(0, 6) + '...';
+      commentsEl.innerHTML += '<div class="comment-item"><span class="comment-user">' + userName + '</span>' + escapeHtml(content) + '</div>';
     }
   } catch(e) { console.error(e); }
 }
@@ -2758,231 +2488,168 @@ function formatTimeAgo(date) {
   return Math.floor(diff / 86400) + '日前';
 }
 
-// ========== コラムページ ==========
-// ★ ブログURLをここで一元管理。移行後はこの1行だけ変更すればOK
-const BLOG_URL = 'https://note.com/bloom_journal';
-const COMMUNITY_URL = ''; // Discord開設後にURLをここに入力
+// ========== シェア画像生成（1080×1350 インスタ・スレッズ用） ==========
 
-const COLUMN_ARTICLES = [
-  {
-    id: 1, category: 'nutrition',
-    badge: '🥗 栄養', badgeColor: '#E8F5E9', badgeText: '#2DAA71',
-    title: 'たんぱく質が美容の鍵？1日に必要な量と摂り方',
-    desc: 'ダイエット中でも筋肉と肌を守るために欠かせないたんぱく質。体重×1gが目安。食事での上手な摂り方を解説します。',
-    date: '2025.06.01', readTime: '3分', isNew: true,
-    url: BLOG_URL
-  },
-  {
-    id: 2, category: 'beauty',
-    badge: '💄 美容', badgeColor: '#FCE4EC', badgeText: '#E75480',
-    title: '腸活で肌が変わった！私が続けている5つの習慣',
-    desc: '腸と肌は直結している。ヨーグルト・食物繊維・水分補給など、実際に効果を感じたルーティンをシェアします。',
-    date: '2025.05.25', readTime: '4分', isNew: true,
-    url: BLOG_URL
-  },
-  {
-    id: 3, category: 'diet',
-    badge: '⚖️ ダイエット', badgeColor: '#FFF8E1', badgeText: '#F59E0B',
-    title: '「食べないダイエット」が逆効果な本当の理由',
-    desc: '極端な食事制限は代謝を落とし、リバウンドを招く。栄養学的な視点から、正しい食事量の考え方を解説します。',
-    date: '2025.05.18', readTime: '5分', isNew: false,
-    url: BLOG_URL
-  },
-  {
-    id: 4, category: 'trend',
-    badge: '✨ トレンド', badgeColor: '#F3E5FF', badgeText: '#8B5CF6',
-    title: '今話題の「GLP-1ダイエット」って実際どうなの？',
-    desc: '医療ダイエットとして注目されているGLP-1受容体作動薬。メリット・デメリットを正直にまとめました。',
-    date: '2025.05.10', readTime: '6分', isNew: false,
-    url: BLOG_URL
-  },
-  {
-    id: 5, category: 'nutrition',
-    badge: '🥗 栄養', badgeColor: '#E8F5E9', badgeText: '#2DAA71',
-    title: '美容サプリの選び方：本当に効くものと無駄なもの',
-    desc: 'コラーゲン・ビタミンC・鉄分・葉酸…。成分ごとに「飲む意味があるもの」を栄養士目線で徹底解説。',
-    date: '2025.05.03', readTime: '5分', isNew: false,
-    url: BLOG_URL
-  },
-  {
-    id: 6, category: 'lifestyle',
-    badge: '🌿 ライフスタイル', badgeColor: '#E0F7F4', badgeText: '#0D9488',
-    title: '睡眠とダイエットの関係：寝るだけで痩せやすくなる？',
-    desc: '睡眠不足はグレリン（食欲増進ホルモン）を増やし、ダイエットの大敵に。質の良い睡眠習慣の作り方を紹介します。',
-    date: '2025.04.27', readTime: '4分', isNew: false,
-    url: BLOG_URL
-  },
-  {
-    id: 7, category: 'beauty',
-    badge: '💄 美容', badgeColor: '#FCE4EC', badgeText: '#E75480',
-    title: 'のどかの本音：ダイエットで一番つらかった時期の話',
-    desc: '数字ばかり気にしていた20代前半。食事が怖くなっていたあの頃から、今の習慣に変わるまでの正直な記録です。',
-    date: '2025.04.20', readTime: '7分', isNew: false,
-    url: BLOG_URL
-  }
-];
-
-let columnCurrentCategory = 'all';
-
-function renderColumnPage() {
-  const filtered = columnCurrentCategory === 'all'
-    ? COLUMN_ARTICLES
-    : COLUMN_ARTICLES.filter(a => a.category === columnCurrentCategory);
-
-  const container = document.getElementById('column-list');
-  if (!container) return;
-
-  if (filtered.length === 0) {
-    container.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text-light);font-size:14px;">この カテゴリの記事は準備中です🌱</div>';
-    return;
-  }
-
-  container.innerHTML = filtered.map(article => {
-    const newBadge = article.isNew ? '<span class="col-new-badge">NEW</span>' : '';
-    return '<div class="col-article-card" onclick="openArticle(\'' + article.url + '\')">' +
-      '<div class="col-article-inner">' +
-      '<span class="col-article-badge" style="background:' + article.badgeColor + ';color:' + article.badgeText + ';">' + article.badge + '</span>' +
-      '<div class="col-article-title">' + article.title + newBadge + '</div>' +
-      '<div class="col-article-desc">' + article.desc + '</div>' +
-      '<div class="col-article-meta">' +
-      '<span>' + article.date + ' · ' + article.readTime + 'で読める</span>' +
-      '<span class="col-article-tag">続きを読む →</span>' +
-      '</div>' +
-      '</div>' +
-      '</div>';
-  }).join('');
-}
-
-function filterColumn(category, btn) {
-  columnCurrentCategory = category;
-  document.querySelectorAll('.col-cat-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderColumnPage();
-}
-
-function openArticle(url) {
-  window.open(url, '_blank');
-}
-
-function openBlog() {
-  window.open(BLOG_URL, '_blank');
-}
-
-function openCommunity() {
-  if (COMMUNITY_URL) {
-    window.open(COMMUNITY_URL, '_blank');
-  } else {
-    alert('コミュニティは現在準備中です🌸\nオープンしたらアプリ内でお知らせします！');
-  }
-}
-
-// ========== クイック入力（外部アクセス用） ==========
-let quickDate = new Date();
-
-function openQuickInput() {
-  quickDate = new Date();
-  document.getElementById('quick-input-overlay').classList.add('show');
-  renderQuickHabits();
-  updateQuickDateLabel();
-}
-
-function closeQuickInput() {
-  document.getElementById('quick-input-overlay').classList.remove('show');
-}
-
-function changeQuickDate(delta) {
-  quickDate.setDate(quickDate.getDate() + delta);
-  updateQuickDateLabel();
-  renderQuickHabits();
-}
-
-function updateQuickDateLabel() {
-  document.getElementById('quick-date-label').textContent = formatDateLabel(quickDate);
-}
-
-function renderQuickHabits() {
-  const habits = [...(state.selectedHabits || []), ...(state.customHabits || [])];
-  const dateKey = formatDate(quickDate);
-  const todayData = todoData[dateKey] || {};
-  const container = document.getElementById('quick-habit-list');
-  if (!container) return;
-
-  if (habits.length === 0) {
-    container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-light);font-size:14px;">習慣TODO管理タブで習慣を設定してください 🌸</div>';
-    return;
-  }
-
-  container.innerHTML = habits.map(h => {
-    const done = !!todayData[h];
-    return '<div class="quick-habit-item' + (done ? ' done' : '') + '" onclick="toggleQuickHabit(\'' + h.replace(/'/g, "\\'") + '\')" data-habit="' + h.replace(/"/g, '&quot;') + '">' +
-      '<div class="quick-habit-check">' + (done ? '✓' : '') + '</div>' +
-      '<div class="quick-habit-name">' + h + '</div>' +
-      '</div>';
-  }).join('');
-}
-
-function toggleQuickHabit(habit) {
-  const dateKey = formatDate(quickDate);
-  if (!todoData[dateKey]) todoData[dateKey] = {};
-  todoData[dateKey][habit] = !todoData[dateKey][habit];
-  renderQuickHabits();
-}
-
-async function saveQuickInput() {
-  const dateKey = formatDate(quickDate);
-  const weight = parseFloat(document.getElementById('quick-weight').value) || 0;
-  const mood = parseInt(document.getElementById('quick-mood').value) || 0;
-  const msgEl = document.getElementById('quick-save-msg');
-
-  // 習慣データ保存
-  saveToStorage();
-  if (supabaseClient && currentUser) {
-    const habits = [...(state.selectedHabits || []), ...(state.customHabits || [])];
-    for (const h of habits) {
-      const done = !!(todoData[dateKey] && todoData[dateKey][h]);
-      await saveTodoToSupabase(dateKey, h, done);
-    }
-    // 体重・気分も保存
-    if (weight || mood) {
-      if (!recordData[dateKey]) recordData[dateKey] = {};
-      if (weight) recordData[dateKey].weight = weight;
-      if (mood) recordData[dateKey].mood = mood;
-      await saveRecordToSupabase(dateKey, recordData[dateKey]);
-    }
-  }
-
-  msgEl.textContent = '✅ 記録を保存しました！';
-  msgEl.style.color = 'var(--green-strong)';
-  msgEl.style.display = 'block';
-  setTimeout(() => { msgEl.style.display = 'none'; }, 2500);
-}
-
-// 起動時にURLパラメータを確認してクイック入力を自動表示
-function checkUrlParams() {
-  const params = new URLSearchParams(window.location.search);
-  if (params.get('quick') === '1') {
-    // LPをスキップして即座にアプリ＋クイック入力を表示
-    const topPage = document.getElementById('top-page');
-    const appBody = document.getElementById('app-body');
-    if (topPage) topPage.style.display = 'none';
-    if (appBody) { appBody.style.display = 'block'; appBody.classList.add('show'); }
-    openQuickInput();
-  }
-}
-
-// URLパラメータチェックはDOMが準備でき次第すぐ実行（loadより先）
-(function() {
-  const params = new URLSearchParams(window.location.search);
-  if (params.get('quick') === '1') {
-    document.addEventListener('DOMContentLoaded', function() {
-      const topPage = document.getElementById('top-page');
-      const appBody = document.getElementById('app-body');
-      if (topPage) topPage.style.display = 'none';
-      if (appBody) { appBody.style.display = 'block'; appBody.classList.add('show'); }
+// 共通：canvasをPNG画像としてダウンロード
+async function renderShareCanvas(filename) {
+  const canvas = document.getElementById('share-canvas');
+  // 一時的に可視化してhtml2canvasでキャプチャ
+  const wrap = document.getElementById('share-canvas-wrap');
+  wrap.style.left = '0';
+  wrap.style.top = '0';
+  wrap.style.zIndex = '9999';
+  wrap.style.position = 'fixed';
+  await new Promise(r => setTimeout(r, 100));
+  try {
+    const c = await html2canvas(canvas, {
+      scale: 1,
+      useCORS: true,
+      allowTaint: true,
+      width: 1080,
+      height: 1350,
+      backgroundColor: null,
+      logging: false
     });
+    const link = document.createElement('a');
+    link.download = filename;
+    link.href = c.toDataURL('image/png');
+    link.click();
+    // スマホ向け：画像を新しいタブで開く（長押し保存）
+    const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+    if (isIOS) {
+      window.open(c.toDataURL('image/png'), '_blank');
+      alert('📸 画像が開きました！\n長押し→「写真に追加」でカメラロールに保存できます🌸');
+    } else {
+      alert('📸 画像を保存しました！\nインスタグラム・スレッズにそのまま投稿できます🌸\n\n推奨：インスタ投稿（4:5）またはストーリーズ');
+    }
+  } catch(e) {
+    console.error(e);
+    alert('画像の生成に失敗しました。もう一度お試しください。');
+  } finally {
+    wrap.style.left = '-9999px';
+    wrap.style.top = '0';
+    wrap.style.zIndex = '-1';
+    wrap.style.position = 'fixed';
   }
-})();
+}
 
+// 月次レポートの画像を生成
+function saveReportAsImage() {
+  const now = new Date();
+  const monthStr = now.getFullYear() + '年' + (now.getMonth()+1) + '月';
+  const avgTodo = document.getElementById('report-avg-todo').textContent;
+  const streak = document.getElementById('report-streak').textContent;
+  const weightDiff = document.getElementById('report-weight-diff').textContent;
+  const recordDays = document.getElementById('report-record-days').textContent;
+  const comment = document.getElementById('report-comment').value;
+  const habits = state.selectedHabits;
+  const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+  const days = [];
+  for (let d = new Date(firstDay); d <= now; d.setDate(d.getDate()+1)) {
+    days.push(formatDate(new Date(d)));
+  }
+
+  // 習慣達成率を計算
+  const habitStats = habits.slice(0, 5).map(h => {
+    const doneDays = days.filter(k => todoData[k] && todoData[k][h]).length;
+    const pct = days.length > 0 ? Math.round(doneDays / days.length * 100) : 0;
+    return { name: h, pct };
+  });
+
+  const body = document.getElementById('share-canvas-body');
+  body.innerHTML = `
+    <div class="share-canvas-title">月次レポート<div class="share-canvas-month">📅 ${monthStr}</div></div>
+
+    <div class="share-stat-grid">
+      <div class="share-stat-box">
+        <div class="share-stat-num" style="color:#E75480;">${avgTodo}</div>
+        <div class="share-stat-label">平均達成率</div>
+      </div>
+      <div class="share-stat-box">
+        <div class="share-stat-num" style="color:#F59E0B;">${streak}</div>
+        <div class="share-stat-label">最長継続</div>
+      </div>
+      <div class="share-stat-box">
+        <div class="share-stat-num" style="color:#8B5CF6;">${weightDiff}</div>
+        <div class="share-stat-label">体重変化</div>
+      </div>
+    </div>
+
+    ${habitStats.length > 0 ? `
+    <div class="share-habit-list">
+      <div class="share-habit-title">🌿 習慣達成率</div>
+      ${habitStats.map(h => `
+        <div class="share-habit-item">
+          <span style="font-size:16px;flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">${h.name}</span>
+          <div class="share-habit-bar"><div class="share-habit-bar-fill" style="width:${h.pct}%;background:${h.pct>=80?'#7DD4A8':h.pct>=50?'#f0a0b8':'#F87171'};"></div></div>
+          <span class="share-habit-pct" style="color:${h.pct>=80?'#2DAA71':h.pct>=50?'#E75480':'#EF4444'};">${h.pct}%</span>
+        </div>
+      `).join('')}
+    </div>` : ''}
+
+    ${comment ? `
+    <div style="background:white;border-radius:20px;padding:28px 32px;box-shadow:0 4px 24px rgba(200,100,130,0.08);">
+      <div style="font-size:18px;font-weight:600;color:#c07090;margin-bottom:12px;">💬 今月のひとこと</div>
+      <div style="font-size:18px;color:#5a3848;line-height:1.7;">${comment.substring(0,60)}${comment.length>60?'…':''}</div>
+    </div>` : ''}
+  `;
+
+  document.getElementById('share-footer-tag').textContent = '#BloomJournal #月次レポート #習慣記録';
+  renderShareCanvas('bloom-journal-report-' + now.getFullYear() + (now.getMonth()+1) + '.png');
+}
+
+// 習慣TODOの画像を生成
+function saveTodoAsImage() {
+  const dateStr = formatDateLabel(todoDate);
+  const habits = state.selectedHabits;
+  const dateKey = formatDate(todoDate);
+  const dayData = todoData[dateKey] || {};
+  const doneCount = habits.filter(h => dayData[h]).length;
+  const pct = habits.length > 0 ? Math.round(doneCount / habits.length * 100) : 0;
+  const flowerEmojis = ['🌱','🌿','🌸','🌺','🌻','🌹','💐'];
+  const flowerIdx = Math.min(Math.floor(streakCount / 5), flowerEmojis.length - 1);
+  const flower = flowerEmojis[flowerIdx];
+
+  const body = document.getElementById('share-canvas-body');
+  body.innerHTML = `
+    <div class="share-canvas-title">習慣チェック<div class="share-canvas-month">📅 ${dateStr}</div></div>
+
+    <div class="share-stat-grid">
+      <div class="share-stat-box">
+        <div class="share-stat-num" style="color:#E75480;">${pct}%</div>
+        <div class="share-stat-label">達成率</div>
+      </div>
+      <div class="share-stat-box">
+        <div class="share-stat-num" style="color:#F59E0B;">${doneCount}/${habits.length}</div>
+        <div class="share-stat-label">完了 / 全体</div>
+      </div>
+      <div class="share-stat-box">
+        <div class="share-stat-num" style="color:#2DAA71;">${streakCount}日</div>
+        <div class="share-stat-label">継続中</div>
+      </div>
+    </div>
+
+    <div class="share-habit-list">
+      <div class="share-habit-title">✅ 今日の習慣</div>
+      ${habits.slice(0, 7).map(h => {
+        const done = !!dayData[h];
+        return `<div class="share-habit-item">
+          <span style="font-size:18px;">${done ? '✅' : '⬜'}</span>
+          <span style="flex:1;font-size:17px;${done ? 'color:#2DAA71;font-weight:500;' : 'color:#a88898;'}">${h}</span>
+        </div>`;
+      }).join('')}
+    </div>
+
+    <div style="text-align:center;background:white;border-radius:20px;padding:28px;box-shadow:0 4px 24px rgba(200,100,130,0.08);">
+      <div style="font-size:72px;margin-bottom:12px;">${flower}</div>
+      <div style="font-size:20px;color:#c07090;font-weight:500;">${streakCount}日連続達成中 🔥</div>
+      ${state.name ? `<div style="font-size:18px;color:#a88898;margin-top:8px;">${state.name}さん、継続中！</div>` : ''}
+    </div>
+  `;
+
+  document.getElementById('share-footer-tag').textContent = '#BloomJournal #習慣記録 #ダイエット #体質改善';
+  renderShareCanvas('bloom-journal-todo-' + formatDate(todoDate) + '.png');
+}
 
 function escapeHtml(str) {
   if (!str) return '';
@@ -2991,5 +2658,6 @@ function escapeHtml(str) {
 
 
 </script>
-</body>
-</html>
+
+
+</body></html>
