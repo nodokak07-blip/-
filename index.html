@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<!-- saved from url=(0046)file:///C:/Users/nodok/Downloads/index_32.html -->
-<html lang="ja"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bloom Journal | 美容健康ダイエット習慣サポート</title>
 <meta name="description" content="美容健康ダイエット習慣サポートアプリ。目標設定・習慣TODO管理・体調記録。">
-<link href="./Bloom Journal _ 美容健康ダイエット習慣サポート_files/css2" rel="stylesheet">
-<script src="./Bloom Journal _ 美容健康ダイエット習慣サポート_files/supabase-js@2"></script>
-<script src="./Bloom Journal _ 美容健康ダイエット習慣サポート_files/html2canvas.min.js.ダウンロード"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 :root {
   --pink-light: #FFF0F3; --pink-mid: #FBBDD0; --pink-strong: #E75480; --pink-dark: #C0395D;
@@ -373,8 +373,8 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
     <div class="auth-tagline">美容健康ダイエット習慣サポート</div>
 
     <div class="auth-tabs">
-      <button class="auth-tab active" onclick="switchAuthTab(&#39;login&#39;)">ログイン</button>
-      <button class="auth-tab" onclick="switchAuthTab(&#39;signup&#39;)">新規登録</button>
+      <button class="auth-tab active" onclick="switchAuthTab('login')">ログイン</button>
+      <button class="auth-tab" onclick="switchAuthTab('signup')">新規登録</button>
     </div>
 
     <div id="auth-login-form" class="auth-form">
@@ -403,11 +403,11 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
 <!-- プロフィール設定モーダル -->
 <div id="profile-modal" style="display:none;position:fixed;inset:0;background:rgba(253,250,246,0.97);z-index:300;display:none;align-items:center;justify-content:center;padding:20px;">
   <div style="background:white;border-radius:20px;padding:32px;width:100%;max-width:420px;box-shadow:0 8px 48px rgba(200,100,130,0.15);">
-    <div style="font-family:&#39;Noto Serif JP&#39;,serif;font-size:20px;font-weight:600;color:#c07090;margin-bottom:20px;text-align:center;">👤 プロフィール設定</div>
+    <div style="font-family:'Noto Serif JP',serif;font-size:20px;font-weight:600;color:#c07090;margin-bottom:20px;text-align:center;">👤 プロフィール設定</div>
     <div class="form-group">
       <label class="form-label">アイコン（絵文字）</label>
       <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;" id="icon-picker">
-        <span onclick="selectIcon(&#39;🌸&#39;)">🌸</span> <span onclick="selectIcon(&#39;🌺&#39;)">🌺</span> <span onclick="selectIcon(&#39;🌻&#39;)">🌻</span> <span onclick="selectIcon(&#39;🌹&#39;)">🌹</span> <span onclick="selectIcon(&#39;💐&#39;)">💐</span> <span onclick="selectIcon(&#39;🌷&#39;)">🌷</span> <span onclick="selectIcon(&#39;🌼&#39;)">🌼</span> <span onclick="selectIcon(&#39;🦋&#39;)">🦋</span> <span onclick="selectIcon(&#39;🍀&#39;)">🍀</span> <span onclick="selectIcon(&#39;⭐&#39;)">⭐</span> <span onclick="selectIcon(&#39;🌙&#39;)">🌙</span> <span onclick="selectIcon(&#39;☀️&#39;)">☀️</span> <span onclick="selectIcon(&#39;🎀&#39;)">🎀</span> <span onclick="selectIcon(&#39;💝&#39;)">💝</span> <span onclick="selectIcon(&#39;🌈&#39;)">🌈</span> <span onclick="selectIcon(&#39;🍓&#39;)">🍓</span> <span onclick="selectIcon(&#39;🍑&#39;)">🍑</span> <span onclick="selectIcon(&#39;🌊&#39;)">🌊</span> <span onclick="selectIcon(&#39;🦄&#39;)">🦄</span> <span onclick="selectIcon(&#39;🐱&#39;)">🐱</span>
+        <span onclick="selectIcon('🌸')">🌸</span> <span onclick="selectIcon('🌺')">🌺</span> <span onclick="selectIcon('🌻')">🌻</span> <span onclick="selectIcon('🌹')">🌹</span> <span onclick="selectIcon('💐')">💐</span> <span onclick="selectIcon('🌷')">🌷</span> <span onclick="selectIcon('🌼')">🌼</span> <span onclick="selectIcon('🦋')">🦋</span> <span onclick="selectIcon('🍀')">🍀</span> <span onclick="selectIcon('⭐')">⭐</span> <span onclick="selectIcon('🌙')">🌙</span> <span onclick="selectIcon('☀️')">☀️</span> <span onclick="selectIcon('🎀')">🎀</span> <span onclick="selectIcon('💝')">💝</span> <span onclick="selectIcon('🌈')">🌈</span> <span onclick="selectIcon('🍓')">🍓</span> <span onclick="selectIcon('🍑')">🍑</span> <span onclick="selectIcon('🌊')">🌊</span> <span onclick="selectIcon('🦄')">🦄</span> <span onclick="selectIcon('🐱')">🐱</span>
       </div>
       <div style="display:flex;gap:8px;align-items:center;">
         <div id="selected-icon-preview" style="font-size:36px;width:48px;height:48px;background:#FFF0F3;border-radius:50%;display:flex;align-items:center;justify-content:center;">🌸</div>
@@ -503,12 +503,12 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
     </div>
   </div>
   <div class="nav-tabs">
-    <button class="nav-tab active" onclick="showPage(&#39;page-goal&#39;)">🎯 目標設定</button>
-    <button class="nav-tab" onclick="showPage(&#39;page-todo&#39;)">✅ 習慣TODO</button>
-    <button class="nav-tab" onclick="showPage(&#39;page-record&#39;)">📊 体調記録</button>
-    <button class="nav-tab" onclick="showPage(&#39;page-journal&#39;)">📓 ジャーナル</button>
-    <button class="nav-tab" onclick="showPage(&#39;page-report&#39;)">📄 レポート</button>
-    <button class="nav-tab" onclick="showPage(&#39;page-sns&#39;)">📸 みんなの記録</button>
+    <button class="nav-tab active" onclick="showPage('page-goal')">🎯 目標設定</button>
+    <button class="nav-tab" onclick="showPage('page-todo')">✅ 習慣TODO</button>
+    <button class="nav-tab" onclick="showPage('page-record')">📊 体調記録</button>
+    <button class="nav-tab" onclick="showPage('page-journal')">📓 ジャーナル</button>
+    <button class="nav-tab" onclick="showPage('page-report')">📄 レポート</button>
+    <button class="nav-tab" onclick="showPage('page-sns')">📸 みんなの記録</button>
   </div>
 </nav>
 
@@ -593,10 +593,10 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
         <div class="form-group">
           <label class="form-label">目標期間</label>
           <div class="radio-group" id="rg-period">
-            <label class="radio-item" onclick="selectRadio(this,&#39;rg-period&#39;)"><input type="radio" name="period" value="1ヶ月"><div class="radio-dot"></div><div><div class="radio-label">1ヶ月</div><div class="radio-sub">体を慣らすスタート期間</div></div></label>
-            <label class="radio-item" onclick="selectRadio(this,&#39;rg-period&#39;)"><input type="radio" name="period" value="3ヶ月"><div class="radio-dot"></div><div><div class="radio-label">3ヶ月</div><div class="radio-sub">習慣が定着しやすい期間</div></div></label>
-            <label class="radio-item selected" onclick="selectRadio(this,&#39;rg-period&#39;)"><input type="radio" name="period" value="6ヶ月" checked=""><div class="radio-dot"></div><div><div class="radio-label">6ヶ月</div><div class="radio-sub">体質改善に最適な期間 ✨</div></div></label>
-            <label class="radio-item" onclick="selectRadio(this,&#39;rg-period&#39;)"><input type="radio" name="period" value="1年"><div class="radio-dot"></div><div><div class="radio-label">1年</div><div class="radio-sub">じっくりリバウンドなし</div></div></label>
+            <label class="radio-item" onclick="selectRadio(this,'rg-period')"><input type="radio" name="period" value="1ヶ月"><div class="radio-dot"></div><div><div class="radio-label">1ヶ月</div><div class="radio-sub">体を慣らすスタート期間</div></div></label>
+            <label class="radio-item" onclick="selectRadio(this,'rg-period')"><input type="radio" name="period" value="3ヶ月"><div class="radio-dot"></div><div><div class="radio-label">3ヶ月</div><div class="radio-sub">習慣が定着しやすい期間</div></div></label>
+            <label class="radio-item selected" onclick="selectRadio(this,'rg-period')"><input type="radio" name="period" value="6ヶ月" checked><div class="radio-dot"></div><div><div class="radio-label">6ヶ月</div><div class="radio-sub">体質改善に最適な期間 ✨</div></div></label>
+            <label class="radio-item" onclick="selectRadio(this,'rg-period')"><input type="radio" name="period" value="1年"><div class="radio-dot"></div><div><div class="radio-label">1年</div><div class="radio-sub">じっくりリバウンドなし</div></div></label>
           </div>
         </div>
         <button class="btn-primary" onclick="goStep(2)">次へ →</button>
@@ -611,10 +611,10 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
         <div class="form-group">
           <label class="form-label">運動習慣</label>
           <div class="radio-group" id="rg-exercise">
-            <label class="radio-item" onclick="selectRadio(this,&#39;rg-exercise&#39;)"><input type="radio" name="exercise" value="ほぼしない"><div class="radio-dot"></div><div><div class="radio-label">ほぼしない</div><div class="radio-sub">デスクワーク・家事のみ</div></div></label>
-            <label class="radio-item" onclick="selectRadio(this,&#39;rg-exercise&#39;)"><input type="radio" name="exercise" value="週1〜2回"><div class="radio-dot"></div><div><div class="radio-label">週1〜2回</div><div class="radio-sub">軽いウォーキングなど</div></div></label>
-            <label class="radio-item" onclick="selectRadio(this,&#39;rg-exercise&#39;)"><input type="radio" name="exercise" value="週3〜4回"><div class="radio-dot"></div><div><div class="radio-label">週3〜4回</div><div class="radio-sub">定期的に体を動かしている</div></div></label>
-            <label class="radio-item" onclick="selectRadio(this,&#39;rg-exercise&#39;)"><input type="radio" name="exercise" value="ほぼ毎日"><div class="radio-dot"></div><div><div class="radio-label">ほぼ毎日</div><div class="radio-sub">アクティブな生活</div></div></label>
+            <label class="radio-item" onclick="selectRadio(this,'rg-exercise')"><input type="radio" name="exercise" value="ほぼしない"><div class="radio-dot"></div><div><div class="radio-label">ほぼしない</div><div class="radio-sub">デスクワーク・家事のみ</div></div></label>
+            <label class="radio-item" onclick="selectRadio(this,'rg-exercise')"><input type="radio" name="exercise" value="週1〜2回"><div class="radio-dot"></div><div><div class="radio-label">週1〜2回</div><div class="radio-sub">軽いウォーキングなど</div></div></label>
+            <label class="radio-item" onclick="selectRadio(this,'rg-exercise')"><input type="radio" name="exercise" value="週3〜4回"><div class="radio-dot"></div><div><div class="radio-label">週3〜4回</div><div class="radio-sub">定期的に体を動かしている</div></div></label>
+            <label class="radio-item" onclick="selectRadio(this,'rg-exercise')"><input type="radio" name="exercise" value="ほぼ毎日"><div class="radio-dot"></div><div><div class="radio-label">ほぼ毎日</div><div class="radio-sub">アクティブな生活</div></div></label>
           </div>
         </div>
         <div class="form-group">
@@ -636,7 +636,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
         <div class="step-num">STEP 04</div>
         <div class="step-title">習慣TODOを選ぼう</div>
         <div class="step-desc">続けたい習慣を3〜10個選んでください。頻度も設定できます。</div>
-        <div class="habit-select-grid" id="habit-select-grid"><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;水を目標量飲む&#39;)">水を目標量飲む</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;毎日食後ウォーキング&#39;)">毎日食後ウォーキング</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;睡眠8時間&#39;)">睡眠8時間</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;食物繊維1日20g&#39;)">食物繊維1日20g</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;ストレッチ3分&#39;)">ストレッチ3分</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;バランスメニュー&#39;)">バランスメニュー</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;筋膜リリース5分&#39;)">筋膜リリース5分</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;ピラティス&#39;)">ピラティス</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;16時間ファスティング&#39;)">16時間ファスティング</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;グルテンフリー&#39;)">グルテンフリー</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;サプリメント&#39;)">サプリメント</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;食事の順番の意識(ベジファースト)&#39;)">食事の順番の意識(ベジファースト)</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;食事をよく噛む（1口30回目安）&#39;)">食事をよく噛む（1口30回目安）</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;栄養バランスの取れた食事&#39;)">栄養バランスの取れた食事</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;食後3時間開けて就寝&#39;)">食後3時間開けて就寝</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;食後4時間開けて就寝&#39;)">食後4時間開けて就寝</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;食事の間隔を4時間あける&#39;)">食事の間隔を4時間あける</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;飲酒後3時間開けて就寝&#39;)">飲酒後3時間開けて就寝</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;ウォーキング&#39;)">ウォーキング</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;朝10分ヨガ&#39;)">朝10分ヨガ</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;朝風呂&#39;)">朝風呂</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;毎日1万歩以上&#39;)">毎日1万歩以上</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;竹踏み&#39;)">竹踏み</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;ヨガ&#39;)">ヨガ</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;ジム（筋トレ等）&#39;)">ジム（筋トレ等）</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;ランニング&#39;)">ランニング</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;筋トレ&#39;)">筋トレ</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;ヴィーガンメニュー&#39;)">ヴィーガンメニュー</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;必須ミネラル補給&#39;)">必須ミネラル補給</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;白砂糖を避ける&#39;)">白砂糖を避ける</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;瞑想&#39;)">瞑想</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;朝の白湯&#39;)">朝の白湯</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;緑茶を飲む&#39;)">緑茶を飲む</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;腹八分目を意識&#39;)">腹八分目を意識</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;食事を記録する&#39;)">食事を記録する</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;湯船につかる&#39;)">湯船につかる</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;階段を使う&#39;)">階段を使う</div><div class="habit-select-item " onclick="toggleHabitSelect(this,&#39;夜21時以降食べない&#39;)">夜21時以降食べない</div></div>
+        <div class="habit-select-grid" id="habit-select-grid"></div>
         <div style="margin-top:16px;">
           <label class="form-label">カスタム習慣を追加</label>
           <div class="custom-add-row">
@@ -654,7 +654,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
       <div class="step-card" id="step-4">
         <div class="result-hero">
           <div style="font-size:13px;opacity:.85;margin-bottom:4px;" id="res-name-greeting">こんにちは！</div>
-          <div style="font-family:&#39;Noto Serif JP&#39;,serif;font-size:20px;font-weight:600;margin-bottom:16px;">あなた専用<br>ダイエット目標シート 🌸</div>
+          <div style="font-family:'Noto Serif JP',serif;font-size:20px;font-weight:600;margin-bottom:16px;">あなた専用<br>ダイエット目標シート 🌸</div>
           <div class="result-stats">
             <div style="text-align:center;"><div class="result-stat-num" id="res-current">—</div><div class="result-stat-label">現在の体重</div></div>
             <div style="font-size:20px;opacity:.6;align-self:center;">→</div>
@@ -673,11 +673,11 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
         <div class="line-banner">
           <div style="font-size:15px;font-weight:700;margin-bottom:8px;">📲 LINEで毎日サポート！</div>
           <div style="font-size:13px;opacity:.9;margin-bottom:12px;">毎朝の応援メッセージをお届けします。</div>
-          <a href="file:///C:/Users/nodok/Downloads/index_32.html#" class="btn-line" onclick="alert(&#39;LINEのURLを設定してください&#39;)">LINEで受け取る 🎁</a>
+          <a href="#" class="btn-line" onclick="alert('LINEのURLを設定してください')">LINEで受け取る 🎁</a>
         </div>
         <div class="action-row">
           <button class="btn-pdf" onclick="downloadPDF()">📄 PDFで保存</button>
-          <button class="btn-share" onclick="showPage(&#39;page-report&#39;)">📊 レポートへ</button>
+          <button class="btn-share" onclick="showPage('page-report')">📊 レポートへ</button>
         </div>
         <button class="btn-secondary" onclick="goStep(3)" style="margin-top:10px;">← 習慣を変更する</button>
         <button class="btn-primary" onclick="startTodo()" style="margin-top:10px;background:var(--green-strong);">✅ 習慣TODOを始める</button>
@@ -689,7 +689,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
   <div id="goal-view" style="display:none;padding:16px;">
     <div class="result-hero">
       <div style="font-size:13px;opacity:.85;margin-bottom:4px;" id="goal-view-name"></div>
-      <div style="font-family:&#39;Noto Serif JP&#39;,serif;font-size:20px;font-weight:600;margin-bottom:16px;">ダイエット目標シート 🌸</div>
+      <div style="font-family:'Noto Serif JP',serif;font-size:20px;font-weight:600;margin-bottom:16px;">ダイエット目標シート 🌸</div>
       <div class="result-stats">
         <div style="text-align:center;"><div class="result-stat-num" id="gv-current">—</div><div class="result-stat-label">現在の体重</div></div>
         <div style="font-size:20px;opacity:.6;align-self:center;">→</div>
@@ -710,7 +710,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
   <div style="padding:16px;">
     <div class="date-header">
       <button class="date-nav" onclick="changeDate(-1)">‹</button>
-      <div class="date-label" id="todo-date-label">今日 (6/8)</div>
+      <div class="date-label" id="todo-date-label">今日</div>
       <button class="date-nav" onclick="changeDate(1)">›</button>
     </div>
 
@@ -727,7 +727,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
     <div class="card">
       <div class="card-title">✅ 今日の習慣チェック</div>
       <div id="todo-list"></div>
-      <div id="todo-empty" style="text-align: center; padding: 20px; color: var(--text-light); font-size: 14px; display: block;">
+      <div id="todo-empty" style="text-align:center;padding:20px;color:var(--text-light);font-size:14px;display:none;">
         目標シートで習慣を設定してください 🌸
       </div>
     </div>
@@ -757,7 +757,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
   <div style="padding:16px;">
     <div class="date-header">
       <button class="date-nav" onclick="changeRecordDate(-1)">‹</button>
-      <div class="date-label" id="record-date-label">今日 (6/8)</div>
+      <div class="date-label" id="record-date-label">今日</div>
       <button class="date-nav" onclick="changeRecordDate(1)">›</button>
     </div>
 
@@ -809,19 +809,19 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
   <div style="padding:16px;">
     <div class="card">
       <div class="card-title">📄 月次レポート</div>
-      <div style="font-size:13px;color:var(--text-mid);margin-bottom:16px;" id="report-period">2026年6月のレポート</div>
+      <div style="font-size:13px;color:var(--text-mid);margin-bottom:16px;" id="report-period"></div>
 
       <div class="stats-row">
-        <div class="stat-card"><div class="stat-num" id="report-avg-todo">0%</div><div class="stat-label">平均達成率</div></div>
-        <div class="stat-card"><div class="stat-num" id="report-streak">0日</div><div class="stat-label">最長継続</div></div>
+        <div class="stat-card"><div class="stat-num" id="report-avg-todo">—</div><div class="stat-label">平均達成率</div></div>
+        <div class="stat-card"><div class="stat-num" id="report-streak">—</div><div class="stat-label">最長継続</div></div>
         <div class="stat-card"><div class="stat-num" id="report-weight-diff">—</div><div class="stat-label">体重変化</div></div>
       </div>
 
       <!-- 追加統計 -->
       <div class="stats-row" style="margin-top:8px;">
-        <div class="stat-card"><div class="stat-num" id="report-record-days">0日</div><div class="stat-label">記録日数</div></div>
+        <div class="stat-card"><div class="stat-num" id="report-record-days">—</div><div class="stat-label">記録日数</div></div>
         <div class="stat-card"><div class="stat-num" id="report-avg-stress">—</div><div class="stat-label">平均ストレス</div></div>
-        <div class="stat-card"><div class="stat-num" id="report-journal-days">0件</div><div class="stat-label">ジャーナル数</div></div>
+        <div class="stat-card"><div class="stat-num" id="report-journal-days">—</div><div class="stat-label">ジャーナル数</div></div>
       </div>
 
       <!-- 習慣別達成率 -->
@@ -862,9 +862,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
       <div class="card-title">📓 今日のジャーナル</div>
       <div class="form-group">
         <label class="form-label">今日の気づき・振り返り・感情を自由に書こう</label>
-        <textarea id="journal-text" placeholder="今日はどんな一日でしたか？
-食事・運動・気持ち・できたこと・できなかったこと...
-なんでも自由に書いてください🌸" rows="8" style="font-size:15px;line-height:1.8;"></textarea>
+        <textarea id="journal-text" placeholder="今日はどんな一日でしたか？&#10;食事・運動・気持ち・できたこと・できなかったこと...&#10;なんでも自由に書いてください🌸" rows="8" style="font-size:15px;line-height:1.8;"></textarea>
       </div>
       <div style="display:flex;gap:10px;">
         <button class="btn-primary" onclick="saveJournal()" style="flex:1;">💾 保存する</button>
@@ -895,8 +893,8 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
 
   <!-- SNSタブ（フィード/投稿） -->
   <div class="sns-tabs">
-    <button class="sns-tab active" onclick="switchSnsTab(&#39;feed&#39;)">📸 みんなの記録</button>
-    <button class="sns-tab" onclick="switchSnsTab(&#39;post&#39;)">✏️ 投稿する</button>
+    <button class="sns-tab active" onclick="switchSnsTab('feed')">📸 みんなの記録</button>
+    <button class="sns-tab" onclick="switchSnsTab('post')">✏️ 投稿する</button>
   </div>
 
   <!-- フィード -->
@@ -911,7 +909,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
       <div class="post-create-title">📸 今日の取り組みをシェア</div>
       <div class="expires-badge">⏰ 投稿は30日後に自動削除されます</div>
 
-      <div class="image-upload-area" id="upload-area" onclick="document.getElementById(&#39;post-image-input&#39;).click()">
+      <div class="image-upload-area" id="upload-area" onclick="document.getElementById('post-image-input').click()">
         <div id="upload-placeholder">
           <div style="font-size:36px;margin-bottom:8px;">📷</div>
           <div style="font-size:14px;color:var(--text-mid);">写真を選択</div>
@@ -922,8 +920,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
       <input type="file" id="post-image-input" accept="image/*" style="display:none;" onchange="previewImage(this)">
 
       <div class="form-group" style="margin-top:12px;">
-        <textarea id="post-caption" placeholder="今日の取り組みを書こう🌸
-例：ウォーキング30分達成！" rows="3" style="font-size:14px;"></textarea>
+        <textarea id="post-caption" placeholder="今日の取り組みを書こう🌸&#10;例：ウォーキング30分達成！" rows="3" style="font-size:14px;"></textarea>
       </div>
 
       <button class="btn-primary" onclick="submitPost()">投稿する 🌸</button>
@@ -2658,6 +2655,5 @@ function escapeHtml(str) {
 
 
 </script>
-
-
-</body></html>
+</body>
+</html>
