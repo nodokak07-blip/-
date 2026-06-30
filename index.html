@@ -142,7 +142,7 @@ textarea { resize:vertical;min-height:80px; }
 .btn-sm-pink { background:var(--pink-strong);color:white; }
 .btn-sm-outline { background:transparent;color:var(--pink-strong);border:1.5px solid var(--pink-mid); }
 
-/* ========== グループ機能 ========== */
+/* ========== グループ機能（Phase 2） ========== */
 .group-tabs { display:flex;gap:0;margin:0 16px 16px;border-radius:10px;overflow:hidden;border:1.5px solid #F0D8E2;background:#FFF0F3; }
 .group-tab { flex:1;padding:10px;border:none;background:transparent;font-size:12px;cursor:pointer;font-family:'Noto Sans JP',sans-serif;transition:all .2s;color:var(--text-mid); }
 .group-tab.active { background:var(--pink-strong);color:white;font-weight:500; }
@@ -163,9 +163,11 @@ textarea { resize:vertical;min-height:80px; }
 .campaign-goal { font-size:10px;color:var(--text-light);margin-top:4px; }
 
 .garden-grid { display:grid;grid-template-columns:repeat(2,1fr);gap:10px; }
-.garden-item { background:var(--pink-light);border:0.5px solid #F4C0D1;border-radius:10px;padding:10px;text-align:center; }
+.garden-item { background:var(--pink-light);border:0.5px solid #F4C0D1;border-radius:10px;padding:10px;text-align:center;cursor:pointer;position:relative;transition:all .2s; }
+.garden-item:hover { transform:translateY(-2px);box-shadow:0 4px 12px rgba(200,140,180,0.15); }
 .garden-name { font-size:10px;color:var(--text-primary);margin-bottom:4px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
-.garden-flower { display:flex;justify-content:center;margin:4px 0; }
+.garden-flower { display:flex;justify-content:center;margin:4px 0;position:relative;font-size:44px; }
+.garden-stats-mini { font-size:8px;color:var(--text-light);margin-top:4px;display:flex;justify-content:center;gap:4px; }
 
 /* グループ報告 */
 .report-form { background:white;border-radius:10px;padding:14px;border:0.5px solid #F0D8E2; }
@@ -189,6 +191,45 @@ textarea { resize:vertical;min-height:80px; }
 .chat-name { font-size:10px;color:var(--text-mid);font-weight:500;min-width:40px; }
 .chat-text { font-size:12px;background:white;border-radius:8px;padding:6px 8px;border:0.5px solid #F4C0D1;line-height:1.4; }
 .chat-msg.admin .chat-text { background:#FBEAF0;border-color:#ED93B1; }
+
+/* ========== モーダル（応援・コメント） ========== */
+.modal-overlay { display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:200;align-items:center;justify-content:center;padding:20px; }
+.modal-overlay.show { display:flex; }
+.modal-content { background:white;border-radius:var(--radius);width:100%;max-width:480px;max-height:90vh;overflow-y:auto;padding:0;box-shadow:0 20px 60px rgba(0,0,0,0.3); }
+.modal-header { padding:16px 20px;border-bottom:1px solid #F0D8E2;display:flex;justify-content:space-between;align-items:center;sticky;top:0;background:white; }
+.modal-title { font-size:16px;font-weight:600;color:var(--text-dark); }
+.modal-close { background:none;border:none;font-size:24px;cursor:pointer;color:var(--text-light);padding:0;width:32px;height:32px;display:flex;align-items:center;justify-content:center; }
+.modal-body { padding:20px; }
+
+/* フラワーディテール */
+.flower-detail-hero { text-align:center;padding:24px 16px;background:linear-gradient(135deg,var(--pink-light),white);border-bottom:1px solid #F0D8E2; }
+.flower-large { font-size:80px;margin-bottom:12px; }
+.flower-user-name { font-size:14px;font-weight:600;color:var(--text-dark);margin-bottom:4px; }
+.flower-user-info { font-size:12px;color:var(--text-light); }
+
+.flower-stats-row { display:flex;justify-content:center;gap:24px;margin-top:12px; }
+.flower-stat { text-align:center; }
+.flower-stat-num { font-size:18px;font-weight:700;color:var(--pink-strong); }
+.flower-stat-label { font-size:11px;color:var(--text-light); }
+
+.like-btn { width:100%;padding:12px;background:linear-gradient(135deg,#FF6B9D,#FFA8C6);color:white;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:16px;transition:all .2s; }
+.like-btn:hover { transform:scale(1.02);box-shadow:0 6px 20px rgba(255,107,157,0.3); }
+
+.comments-section { margin-top:16px; }
+.comments-title { font-size:13px;font-weight:600;color:var(--text-dark);margin-bottom:12px; }
+.comment-item { background:var(--pink-light);border-radius:10px;padding:12px;margin-bottom:10px;border:0.5px solid #F4C0D1; }
+.comment-header { display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px; }
+.comment-user { font-size:12px;font-weight:500;color:var(--text-dark); }
+.comment-date { font-size:10px;color:var(--text-light); }
+.comment-text { font-size:12px;color:var(--text-dark);line-height:1.5; }
+
+.comment-input-section { margin-top:16px;padding-top:16px;border-top:1px solid #F0D8E2; }
+.comment-input { width:100%;padding:10px 12px;border:1.5px solid #F0D8E2;border-radius:10px;font-family:'Noto Sans JP',sans-serif;font-size:13px;margin-bottom:8px;resize:none;min-height:60px; }
+.comment-submit-btn { width:100%;padding:10px;background:var(--pink-strong);color:white;border:none;border-radius:10px;font-size:13px;font-weight:500;cursor:pointer; }
+
+/* ハート飛ぶアニメーション */
+.heart-fly { position:fixed;font-size:24px;pointer-events:none;animation:heartFly 1.2s ease-out forwards; }
+@keyframes heartFly { 0%{opacity:1;transform:translateY(0) scale(1)} 100%{opacity:0;transform:translateY(-100px) scale(0.5)} }
 
 /* フッター */
 .footer { text-align:center;padding:24px 16px;font-size:12px;color:var(--text-light);border-top:1px solid #F5E0EA; }
@@ -734,7 +775,7 @@ input[type="number"]::-moz-inner-spin-button,input[type="number"]::-moz-outer-sp
   </div>
 </div>
 
-<!-- ========== グループページ（Phase 1） ========== -->
+<!-- ========== グループページ（Phase 2） ========== -->
 <div id="page-group" class="page">
   
   <!-- グループ内タブ -->
@@ -765,21 +806,25 @@ input[type="number"]::-moz-inner-spin-button,input[type="number"]::-moz-outer-sp
       <div style="padding:12px 14px;">
         <div style="font-size:12px;font-weight:500;color:var(--text-mid);margin-bottom:10px;">みんなの花畑</div>
         <div class="garden-grid" id="home-garden-grid">
-          <div class="garden-item">
+          <div class="garden-item" onclick="openFlowerDetail('nodoka')">
             <div class="garden-name">のどか</div>
             <div class="garden-flower" style="font-size:44px;">🌸</div>
+            <div class="garden-stats-mini">❤️ 12 💬 5</div>
           </div>
-          <div class="garden-item">
+          <div class="garden-item" onclick="openFlowerDetail('miki')">
             <div class="garden-name">みき</div>
             <div class="garden-flower" style="font-size:40px;">🌸</div>
+            <div class="garden-stats-mini">❤️ 8 💬 3</div>
           </div>
-          <div class="garden-item">
+          <div class="garden-item" onclick="openFlowerDetail('sara')">
             <div class="garden-name">さら</div>
             <div class="garden-flower" style="font-size:38px;">🌷</div>
+            <div class="garden-stats-mini">❤️ 6 💬 2</div>
           </div>
-          <div class="garden-item">
+          <div class="garden-item" onclick="openFlowerDetail('yui')">
             <div class="garden-name">ゆい</div>
             <div class="garden-flower" style="font-size:36px;">🌱</div>
+            <div class="garden-stats-mini">❤️ 3 💬 1</div>
           </div>
         </div>
       </div>
@@ -863,6 +908,45 @@ input[type="number"]::-moz-inner-spin-button,input[type="number"]::-moz-outer-sp
     </div>
   </div>
 
+</div>
+
+<!-- ========== 応援・コメント用モーダル ========== -->
+<div id="modal-flower" class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-title">応援しよう</div>
+      <button class="modal-close" onclick="closeFlowerDetail()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="flower-detail-hero">
+        <div class="flower-large" id="modal-flower-emoji">🌸</div>
+        <div class="flower-user-name" id="modal-flower-name">ユーザー名</div>
+        <div class="flower-user-info" id="modal-flower-info">報告日：2025年1月15日</div>
+        <div class="flower-stats-row">
+          <div class="flower-stat">
+            <div class="flower-stat-num" id="modal-flower-likes">0</div>
+            <div class="flower-stat-label">いいね</div>
+          </div>
+          <div class="flower-stat">
+            <div class="flower-stat-num" id="modal-flower-comments">0</div>
+            <div class="flower-stat-label">コメント</div>
+          </div>
+        </div>
+      </div>
+
+      <button class="like-btn" onclick="sendLike()">❤️ いいね！を送る</button>
+
+      <div class="comments-section">
+        <div class="comments-title">コメント</div>
+        <div id="modal-comments-list"></div>
+
+        <div class="comment-input-section">
+          <textarea class="comment-input" id="modal-comment-text" placeholder="応援コメントを書こう…"></textarea>
+          <button class="comment-submit-btn" onclick="submitComment()">コメントを送信</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <footer class="footer">
@@ -1066,6 +1150,9 @@ let journalData = {};
 let streakCount = 0;
 let groupMessages = [];
 let selectedAchievement = 'done';
+let flowerData = {};
+let commentsData = {};
+let currentFlowerUser = null;
 
 // ========== 初期化 ==========
 window.addEventListener('load', () => {
@@ -1091,6 +1178,10 @@ function loadFromStorage() {
     if (j) journalData = JSON.parse(j);
     const g = localStorage.getItem('bloom-group-messages');
     if (g) groupMessages = JSON.parse(g);
+    const f = localStorage.getItem('bloom-flower-data');
+    if (f) flowerData = JSON.parse(f);
+    const c = localStorage.getItem('bloom-comments');
+    if (c) commentsData = JSON.parse(c);
     calcStreak();
   } catch(e) {}
 }
@@ -1102,6 +1193,8 @@ function saveToStorage() {
     localStorage.setItem('bloom-record', JSON.stringify(recordData));
     localStorage.setItem('bloom-journal', JSON.stringify(journalData));
     localStorage.setItem('bloom-group-messages', JSON.stringify(groupMessages));
+    localStorage.setItem('bloom-flower-data', JSON.stringify(flowerData));
+    localStorage.setItem('bloom-comments', JSON.stringify(commentsData));
   } catch(e) {}
 }
 
@@ -1562,7 +1655,7 @@ function loadJournalEntry(key) {
   document.getElementById('journal-text').value = journalData[key] || '';
 }
 
-// ========== グループ機能（Phase 1） ==========
+// ========== グループ機能（Phase 2） ==========
 function switchGroupTab(tab) {
   document.querySelectorAll('.group-tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.group-screen').forEach(s => s.classList.remove('active'));
@@ -1620,6 +1713,120 @@ function updateGroupChat(tab) {
 function escapeHtml(str) {
   if (!str) return '';
   return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ========== Phase 2: 応援・コメント機能 ==========
+function openFlowerDetail(userName) {
+  currentFlowerUser = userName;
+  const modal = document.getElementById('modal-flower');
+  
+  // フラワーデータ取得（サンプル）
+  const flowers = {
+    nodoka: { emoji:'🌸', likes:12, comments:5 },
+    miki: { emoji:'🌸', likes:8, comments:3 },
+    sara: { emoji:'🌷', likes:6, comments:2 },
+    yui: { emoji:'🌱', likes:3, comments:1 }
+  };
+  
+  const flower = flowers[userName] || { emoji:'🌸', likes:0, comments:0 };
+  
+  document.getElementById('modal-flower-emoji').textContent = flower.emoji;
+  document.getElementById('modal-flower-name').textContent = userName + 'さんのお花';
+  document.getElementById('modal-flower-info').textContent = '報告日：2025年1月15日';
+  document.getElementById('modal-flower-likes').textContent = flower.likes;
+  document.getElementById('modal-flower-comments').textContent = flower.comments;
+  
+  // コメント表示
+  const comments = commentsData[userName] || [];
+  const commentsList = document.getElementById('modal-comments-list');
+  if (comments.length === 0) {
+    commentsList.innerHTML = '<div style="text-align:center;padding:16px;color:var(--text-light);font-size:12px;">まだコメントがありません</div>';
+  } else {
+    commentsList.innerHTML = comments.map(c => `
+      <div class="comment-item">
+        <div class="comment-header">
+          <div class="comment-user">${escapeHtml(c.name)}</div>
+          <div class="comment-date">${c.date || '今日'}</div>
+        </div>
+        <div class="comment-text">${escapeHtml(c.text)}</div>
+      </div>
+    `).join('');
+  }
+  
+  modal.classList.add('show');
+  document.getElementById('modal-comment-text').value = '';
+}
+
+function closeFlowerDetail() {
+  document.getElementById('modal-flower').classList.remove('show');
+  currentFlowerUser = null;
+}
+
+function sendLike() {
+  if (!currentFlowerUser) return;
+  
+  // ハートアニメーション
+  const heart = document.createElement('div');
+  heart.classList.add('heart-fly');
+  heart.textContent = '❤️';
+  heart.style.left = Math.random() * 60 + 20 + '%';
+  heart.style.top = '50%';
+  document.body.appendChild(heart);
+  
+  setTimeout(() => heart.remove(), 1200);
+  
+  // いいね数を増やす
+  const likeNum = document.getElementById('modal-flower-likes');
+  let current = parseInt(likeNum.textContent);
+  likeNum.textContent = current + 1;
+  
+  // データ保存
+  if (!flowerData[currentFlowerUser]) flowerData[currentFlowerUser] = { likes:0 };
+  flowerData[currentFlowerUser].likes = current + 1;
+  saveToStorage();
+}
+
+function submitComment() {
+  if (!currentFlowerUser) return;
+  
+  const text = document.getElementById('modal-comment-text').value.trim();
+  if (!text) { alert('コメントを入力してください'); return; }
+  
+  const username = localStorage.getItem('bloom-profile-username') || 'あなた';
+  if (!commentsData[currentFlowerUser]) commentsData[currentFlowerUser] = [];
+  
+  commentsData[currentFlowerUser].push({
+    name: username,
+    text: text,
+    date: '今日'
+  });
+  
+  // コメント数を増やす
+  const commentNum = document.getElementById('modal-flower-comments');
+  let current = parseInt(commentNum.textContent);
+  commentNum.textContent = current + 1;
+  
+  // コメント表示を更新
+  const commentsList = document.getElementById('modal-comments-list');
+  const newComment = document.createElement('div');
+  newComment.className = 'comment-item';
+  newComment.innerHTML = `
+    <div class="comment-header">
+      <div class="comment-user">${escapeHtml(username)}</div>
+      <div class="comment-date">今日</div>
+    </div>
+    <div class="comment-text">${escapeHtml(text)}</div>
+  `;
+  
+  if (commentsList.textContent.includes('まだコメント')) {
+    commentsList.innerHTML = '';
+  }
+  commentsList.appendChild(newComment);
+  
+  // テキストクリア
+  document.getElementById('modal-comment-text').value = '';
+  saveToStorage();
+  alert('コメントを送信しました💜');
 }
 
 </script>
