@@ -142,122 +142,58 @@ textarea { resize:vertical;min-height:80px; }
 .btn-sm-pink { background:var(--pink-strong);color:white; }
 .btn-sm-outline { background:transparent;color:var(--pink-strong);border:1.5px solid var(--pink-mid); }
 
-/* チップ・タグ */
-.tag { display:inline-block;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:500;margin:3px; }
-.tag-pink { background:var(--pink-light);color:var(--pink-strong);border:1px solid var(--pink-mid); }
-.tag-green { background:var(--green-light);color:var(--green-strong);border:1px solid var(--green-mid); }
-.tag-purple { background:var(--purple-light);color:var(--purple-strong);border:1px solid var(--purple-mid); }
+/* ========== グループ機能 ========== */
+.group-tabs { display:flex;gap:0;margin:0 16px 16px;border-radius:10px;overflow:hidden;border:1.5px solid #F0D8E2;background:#FFF0F3; }
+.group-tab { flex:1;padding:10px;border:none;background:transparent;font-size:12px;cursor:pointer;font-family:'Noto Sans JP',sans-serif;transition:all .2s;color:var(--text-mid); }
+.group-tab.active { background:var(--pink-strong);color:white;font-weight:500; }
 
-/* TODO チェックリスト */
-.todo-item { display:flex;align-items:center;gap:12px;padding:14px 16px;border:1.5px solid #F0D8E2;border-radius:var(--radius-sm);margin-bottom:8px;cursor:pointer;transition:all .2s;background:var(--pink-light);user-select:none; }
-.todo-item:hover { border-color:var(--pink-strong);background:white; }
-.todo-item.done { background:#F0FAF5;border-color:var(--green-mid); }
-.todo-check { width:22px;height:22px;border:2px solid #D4B0C0;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all .2s; }
-.todo-item.done .todo-check { background:var(--green-strong);border-color:var(--green-strong);color:white; }
-.todo-text { font-size:14px;flex:1; }
-.todo-item.done .todo-text { text-decoration:line-through;color:var(--text-light); }
-.todo-freq { font-size:11px;color:var(--text-light);padding:2px 8px;background:#F5EEF2;border-radius:10px;flex-shrink:0; }
+.group-screen { display:none;padding:16px; }
+.group-screen.active { display:block; }
 
-/* 習慣選択グリッド */
-.habit-select-grid { display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px;max-height:320px;overflow-y:auto;padding-right:4px; }
-@media(max-width:400px){.habit-select-grid{grid-template-columns:1fr;}}
-.habit-select-item { padding:12px;border:1.5px solid #F0D8E2;border-radius:var(--radius-sm);cursor:pointer;transition:all .2s;background:var(--pink-light);font-size:13px;text-align:center; }
-.habit-select-item:hover { border-color:var(--pink-strong);background:white; }
-.habit-select-item.selected { border-color:var(--pink-strong);background:white;font-weight:500; }
-.habit-select-item.selected::after { content:'✓';color:var(--pink-strong);margin-left:4px; }
+/* グループホーム */
+.group-notice { background:#FBEAF0;border:0.5px solid #F4C0D1;border-radius:10px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start;margin-bottom:14px; }
+.group-notice-icon { flex-shrink:0;width:28px;height:28px;border-radius:50%;background:#ED93B1;display:flex;align-items:center;justify-content:center;font-size:14px; }
+.group-notice-text { font-size:12px;color:#4B1528;line-height:1.5; }
 
-/* 頻度選択 */
-.freq-select { display:flex;gap:8px;flex-wrap:wrap;margin-top:6px; }
-.freq-btn { padding:6px 14px;border-radius:20px;border:1.5px solid #F0D8E2;background:var(--pink-light);font-size:12px;cursor:pointer;transition:all .2s; }
-.freq-btn.selected { border-color:var(--pink-strong);background:var(--pink-strong);color:white; }
+.campaign-card { background:white;border:0.5px solid #F4C0D1;border-radius:12px;overflow:hidden;margin-bottom:14px; }
+.campaign-header { background:#FBF4F7;padding:12px 14px;border-bottom:0.5px solid #F4C0D1; }
+.campaign-name { font-size:14px;font-weight:600;color:#993556; }
+.campaign-progress { height:7px;background:#fff;border-radius:99px;overflow:hidden;margin:6px 0;border:0.5px solid #F4C0D1; }
+.campaign-progress-fill { height:100%;background:#ED93B1;border-radius:99px;transition:width .5s; }
+.campaign-goal { font-size:10px;color:var(--text-light);margin-top:4px; }
 
-/* スライダー */
-.slider-wrap { padding:4px 0; }
-input[type="range"] { width:100%;height:6px;border-radius:3px;background:#F0D8E2;outline:none;cursor:pointer;-webkit-appearance:none;border:none;padding:0; }
-input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--pink-strong);border:3px solid white;box-shadow:0 2px 8px rgba(231,84,128,0.3);cursor:pointer; }
-.slider-val { text-align:center;font-size:22px;font-weight:700;color:var(--pink-strong);margin-top:8px; }
-.slider-unit { font-size:13px;font-weight:400;color:var(--text-mid); }
-.slider-labels { display:flex;justify-content:space-between;font-size:11px;color:var(--text-light);margin-top:4px; }
+.garden-grid { display:grid;grid-template-columns:repeat(2,1fr);gap:10px; }
+.garden-item { background:var(--pink-light);border:0.5px solid #F4C0D1;border-radius:10px;padding:10px;text-align:center; }
+.garden-name { font-size:10px;color:var(--text-primary);margin-bottom:4px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+.garden-flower { display:flex;justify-content:center;margin:4px 0; }
 
-/* 進捗バー */
-.progress-bar-wrap { height:8px;background:#F0D8E2;border-radius:4px;overflow:hidden;margin:8px 0; }
-.progress-bar-fill { height:100%;border-radius:4px;background:linear-gradient(90deg,var(--pink-strong),var(--purple-mid));transition:width .5s ease; }
+/* グループ報告 */
+.report-form { background:white;border-radius:10px;padding:14px;border:0.5px solid #F0D8E2; }
+.achievement-btns { display:flex;gap:8px;margin-bottom:10px; }
+.achievement-btn { flex:1;padding:10px 0;border-radius:8px;border:0.5px solid #ED93B1;background:transparent;font-size:12px;color:#993556;cursor:pointer;transition:all .2s;font-family:'Noto Sans JP',sans-serif; }
+.achievement-btn.selected { background:#FBEAF0;border-color:#ED93B1;font-weight:500; }
 
-/* 統計カード */
-.stats-row { display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px; }
-.stat-card { background:white;border-radius:var(--radius-sm);padding:16px 12px;text-align:center;box-shadow:var(--shadow);border:1px solid #F5E0EA; }
-.stat-num { font-size:24px;font-weight:700;color:var(--pink-strong); }
-.stat-label { font-size:11px;color:var(--text-light);margin-top:4px; }
+/* わたしの花畑 */
+.personal-garden { position:relative;height:160px;background:#FBF4F7;border:0.5px solid #F4C0D1;border-radius:12px;overflow:hidden;margin:10px 0; }
+.garden-ground { position:absolute;left:0;right:0;bottom:0;height:40px;background:#DCEFD6; }
+.garden-stats { display:flex;justify-content:space-around;font-size:11px;color:var(--text-secondary);margin:10px 0;text-align:center; }
+.garden-stat { flex:1; }
+.garden-stat-num { font-size:16px;font-weight:600;color:var(--pink-strong); }
 
-/* 日付ヘッダー */
-.date-header { display:flex;align-items:center;justify-content:space-between;margin-bottom:16px; }
-.date-nav { background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-mid);padding:4px 8px; }
-.date-label { font-size:15px;font-weight:500;color:var(--text-dark); }
+.msg-input-row { display:flex;gap:6px;margin-top:10px; }
+.msg-input { flex:1;padding:8px 10px;border:0.5px solid #F0D8E2;border-radius:8px;font-size:12px;font-family:'Noto Sans JP',sans-serif; }
+.msg-send-btn { background:var(--pink-strong);color:white;border:none;border-radius:8px;padding:8px 14px;font-size:12px;cursor:pointer;font-family:'Noto Sans JP',sans-serif; }
 
-/* カスタム追加 */
-.custom-add-row { display:flex;gap:8px;margin-top:12px; }
-.custom-add-row input { flex:1;margin:0; }
-
-/* エラー */
-.error-msg { font-size:12px;color:#E74C3C;margin-top:4px;display:none; }
-
-/* ローディング */
-.loading-overlay { display:none;position:fixed;inset:0;background:rgba(253,250,246,0.9);z-index:200;align-items:center;justify-content:center;flex-direction:column;gap:16px; }
-.loading-overlay.show { display:flex; }
-.loading-spinner { width:40px;height:40px;border:3px solid #F0D8E2;border-top-color:var(--pink-strong);border-radius:50%;animation:spin .8s linear infinite; }
-@keyframes spin{to{transform:rotate(360deg);}}
-
-/* BMIカード */
-.bmi-card { background:linear-gradient(135deg,var(--pink-light),white);border:1.5px solid var(--pink-mid);border-radius:var(--radius-sm);padding:20px;margin:16px 0;text-align:center; }
-.bmi-number { font-size:44px;font-weight:700;color:var(--pink-strong);line-height:1; }
-.bmi-cat { font-size:13px;color:var(--text-mid);margin-top:6px; }
-
-/* ラジオ */
-.radio-group { display:flex;flex-direction:column;gap:8px; }
-.radio-item { display:flex;align-items:center;gap:12px;padding:12px 14px;border:1.5px solid #F0D8E2;border-radius:var(--radius-sm);cursor:pointer;transition:all .2s;background:var(--pink-light); }
-.radio-item:hover,.radio-item.selected { border-color:var(--pink-strong);background:white; }
-.radio-item input { display:none; }
-.radio-dot { width:16px;height:16px;border:2px solid #D4B0C0;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center; }
-.radio-item.selected .radio-dot { border-color:var(--pink-strong);background:var(--pink-strong); }
-.radio-item.selected .radio-dot::after { content:'';width:5px;height:5px;border-radius:50%;background:white; }
-.radio-label { font-size:14px;flex:1; }
-.radio-sub { font-size:12px;color:var(--text-light);margin-top:2px; }
-
-/* チェックグループ */
-.check-group { display:flex;flex-direction:column;gap:8px; }
-.check-item { display:flex;align-items:center;gap:12px;padding:12px 14px;border:1.5px solid #F0D8E2;border-radius:var(--radius-sm);cursor:pointer;transition:all .2s;background:var(--pink-light); }
-.check-item:hover,.check-item.selected { border-color:var(--pink-strong);background:white; }
-.check-box { width:18px;height:18px;border:2px solid #D4B0C0;border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;color:white;transition:all .2s; }
-.check-item.selected .check-box { background:var(--green-strong);border-color:var(--green-strong); }
-.check-label { font-size:14px;flex:1; }
-
-/* 結果 */
-.result-hero { background:linear-gradient(135deg,var(--pink-strong) 0%,#FF8FAB 100%);border-radius:var(--radius);padding:28px 20px;text-align:center;color:white;margin-bottom:20px; }
-.result-stats { display:flex;justify-content:center;gap:24px;margin-top:16px;flex-wrap:wrap; }
-.result-stat-num { font-size:26px;font-weight:700; }
-.result-stat-label { font-size:11px;opacity:.8;margin-top:2px; }
-.goal-item { display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #FBF0F4; }
-.goal-item:last-child { border:none; }
-.goal-dot { width:8px;height:8px;border-radius:50%;background:var(--pink-strong);margin-top:6px;flex-shrink:0; }
-.goal-text { font-size:14px;line-height:1.6; }
-.goal-sub { font-size:12px;color:var(--text-light);margin-top:2px; }
-.habit-result-grid { display:grid;grid-template-columns:1fr 1fr;gap:8px; }
-.habit-result-item { background:var(--green-light);border:1.5px solid var(--green-mid);border-radius:var(--radius-sm);padding:12px;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500; }
-
-/* LINE */
-.line-banner { background:#06C755;border-radius:var(--radius);padding:20px;text-align:center;color:white;margin-bottom:16px; }
-.btn-line { display:inline-block;background:white;color:#06C755;border:none;border-radius:8px;padding:12px 28px;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none; }
-
-/* アクション */
-.action-row { display:flex;gap:10px;margin-top:8px; }
-.btn-pdf,.btn-share { flex:1;padding:13px;border-radius:var(--radius-sm);font-size:14px;font-weight:500;cursor:pointer;border:none;transition:all .2s; }
-.btn-pdf { background:var(--pink-strong);color:white; }
-.btn-share { background:white;color:var(--text-mid);border:1.5px solid #E8D0D8; }
+.chat-area { background:var(--pink-light);border-radius:10px;padding:10px;height:200px;overflow-y:auto;margin:10px 0;display:flex;flex-direction:column;gap:8px; }
+.chat-msg { display:flex;gap:6px;align-items:flex-start; }
+.chat-name { font-size:10px;color:var(--text-mid);font-weight:500;min-width:40px; }
+.chat-text { font-size:12px;background:white;border-radius:8px;padding:6px 8px;border:0.5px solid #F4C0D1;line-height:1.4; }
+.chat-msg.admin .chat-text { background:#FBEAF0;border-color:#ED93B1; }
 
 /* フッター */
 .footer { text-align:center;padding:24px 16px;font-size:12px;color:var(--text-light);border-top:1px solid #F5E0EA; }
 
-/* ステップ（目標シート作成フロー） */
+/* ========== 既存スタイル ========== */
 .step-card { background:white;border-radius:var(--radius);box-shadow:var(--shadow);padding:28px 24px;margin-bottom:20px;display:none;animation:fadeIn .4s ease; }
 .step-card.active { display:block; }
 .step-num { font-size:11px;color:var(--pink-strong);font-weight:500;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px; }
@@ -274,92 +210,87 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
 .hero-sub { font-size:13px;color:var(--text-mid);line-height:1.8;margin-bottom:20px; }
 .progress-wrap { margin-bottom:20px; }
 .progress-text { font-size:12px;color:var(--text-light);margin-bottom:4px;display:flex;justify-content:space-between; }
+.progress-bar-wrap { height:8px;background:#F0D8E2;border-radius:4px;overflow:hidden;margin:8px 0; }
+.progress-bar-fill { height:100%;border-radius:4px;background:linear-gradient(90deg,var(--pink-strong),var(--purple-mid));transition:width .5s ease; }
+.stat-card { background:white;border-radius:var(--radius-sm);padding:16px 12px;text-align:center;box-shadow:var(--shadow);border:1px solid #F5E0EA; }
+.stat-num { font-size:24px;font-weight:700;color:var(--pink-strong); }
+.stat-label { font-size:11px;color:var(--text-light);margin-top:4px; }
+.stats-row { display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px; }
+.result-hero { background:linear-gradient(135deg,var(--pink-strong) 0%,#FF8FAB 100%);border-radius:var(--radius);padding:28px 20px;text-align:center;color:white;margin-bottom:20px; }
+.result-stats { display:flex;justify-content:center;gap:24px;margin-top:16px;flex-wrap:wrap; }
+.result-stat-num { font-size:26px;font-weight:700; }
+.result-stat-label { font-size:11px;opacity:.8;margin-top:2px; }
+.goal-item { display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #FBF0F4; }
+.goal-item:last-child { border:none; }
+.goal-dot { width:8px;height:8px;border-radius:50%;background:var(--pink-strong);margin-top:6px;flex-shrink:0; }
+.goal-text { font-size:14px;line-height:1.6; }
+.goal-sub { font-size:12px;color:var(--text-light);margin-top:2px; }
+.habit-result-grid { display:grid;grid-template-columns:1fr 1fr;gap:8px; }
+.habit-result-item { background:var(--green-light);border:1.5px solid var(--green-mid);border-radius:var(--radius-sm);padding:12px;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500; }
+.line-banner { background:#06C755;border-radius:var(--radius);padding:20px;text-align:center;color:white;margin-bottom:16px; }
+.btn-line { display:inline-block;background:white;color:#06C755;border:none;border-radius:8px;padding:12px 28px;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none; }
+.action-row { display:flex;gap:10px;margin-top:8px; }
+.btn-pdf,.btn-share { flex:1;padding:13px;border-radius:var(--radius-sm);font-size:14px;font-weight:500;cursor:pointer;border:none;transition:all .2s; }
+.btn-pdf { background:var(--pink-strong);color:white; }
+.btn-share { background:white;color:var(--text-mid);border:1.5px solid #E8D0D8; }
 
-/* ========== SNS（インスタンツ）========== */
-.sns-feed { display:flex;flex-direction:column;gap:16px;padding:16px; }
-.post-card { background:white;border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden; }
-.post-header { display:flex;align-items:center;gap:10px;padding:12px 16px; }
-.post-avatar { width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#f0a0b8,#d4b8e8);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0; }
-.post-username { font-size:13px;font-weight:600;color:var(--text-dark); }
-.post-time { font-size:11px;color:var(--text-light);margin-top:2px; }
-.post-expires { font-size:10px;color:#E75480;margin-left:auto;background:#FFF0F3;padding:3px 8px;border-radius:10px; }
-.post-image { width:100%;aspect-ratio:1;object-fit:cover;display:block;background:#F5EEF2; }
-.post-image-placeholder { width:100%;aspect-ratio:1;background:linear-gradient(135deg,#FFF0F3,#F5F0FF);display:flex;align-items:center;justify-content:center;font-size:48px; }
-.post-actions { display:flex;align-items:center;gap:16px;padding:12px 16px 8px; }
-.post-action-btn { background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-mid);transition:all .2s;padding:4px; }
-.post-action-btn:hover { color:var(--pink-strong); }
-.post-action-btn.liked { color:var(--pink-strong); }
-.post-caption { padding:0 16px 8px;font-size:14px;color:var(--text-dark);line-height:1.6; }
-.post-comments { padding:0 16px 12px; }
-.comment-item { font-size:13px;color:var(--text-mid);padding:4px 0;border-bottom:1px solid #F5EEF2;line-height:1.5; }
-.comment-item:last-child { border:none; }
-.comment-user { font-weight:600;color:var(--text-dark);margin-right:6px; }
-.comment-input-row { display:flex;gap:8px;padding:8px 16px 12px;border-top:1px solid #F5EEF2; }
-.comment-input { flex:1;padding:8px 12px;border:1.5px solid #F0D8E2;border-radius:20px;font-size:13px;outline:none;font-family:'Noto Sans JP',sans-serif; }
-.comment-input:focus { border-color:var(--pink-strong); }
-.comment-send-btn { background:var(--pink-strong);color:white;border:none;border-radius:20px;padding:8px 16px;font-size:13px;cursor:pointer;white-space:nowrap; }
+.date-header { display:flex;align-items:center;justify-content:space-between;margin-bottom:16px; }
+.date-nav { background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-mid);padding:4px 8px; }
+.date-label { font-size:15px;font-weight:500;color:var(--text-dark); }
 
-/* 投稿作成 */
-.post-create-card { background:white;border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;margin:16px; }
-.post-create-title { font-family:'Noto Serif JP',serif;font-size:16px;font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:8px; }
-.image-upload-area { border:2px dashed #F0D8E2;border-radius:var(--radius-sm);padding:32px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:12px;background:#FFF8FA; }
-.image-upload-area:hover { border-color:var(--pink-strong);background:#FFF0F3; }
-.image-upload-area.has-image { padding:0;border:none; }
-.image-preview { width:100%;border-radius:var(--radius-sm);display:block; }
-.expires-badge { display:inline-block;background:#FFF0F3;color:var(--pink-strong);font-size:11px;padding:4px 10px;border-radius:10px;border:1px solid var(--pink-mid);margin-bottom:12px; }
-.sns-tabs { display:flex;gap:0;margin:16px;border-radius:10px;overflow:hidden;border:1.5px solid #F0D8E2; }
-.sns-tab { flex:1;padding:10px;border:none;background:#FFF0F3;font-size:13px;cursor:pointer;font-family:'Noto Sans JP',sans-serif;transition:all .2s; }
-.sns-tab.active { background:var(--pink-strong);color:white;font-weight:500; }
-.no-posts { text-align:center;padding:48px 20px;color:var(--text-light); }
-.no-posts-icon { font-size:48px;margin-bottom:12px; }
+.todo-item { display:flex;align-items:center;gap:12px;padding:14px 16px;border:1.5px solid #F0D8E2;border-radius:var(--radius-sm);margin-bottom:8px;cursor:pointer;transition:all .2s;background:var(--pink-light);user-select:none; }
+.todo-item:hover { border-color:var(--pink-strong);background:white; }
+.todo-item.done { background:#F0FAF5;border-color:var(--green-mid); }
+.todo-check { width:22px;height:22px;border:2px solid #D4B0C0;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all .2s; }
+.todo-item.done .todo-check { background:var(--green-strong);border-color:var(--green-strong);color:white; }
+.todo-text { font-size:14px;flex:1; }
+.todo-item.done .todo-text { text-decoration:line-through;color:var(--text-light); }
 
-/* アイコンピッカー */
-#icon-picker span { font-size:24px;cursor:pointer;padding:4px;border-radius:8px;transition:all .2s; }
-#icon-picker span:hover { background:#FFF0F3;transform:scale(1.2); }
-#icon-picker span.selected { background:#FFD0E0; }
-/* ========== シェア画像生成（1080×1350） ========== */
-.share-img-wrap { position:fixed;left:-9999px;top:0;z-index:-1; }
-.share-canvas {
-  width:1080px; height:1350px;
-  background:linear-gradient(160deg,#fff5f8 0%,#fef0f8 40%,#f5f0ff 70%,#f0f8ff 100%);
-  font-family:'Noto Sans JP',sans-serif;
-  overflow:hidden; position:relative;
-  display:flex; flex-direction:column;
-}
-.share-canvas-header {
-  background:linear-gradient(135deg,#f0a0b8,#e8d5c0);
-  padding:32px 64px 24px;
-  color:white;
-  position:relative;
-}
-.share-canvas-logo { font-family:'Noto Serif JP',serif;font-size:34px;font-weight:600;margin-bottom:4px;letter-spacing:.04em; }
-.share-canvas-tagline { font-size:16px;opacity:.85; }
-.share-canvas-body { flex:1;padding:20px 48px;display:flex;flex-direction:column;gap:16px; }
-.share-canvas-title { font-family:'Noto Serif JP',serif;font-size:44px;font-weight:600;color:#3a2030;line-height:1.3; }
-.share-canvas-month { font-size:22px;color:#c07090;font-weight:500;margin-top:2px; }
-.share-stat-grid { display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px; }
-.share-stat-box {
-  background:white;border-radius:20px;padding:28px 16px;text-align:center;
-  box-shadow:0 4px 24px rgba(200,100,130,0.1);
-}
-.share-stat-num { font-size:52px;font-weight:700;color:#E75480;line-height:1; }
-.share-stat-label { font-size:16px;color:#a88898;margin-top:8px; }
-.share-habit-list { background:white;border-radius:20px;padding:22px 28px;box-shadow:0 4px 24px rgba(200,100,130,0.08); }
-.share-habit-title { font-size:22px;font-weight:600;color:#3a2030;margin-bottom:12px;display:flex;align-items:center;gap:10px; }
-.share-habit-item { display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid #f5e8f0;font-size:18px;color:#5a3848; }
-.share-habit-item:last-child { border:none; }
-.share-habit-bar { flex:1;height:8px;background:#f0d8e2;border-radius:4px;overflow:hidden;margin:0 12px; }
-.share-habit-bar-fill { height:100%;border-radius:4px;background:linear-gradient(90deg,#f0a0b8,#e8d5c0); }
-.share-habit-pct { font-size:16px;font-weight:600;color:#E75480;width:44px;text-align:right; }
-.share-canvas-footer {
-  background:linear-gradient(135deg,#f0a0b8,#e8d5c0);
-  padding:22px 64px;
-  display:flex;align-items:center;justify-content:space-between;
-  color:white;
-}
-.share-footer-tag { font-size:17px;opacity:.85; }
-.share-footer-logo { font-family:'Noto Serif JP',serif;font-size:22px;font-weight:600; }
-.share-deco { position:absolute;pointer-events:none;opacity:.15;font-size:80px; }
+.radio-group { display:flex;flex-direction:column;gap:8px; }
+.radio-item { display:flex;align-items:center;gap:12px;padding:12px 14px;border:1.5px solid #F0D8E2;border-radius:var(--radius-sm);cursor:pointer;transition:all .2s;background:var(--pink-light); }
+.radio-item:hover,.radio-item.selected { border-color:var(--pink-strong);background:white; }
+.radio-item input { display:none; }
+.radio-dot { width:16px;height:16px;border:2px solid #D4B0C0;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center; }
+.radio-item.selected .radio-dot { border-color:var(--pink-strong);background:var(--pink-strong); }
+.radio-item.selected .radio-dot::after { content:'';width:5px;height:5px;border-radius:50%;background:white; }
+.radio-label { font-size:14px;flex:1; }
+
+.habit-select-grid { display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px;max-height:320px;overflow-y:auto;padding-right:4px; }
+@media(max-width:400px){.habit-select-grid{grid-template-columns:1fr;}}
+.habit-select-item { padding:12px;border:1.5px solid #F0D8E2;border-radius:var(--radius-sm);cursor:pointer;transition:all .2s;background:var(--pink-light);font-size:13px;text-align:center; }
+.habit-select-item:hover { border-color:var(--pink-strong);background:white; }
+.habit-select-item.selected { border-color:var(--pink-strong);background:white;font-weight:500; }
+.habit-select-item.selected::after { content:'✓';color:var(--pink-strong);margin-left:4px; }
+
+.custom-add-row { display:flex;gap:8px;margin-top:12px; }
+.custom-add-row input { flex:1;margin:0; }
+
+.error-msg { font-size:12px;color:#E74C3C;margin-top:4px;display:none; }
+
+.loading-overlay { display:none;position:fixed;inset:0;background:rgba(253,250,246,0.9);z-index:200;align-items:center;justify-content:center;flex-direction:column;gap:16px; }
+.loading-overlay.show { display:flex; }
+.loading-spinner { width:40px;height:40px;border:3px solid #F0D8E2;border-top-color:var(--pink-strong);border-radius:50%;animation:spin .8s linear infinite; }
+@keyframes spin{to{transform:rotate(360deg);}}
+
+.bmi-card { background:linear-gradient(135deg,var(--pink-light),white);border:1.5px solid var(--pink-mid);border-radius:var(--radius-sm);padding:20px;margin:16px 0;text-align:center; }
+.bmi-number { font-size:44px;font-weight:700;color:var(--pink-strong);line-height:1; }
+.bmi-cat { font-size:13px;color:var(--text-mid);margin-top:6px; }
+
+.check-group { display:flex;flex-direction:column;gap:8px; }
+.check-item { display:flex;align-items:center;gap:12px;padding:12px 14px;border:1.5px solid #F0D8E2;border-radius:var(--radius-sm);cursor:pointer;transition:all .2s;background:var(--pink-light); }
+.check-item:hover,.check-item.selected { border-color:var(--pink-strong);background:white; }
+.check-box { width:18px;height:18px;border:2px solid #D4B0C0;border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;color:white;transition:all .2s; }
+.check-item.selected .check-box { background:var(--green-strong);border-color:var(--green-strong); }
+.check-label { font-size:14px;flex:1; }
+
+.slider-wrap { padding:4px 0; }
+input[type="range"] { width:100%;height:6px;border-radius:3px;background:#F0D8E2;outline:none;cursor:pointer;-webkit-appearance:none;border:none;padding:0; }
+input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--pink-strong);border:3px solid white;box-shadow:0 2px 8px rgba(231,84,128,0.3);cursor:pointer; }
+.slider-val { text-align:center;font-size:22px;font-weight:700;color:var(--pink-strong);margin-top:8px; }
+.slider-unit { font-size:13px;font-weight:400;color:var(--text-mid); }
+.slider-labels { display:flex;justify-content:space-between;font-size:11px;color:var(--text-light);margin-top:4px; }
+
+input[type="number"]::-moz-inner-spin-button,input[type="number"]::-moz-outer-spin-button { -moz-appearance: none; }
 
 </style>
 </head>
@@ -399,29 +330,6 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
   </div>
 </div>
 
-<!-- プロフィール設定モーダル -->
-<div id="profile-modal" style="display:none;position:fixed;inset:0;background:rgba(253,250,246,0.97);z-index:300;display:none;align-items:center;justify-content:center;padding:20px;">
-  <div style="background:white;border-radius:20px;padding:32px;width:100%;max-width:420px;box-shadow:0 8px 48px rgba(200,100,130,0.15);">
-    <div style="font-family:'Noto Serif JP',serif;font-size:20px;font-weight:600;color:#c07090;margin-bottom:20px;text-align:center;">👤 プロフィール設定</div>
-    <div class="form-group">
-      <label class="form-label">アイコン（絵文字）</label>
-      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;" id="icon-picker">
-        <span onclick="selectIcon('🌸')">🌸</span> <span onclick="selectIcon('🌺')">🌺</span> <span onclick="selectIcon('🌻')">🌻</span> <span onclick="selectIcon('🌹')">🌹</span> <span onclick="selectIcon('💐')">💐</span> <span onclick="selectIcon('🌷')">🌷</span> <span onclick="selectIcon('🌼')">🌼</span> <span onclick="selectIcon('🦋')">🦋</span> <span onclick="selectIcon('🍀')">🍀</span> <span onclick="selectIcon('⭐')">⭐</span> <span onclick="selectIcon('🌙')">🌙</span> <span onclick="selectIcon('☀️')">☀️</span> <span onclick="selectIcon('🎀')">🎀</span> <span onclick="selectIcon('💝')">💝</span> <span onclick="selectIcon('🌈')">🌈</span> <span onclick="selectIcon('🍓')">🍓</span> <span onclick="selectIcon('🍑')">🍑</span> <span onclick="selectIcon('🌊')">🌊</span> <span onclick="selectIcon('🦄')">🦄</span> <span onclick="selectIcon('🐱')">🐱</span>
-      </div>
-      <div style="display:flex;gap:8px;align-items:center;">
-        <div id="selected-icon-preview" style="font-size:36px;width:48px;height:48px;background:#FFF0F3;border-radius:50%;display:flex;align-items:center;justify-content:center;">🌸</div>
-        <input type="text" id="profile-icon" placeholder="絵文字を入力" maxlength="2" style="width:80px;">
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="form-label">アカウント名</label>
-      <input type="text" id="profile-username" placeholder="例：のどか" maxlength="20">
-    </div>
-    <button class="btn-primary" onclick="saveProfile()">保存する</button>
-    <button class="btn-secondary" onclick="closeProfileModal()">キャンセル</button>
-  </div>
-</div>
-
 <!-- ========== LPトップページ ========== -->
 <div id="top-page" class="lp-wrap">
   <section class="lp-hero">
@@ -449,14 +357,14 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
     <div class="lp-section">
       <div class="lp-section-label">FEATURES</div>
       <div class="lp-divider"></div>
-      <h2 class="lp-section-title">あなたの変化を支える<br>6つの機能</h2>
+      <h2 class="lp-section-title">あなたの変化を支える<br>機能</h2>
       <div class="lp-features-grid">
         <div class="lp-feat-card"><div class="lp-feat-icon-wrap" style="background:#fde8f0;">📋</div><div class="lp-feat-title">目標シート作成</div><div class="lp-feat-body">あなた専用のダイエット目標を自動設計</div></div>
         <div class="lp-feat-card"><div class="lp-feat-icon-wrap" style="background:#e8f5e9;">✅</div><div class="lp-feat-title">習慣TODO記録</div><div class="lp-feat-body">毎日の習慣チェックで継続をサポート</div></div>
         <div class="lp-feat-card"><div class="lp-feat-icon-wrap" style="background:#e8eaf6;">📊</div><div class="lp-feat-title">体重・体調記録</div><div class="lp-feat-body">体重・メンタル・ストレスを毎日記録</div></div>
         <div class="lp-feat-card"><div class="lp-feat-icon-wrap" style="background:#fff8e1;">🌸</div><div class="lp-feat-title">花の成長＆バッジ</div><div class="lp-feat-body">記録が続くと花が成長してバッジ獲得</div></div>
         <div class="lp-feat-card"><div class="lp-feat-icon-wrap" style="background:#fce4ec;">📄</div><div class="lp-feat-title">月次レポートPDF</div><div class="lp-feat-body">コメント付きの月次レポートをPDF出力</div></div>
-        <div class="lp-feat-card"><div class="lp-feat-icon-wrap" style="background:#e0f7f4;">📱</div><div class="lp-feat-title">SNSシェア</div><div class="lp-feat-body">X・インスタ・スレッズ最適サイズで出力</div></div>
+        <div class="lp-feat-card"><div class="lp-feat-icon-wrap" style="background:#e0f7f4;">📸</div><div class="lp-feat-title">グループ機能</div><div class="lp-feat-body">みんなで一緒に習慣を育てる花畑</div></div>
       </div>
     </div>
   </section>
@@ -470,7 +378,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
         <div class="lp-step"><div class="lp-step-num">1</div><div><div class="lp-step-title">目標シートを作成</div><div class="lp-step-body">プロフィール・目標・習慣を設定してあなた専用シートを作成。</div></div></div>
         <div class="lp-step"><div class="lp-step-num">2</div><div><div class="lp-step-title">毎日TODO記録</div><div class="lp-step-body">選んだ習慣を毎日チェック。継続記録が花を育てます。</div></div></div>
         <div class="lp-step"><div class="lp-step-num">3</div><div><div class="lp-step-title">体調・メンタル記録</div><div class="lp-step-body">体重・気分・ストレスチェックで自分の変化を見える化。</div></div></div>
-        <div class="lp-step"><div class="lp-step-num">4</div><div><div class="lp-step-title">月次レポートで振り返り</div><div class="lp-step-body">1ヶ月の記録をPDFにまとめて達成感を実感。</div></div></div>
+        <div class="lp-step"><div class="lp-step-num">4</div><div><div class="lp-step-title">グループで一緒に</div><div class="lp-step-body">みんなで応援し合いながら、習慣を継続。</div></div></div>
       </div>
     </div>
   </section>
@@ -507,14 +415,12 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
     <button class="nav-tab" onclick="showPage('page-record')">📊 体調記録</button>
     <button class="nav-tab" onclick="showPage('page-journal')">📓 ジャーナル</button>
     <button class="nav-tab" onclick="showPage('page-report')">📄 レポート</button>
-    <button class="nav-tab" onclick="showPage('page-sns')">📸 みんなの記録</button>
+    <button class="nav-tab" onclick="showPage('page-group')">🌸 グループ</button>
   </div>
 </nav>
 
 <!-- ========== 目標設定ページ ========== -->
 <div id="page-goal" class="page active">
-
-  <!-- 目標シート作成フロー（初回のみ） -->
   <div id="goal-setup" style="display:block;">
     <div class="hero-section">
       <div class="hero-badge">✨ 美容健康ダイエット習慣サポート</div>
@@ -592,10 +498,10 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
         <div class="form-group">
           <label class="form-label">目標期間</label>
           <div class="radio-group" id="rg-period">
-            <label class="radio-item" onclick="selectRadio(this,'rg-period')"><input type="radio" name="period" value="1ヶ月"><div class="radio-dot"></div><div><div class="radio-label">1ヶ月</div><div class="radio-sub">体を慣らすスタート期間</div></div></label>
-            <label class="radio-item" onclick="selectRadio(this,'rg-period')"><input type="radio" name="period" value="3ヶ月"><div class="radio-dot"></div><div><div class="radio-label">3ヶ月</div><div class="radio-sub">習慣が定着しやすい期間</div></div></label>
-            <label class="radio-item selected" onclick="selectRadio(this,'rg-period')"><input type="radio" name="period" value="6ヶ月" checked><div class="radio-dot"></div><div><div class="radio-label">6ヶ月</div><div class="radio-sub">体質改善に最適な期間 ✨</div></div></label>
-            <label class="radio-item" onclick="selectRadio(this,'rg-period')"><input type="radio" name="period" value="1年"><div class="radio-dot"></div><div><div class="radio-label">1年</div><div class="radio-sub">じっくりリバウンドなし</div></div></label>
+            <label class="radio-item" onclick="selectRadio(this,'rg-period')"><input type="radio" name="period" value="1ヶ月"><div class="radio-dot"></div><div><div class="radio-label">1ヶ月</div><div style="font-size:12px;color:var(--text-light);margin-top:2px;">体を慣らすスタート期間</div></div></label>
+            <label class="radio-item" onclick="selectRadio(this,'rg-period')"><input type="radio" name="period" value="3ヶ月"><div class="radio-dot"></div><div><div class="radio-label">3ヶ月</div><div style="font-size:12px;color:var(--text-light);margin-top:2px;">習慣が定着しやすい期間</div></div></label>
+            <label class="radio-item selected" onclick="selectRadio(this,'rg-period')"><input type="radio" name="period" value="6ヶ月" checked><div class="radio-dot"></div><div><div class="radio-label">6ヶ月</div><div style="font-size:12px;color:var(--text-light);margin-top:2px;">体質改善に最適な期間 ✨</div></div></label>
+            <label class="radio-item" onclick="selectRadio(this,'rg-period')"><input type="radio" name="period" value="1年"><div class="radio-dot"></div><div><div class="radio-label">1年</div><div style="font-size:12px;color:var(--text-light);margin-top:2px;">じっくりリバウンドなし</div></div></label>
           </div>
         </div>
         <button class="btn-primary" onclick="goStep(2)">次へ →</button>
@@ -610,10 +516,10 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
         <div class="form-group">
           <label class="form-label">運動習慣</label>
           <div class="radio-group" id="rg-exercise">
-            <label class="radio-item" onclick="selectRadio(this,'rg-exercise')"><input type="radio" name="exercise" value="ほぼしない"><div class="radio-dot"></div><div><div class="radio-label">ほぼしない</div><div class="radio-sub">デスクワーク・家事のみ</div></div></label>
-            <label class="radio-item" onclick="selectRadio(this,'rg-exercise')"><input type="radio" name="exercise" value="週1〜2回"><div class="radio-dot"></div><div><div class="radio-label">週1〜2回</div><div class="radio-sub">軽いウォーキングなど</div></div></label>
-            <label class="radio-item" onclick="selectRadio(this,'rg-exercise')"><input type="radio" name="exercise" value="週3〜4回"><div class="radio-dot"></div><div><div class="radio-label">週3〜4回</div><div class="radio-sub">定期的に体を動かしている</div></div></label>
-            <label class="radio-item" onclick="selectRadio(this,'rg-exercise')"><input type="radio" name="exercise" value="ほぼ毎日"><div class="radio-dot"></div><div><div class="radio-label">ほぼ毎日</div><div class="radio-sub">アクティブな生活</div></div></label>
+            <label class="radio-item" onclick="selectRadio(this,'rg-exercise')"><input type="radio" name="exercise" value="ほぼしない"><div class="radio-dot"></div><div><div class="radio-label">ほぼしない</div><div style="font-size:12px;color:var(--text-light);margin-top:2px;">デスクワーク・家事のみ</div></div></label>
+            <label class="radio-item" onclick="selectRadio(this,'rg-exercise')"><input type="radio" name="exercise" value="週1〜2回"><div class="radio-dot"></div><div><div class="radio-label">週1〜2回</div><div style="font-size:12px;color:var(--text-light);margin-top:2px;">軽いウォーキングなど</div></div></label>
+            <label class="radio-item" onclick="selectRadio(this,'rg-exercise')"><input type="radio" name="exercise" value="週3〜4回"><div class="radio-dot"></div><div><div class="radio-label">週3〜4回</div><div style="font-size:12px;color:var(--text-light);margin-top:2px;">定期的に体を動かしている</div></div></label>
+            <label class="radio-item" onclick="selectRadio(this,'rg-exercise')"><input type="radio" name="exercise" value="ほぼ毎日"><div class="radio-dot"></div><div><div class="radio-label">ほぼ毎日</div><div style="font-size:12px;color:var(--text-light);margin-top:2px;">アクティブな生活</div></div></label>
           </div>
         </div>
         <div class="form-group">
@@ -634,7 +540,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
       <div class="step-card" id="step-3">
         <div class="step-num">STEP 04</div>
         <div class="step-title">習慣TODOを選ぼう</div>
-        <div class="step-desc">続けたい習慣を3〜10個選んでください。頻度も設定できます。</div>
+        <div class="step-desc">続けたい習慣を3〜10個選んでください。</div>
         <div class="habit-select-grid" id="habit-select-grid"></div>
         <div style="margin-top:16px;">
           <label class="form-label">カスタム習慣を追加</label>
@@ -669,17 +575,10 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
           <div class="card-title">🌿 選んだ習慣TODO</div>
           <div class="habit-result-grid" id="habit-result-list"></div>
         </div>
-        <div class="line-banner">
-          <div style="font-size:15px;font-weight:700;margin-bottom:8px;">📲 LINEで毎日サポート！</div>
-          <div style="font-size:13px;opacity:.9;margin-bottom:12px;">毎朝の応援メッセージをお届けします。</div>
-          <a href="#" class="btn-line" onclick="alert('LINEのURLを設定してください')">LINEで受け取る 🎁</a>
-        </div>
         <div class="action-row">
-          <button class="btn-pdf" onclick="downloadPDF()">📄 PDFで保存</button>
-          <button class="btn-share" onclick="showPage('page-report')">📊 レポートへ</button>
+          <button class="btn-primary" onclick="startTodo()">✅ 習慣TODOを始める</button>
         </div>
         <button class="btn-secondary" onclick="goStep(3)" style="margin-top:10px;">← 習慣を変更する</button>
-        <button class="btn-primary" onclick="startTodo()" style="margin-top:10px;background:var(--green-strong);">✅ 習慣TODOを始める</button>
       </div>
     </div>
   </div>
@@ -737,17 +636,8 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
         <div style="font-size:48px;margin-bottom:8px;" id="flower-emoji">🌱</div>
         <div style="font-size:24px;font-weight:700;color:var(--pink-strong);" id="streak-num">0</div>
         <div style="font-size:13px;color:var(--text-light);margin-top:4px;">日連続達成中</div>
-        <div style="font-size:13px;color:var(--text-mid);margin-top:8px;" id="flower-msg">習慣を続けると花が成長します</div>
       </div>
     </div>
-
-    <div class="card" id="badges-card">
-      <div class="card-title">🏅 獲得バッジ</div>
-      <div id="badges-list" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
-      <div id="badges-empty" style="font-size:13px;color:var(--text-light);">習慣を続けるとバッジが獲得できます</div>
-    </div>
-
-    <button onclick="saveTodoAsImage()" style="width:100%;padding:14px;background:linear-gradient(135deg,#f0a0b8,#e8d5c0);color:white;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:700;cursor:pointer;margin-top:4px;display:flex;align-items:center;justify-content:center;gap:8px;">📸 SNSでシェアする(画像保存)</button>
   </div>
 </div>
 
@@ -803,52 +693,6 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
   </div>
 </div>
 
-<!-- ========== レポートページ ========== -->
-<div id="page-report" class="page">
-  <div style="padding:16px;">
-    <div class="card">
-      <div class="card-title">📄 月次レポート</div>
-      <div style="font-size:13px;color:var(--text-mid);margin-bottom:16px;" id="report-period"></div>
-
-      <div class="stats-row">
-        <div class="stat-card"><div class="stat-num" id="report-avg-todo">—</div><div class="stat-label">平均達成率</div></div>
-        <div class="stat-card"><div class="stat-num" id="report-streak">—</div><div class="stat-label">最長継続</div></div>
-        <div class="stat-card"><div class="stat-num" id="report-weight-diff">—</div><div class="stat-label">体重変化</div></div>
-      </div>
-
-      <!-- 追加統計 -->
-      <div class="stats-row" style="margin-top:8px;">
-        <div class="stat-card"><div class="stat-num" id="report-record-days">—</div><div class="stat-label">記録日数</div></div>
-        <div class="stat-card"><div class="stat-num" id="report-avg-stress">—</div><div class="stat-label">平均ストレス</div></div>
-        <div class="stat-card"><div class="stat-num" id="report-journal-days">—</div><div class="stat-label">ジャーナル数</div></div>
-      </div>
-
-      <!-- 習慣別達成率 -->
-      <div style="margin-top:16px;">
-        <div style="font-size:13px;font-weight:500;color:var(--text-mid);margin-bottom:10px;">🌿 習慣別達成率</div>
-        <div id="report-habit-details"></div>
-      </div>
-
-      <!-- 体重グラフ -->
-      <div style="margin-top:16px;">
-        <div style="font-size:13px;font-weight:500;color:var(--text-mid);margin-bottom:10px;">⚖️ 体重の推移</div>
-        <div id="report-weight-chart" style="display:flex;align-items:flex-end;gap:3px;height:60px;background:#FFF8FA;border-radius:8px;padding:8px;overflow-x:auto;"></div>
-      </div>
-
-      <div class="form-group" style="margin-top:16px;">
-        <label class="form-label">今月のコメント</label>
-        <textarea id="report-comment" placeholder="今月の振り返りを書いてください..." rows="4"></textarea>
-      </div>
-      <div class="action-row">
-        <button class="btn-pdf" onclick="generateReport()">📄 PDFで出力</button>
-        <button class="btn-share" onclick="saveReportComment()">💾 保存</button>
-      </div>
-      <button onclick="saveReportAsImage()" style="width:100%;padding:14px;background:linear-gradient(135deg,#f0a0b8,#e8d5c0);color:white;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:700;cursor:pointer;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:8px;">📸 SNSでシェアする(画像保存)</button>
-      <button onclick="sendMonthlyReportToLINE()" style="width:100%;padding:14px;background:#06C755;color:white;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:700;cursor:pointer;margin-top:10px;">💚 月次レポートをLINEで送る</button>
-    </div>
-  </div>
-</div>
-
 <!-- ========== ジャーナルページ ========== -->
 <div id="page-journal" class="page">
   <div style="padding:16px;">
@@ -863,21 +707,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
         <label class="form-label">今日の気づき・振り返り・感情を自由に書こう</label>
         <textarea id="journal-text" placeholder="今日はどんな一日でしたか？&#10;食事・運動・気持ち・できたこと・できなかったこと...&#10;なんでも自由に書いてください🌸" rows="8" style="font-size:15px;line-height:1.8;"></textarea>
       </div>
-      <div style="display:flex;gap:10px;">
-        <button class="btn-primary" onclick="saveJournal()" style="flex:1;">💾 保存する</button>
-        <button class="btn-sm btn-sm-outline" onclick="sendToLINE()" style="padding:14px 16px;border-radius:var(--radius-sm);font-size:14px;">💚 LINEで相談</button>
-      </div>
-    </div>
-    <div class="card" style="background:linear-gradient(135deg,#e8f8f0,#f0fff8);border:1.5px solid #7DD4A8;">
-      <div class="card-title" style="color:#2DAA71;">💚 LINEでフィードバックをもらおう</div>
-      <p style="font-size:13px;color:#4a8a6a;line-height:1.8;margin-bottom:16px;">ジャーナルを保存してからボタンを押すと、今日の記録がLINEに送信されます。あなたの記録を見てフィードバックをお返しします！</p>
-      <div style="background:#f0fff8;border-radius:10px;padding:16px;margin-bottom:12px;font-size:13px;color:#4a8a6a;line-height:1.8;">
-        📩 <strong>nodoka に直接メッセージが届きます！</strong><br>
-        担当者直通（AIではなく本人が返信します）🌸<br>
-        LINEに移行したら、そのまま<strong>ペースト→送信</strong>してください！
-      </div>
-      <button onclick="sendToLINE()" style="width:100%;padding:16px;background:#06C755;color:white;border:none;border-radius:var(--radius-sm);font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;">💚 今日の記録をLINEで送る</button>
-      <p style="font-size:11px;color:#6aaa8a;text-align:center;margin-top:8px;">※記録内容が自動でコピーされます。LINEでそのままペーストして送信！</p>
+      <button class="btn-primary" onclick="saveJournal()">💾 保存する</button>
     </div>
     <div class="card">
       <div class="card-title">📖 過去のジャーナル</div>
@@ -886,44 +716,150 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
   </div>
 </div>
 
+<!-- ========== レポートページ ========== -->
+<div id="page-report" class="page">
+  <div style="padding:16px;">
+    <div class="card">
+      <div class="card-title">📄 月次レポート</div>
+      <div style="font-size:13px;color:var(--text-mid);margin-bottom:16px;" id="report-period"></div>
 
-<!-- ========== SNSページ（インスタンツ）========== -->
-<div id="page-sns" class="page">
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-num" id="report-avg-todo">—</div><div class="stat-label">平均達成率</div></div>
+        <div class="stat-card"><div class="stat-num" id="report-streak">—</div><div class="stat-label">最長継続</div></div>
+        <div class="stat-card"><div class="stat-num" id="report-weight-diff">—</div><div class="stat-label">体重変化</div></div>
+      </div>
 
-  <!-- SNSタブ（フィード/投稿） -->
-  <div class="sns-tabs">
-    <button class="sns-tab active" onclick="switchSnsTab('feed')">📸 みんなの記録</button>
-    <button class="sns-tab" onclick="switchSnsTab('post')">✏️ 投稿する</button>
+      <div style="font-size:13px;color:var(--text-mid);">今月の詳細情報を見るには、レポート画面でご確認ください。</div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== グループページ（Phase 1） ========== -->
+<div id="page-group" class="page">
+  
+  <!-- グループ内タブ -->
+  <div class="group-tabs">
+    <button class="group-tab active" data-tab="home" onclick="switchGroupTab('home')">ホーム</button>
+    <button class="group-tab" data-tab="report" onclick="switchGroupTab('report')">報告</button>
+    <button class="group-tab" data-tab="mine" onclick="switchGroupTab('mine')">わたしの花畑</button>
   </div>
 
-  <!-- フィード -->
-  <div id="sns-feed" class="sns-feed">
-    <div id="posts-container"></div>
-    <div id="posts-loading" style="text-align:center;padding:32px;color:var(--text-light);">読み込み中...</div>
-  </div>
+  <!-- ホーム -->
+  <div id="group-home" class="group-screen active">
+    <div class="group-notice">
+      <div class="group-notice-icon">📢</div>
+      <div class="group-notice-text">
+        <div style="font-weight:500;margin-bottom:2px;">管理者からのお知らせ</div>
+        <div>今日もおつかれさま🌸 水分こまめにとってね！報告まってます💕</div>
+      </div>
+    </div>
 
-  <!-- 投稿作成 -->
-  <div id="sns-post" style="display:none;">
-    <div class="post-create-card">
-      <div class="post-create-title">📸 今日の取り組みをシェア</div>
-      <div class="expires-badge">⏰ 投稿は30日後に自動削除されます</div>
-
-      <div class="image-upload-area" id="upload-area" onclick="document.getElementById('post-image-input').click()">
-        <div id="upload-placeholder">
-          <div style="font-size:36px;margin-bottom:8px;">📷</div>
-          <div style="font-size:14px;color:var(--text-mid);">写真を選択</div>
-          <div style="font-size:12px;color:var(--text-light);margin-top:4px;">タップして追加</div>
+    <div class="campaign-card">
+      <div class="campaign-header">
+        <div class="campaign-name">🍃 3日間ファスティング</div>
+        <div class="campaign-progress">
+          <div class="campaign-progress-fill" style="width:60%;"></div>
         </div>
-        <img id="post-image-preview" class="image-preview" style="display:none;">
+        <div class="campaign-goal">花畑コンプリートまで あと4回</div>
       </div>
-      <input type="file" id="post-image-input" accept="image/*" style="display:none;" onchange="previewImage(this)">
+      <div style="padding:12px 14px;">
+        <div style="font-size:12px;font-weight:500;color:var(--text-mid);margin-bottom:10px;">みんなの花畑</div>
+        <div class="garden-grid" id="home-garden-grid">
+          <div class="garden-item">
+            <div class="garden-name">のどか</div>
+            <div class="garden-flower" style="font-size:44px;">🌸</div>
+          </div>
+          <div class="garden-item">
+            <div class="garden-name">みき</div>
+            <div class="garden-flower" style="font-size:40px;">🌸</div>
+          </div>
+          <div class="garden-item">
+            <div class="garden-name">さら</div>
+            <div class="garden-flower" style="font-size:38px;">🌷</div>
+          </div>
+          <div class="garden-item">
+            <div class="garden-name">ゆい</div>
+            <div class="garden-flower" style="font-size:36px;">🌱</div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-      <div class="form-group" style="margin-top:12px;">
-        <textarea id="post-caption" placeholder="今日の取り組みを書こう🌸&#10;例：ウォーキング30分達成！" rows="3" style="font-size:14px;"></textarea>
+    <div style="margin-top:14px;padding:12px 14px;background:white;border-radius:10px;border:0.5px solid #F4C0D1;">
+      <div style="font-size:12px;font-weight:500;color:var(--text-mid);margin-bottom:10px;">💬 この企画のトーク</div>
+      <div class="chat-area" id="group-chat-home">
+        <div class="chat-msg">
+          <div class="chat-name">みき</div>
+          <div class="chat-text">おはよう〜今日もがんばろ☀️</div>
+        </div>
+        <div class="chat-msg admin">
+          <div class="chat-name">のどか</div>
+          <div class="chat-text">みんないい調子だね💕</div>
+        </div>
+      </div>
+      <div class="msg-input-row">
+        <input type="text" class="msg-input" id="msg-input-home" placeholder="メッセージを入力…">
+        <button class="msg-send-btn" onclick="sendGroupMessage('home')">送信</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 報告 -->
+  <div id="group-report" class="group-screen">
+    <div style="padding:14px 0;">
+      <div style="font-size:12px;font-weight:500;color:var(--text-mid);margin-bottom:8px;">🍃 3日間ファスティング ・2日目</div>
+      
+      <div class="report-form">
+        <div class="achievement-btns">
+          <button class="achievement-btn selected" id="ach-done" onclick="selectAchievement('done')">🌸 できた！</button>
+          <button class="achievement-btn" id="ach-trying" onclick="selectAchievement('trying')">💪 がんばり中</button>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">ひとことメモ（任意）</label>
+          <textarea id="group-report-memo" placeholder="例：置き換えスムージー成功！" rows="2" style="margin:0;"></textarea>
+        </div>
+
+        <button class="btn-primary" onclick="submitGroupReport()">この内容で報告する</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- わたしの花畑 -->
+  <div id="group-mine" class="group-screen">
+    <div style="padding:14px 0;">
+      <div style="font-size:13px;font-weight:500;color:var(--text-dark);margin-bottom:2px;">わたしの花畑</div>
+      <div style="font-size:11px;color:var(--text-light);margin-bottom:10px;">報告も人への応援も、ぜんぶたまります🌷</div>
+
+      <div class="personal-garden">
+        <div class="garden-ground"></div>
+        <div style="position:absolute;left:10%;bottom:35px;font-size:50px;">🌸</div>
+        <div style="position:absolute;left:45%;bottom:35px;font-size:45px;">🌸</div>
+        <div style="position:absolute;left:70%;bottom:35px;font-size:40px;">🌷</div>
+        <div style="position:absolute;left:25%;top:15%;font-size:20px;">🦋</div>
+        <div style="position:absolute;left:60%;top:25%;font-size:16px;">✨</div>
       </div>
 
-      <button class="btn-primary" onclick="submitPost()">投稿する 🌸</button>
-      <div id="post-msg" style="font-size:13px;margin-top:8px;text-align:center;display:none;"></div>
+      <div class="garden-stats">
+        <div class="garden-stat">
+          <div class="garden-stat-num">5</div>
+          <div>🌸報告</div>
+        </div>
+        <div class="garden-stat">
+          <div class="garden-stat-num">8</div>
+          <div>🌼応援</div>
+        </div>
+        <div class="garden-stat">
+          <div class="garden-stat-num">3</div>
+          <div>🦋コメント</div>
+        </div>
+        <div class="garden-stat">
+          <div class="garden-stat-num">6</div>
+          <div>✨トーク</div>
+        </div>
+      </div>
+
+      <div style="font-size:11px;color:var(--text-light);text-align:center;margin-top:10px;">企画が終わっても振り返りとして残ります</div>
     </div>
   </div>
 
@@ -931,26 +867,8 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
 
 <footer class="footer">
   <p>© 2025 Bloom Journal | 美容健康ダイエット習慣サポート</p>
-  <p style="margin-top:4px;">このアプリは医療的アドバイスではありません。</p>
 </footer>
 
-<!-- ========== シェア画像キャンバス（非表示） ========== -->
-<div class="share-img-wrap" id="share-canvas-wrap">
-  <div class="share-canvas" id="share-canvas">
-    <div class="share-canvas-header">
-      <span class="share-deco" style="right:40px;top:20px;">🌸</span>
-      <div class="share-canvas-logo">Bloom Journal</div>
-      <div class="share-canvas-tagline">美容健康ダイエット習慣サポート</div>
-    </div>
-    <div class="share-canvas-body" id="share-canvas-body">
-      <!-- JSで動的に生成 -->
-    </div>
-    <div class="share-canvas-footer">
-      <div class="share-footer-tag" id="share-footer-tag">#BloomJournal</div>
-      <div class="share-footer-logo">🌸 Bloom Journal</div>
-    </div>
-  </div>
-</div>
 </div>
 
 <script>
@@ -975,7 +893,6 @@ function initSupabase() {
 async function checkAuthState() {
   if (!supabaseClient) return;
   try {
-    // セッションを永続化
     await supabaseClient.auth.startAutoRefresh();
     const { data: { session } } = await supabaseClient.auth.getSession();
     if (session) {
@@ -1008,7 +925,6 @@ async function handleLogin() {
   if (!supabaseClient) return;
   const email = document.getElementById('login-email').value.trim();
   const password = document.getElementById('login-password').value;
-  const msg = document.getElementById('login-msg');
   if (!email || !password) { showAuthMsg('login-msg', 'メールアドレスとパスワードを入力してください', 'error'); return; }
   try {
     const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
@@ -1064,7 +980,6 @@ function updateAuthUI() {
   }
 }
 
-// ========== Supabaseデータ保存 ==========
 async function saveToSupabase() {
   if (!supabaseClient || !currentUser) { saveToStorage(); return; }
   try {
@@ -1079,45 +994,6 @@ async function saveToSupabase() {
     });
     saveToStorage();
   } catch(e) { saveToStorage(); }
-}
-
-async function saveTodoToSupabase(date, habit, done) {
-  if (!supabaseClient || !currentUser) return;
-  try {
-    const existing = await supabaseClient.from('todos')
-      .select('id').eq('user_id', currentUser.id).eq('date', date).eq('habit', habit).single();
-    if (existing.data) {
-      await supabaseClient.from('todos').update({ done }).eq('id', existing.data.id);
-    } else {
-      await supabaseClient.from('todos').insert({ user_id: currentUser.id, date, habit, done });
-    }
-  } catch(e) {}
-}
-
-async function saveRecordToSupabase(date, data) {
-  if (!supabaseClient || !currentUser) return;
-  try {
-    const existing = await supabaseClient.from('records')
-      .select('id').eq('user_id', currentUser.id).eq('date', date).single();
-    if (existing.data) {
-      await supabaseClient.from('records').update(data).eq('id', existing.data.id);
-    } else {
-      await supabaseClient.from('records').insert({ user_id: currentUser.id, date, ...data });
-    }
-  } catch(e) {}
-}
-
-async function saveJournalToSupabase(date, content) {
-  if (!supabaseClient || !currentUser) return;
-  try {
-    const existing = await supabaseClient.from('journals')
-      .select('id').eq('user_id', currentUser.id).eq('date', date).single();
-    if (existing.data) {
-      await supabaseClient.from('journals').update({ content, updated_at: new Date().toISOString() }).eq('id', existing.data.id);
-    } else {
-      await supabaseClient.from('journals').insert({ user_id: currentUser.id, date, content });
-    }
-  } catch(e) {}
 }
 
 async function loadUserDataFromSupabase() {
@@ -1174,8 +1050,6 @@ const PRESET_HABITS = [
   '湯船につかる','階段を使う','夜21時以降食べない'
 ];
 
-const FREQ_OPTIONS = ['毎日','週5〜6回','週3〜4回','週1〜2回'];
-
 let state = {
   name:'', age:'', height:0, weight:0, goalWeight:55, period:'6ヶ月',
   exercise:'', foodWorries:[], selectedHabits:[], customHabits:[],
@@ -1184,11 +1058,14 @@ let state = {
 let currentStep = 0;
 let todoDate = new Date();
 let recordDate = new Date();
+let journalDate = new Date();
 let selectedMood = 0;
 let todoData = {};
 let recordData = {};
+let journalData = {};
 let streakCount = 0;
-let badges = [];
+let groupMessages = [];
+let selectedAchievement = 'done';
 
 // ========== 初期化 ==========
 window.addEventListener('load', () => {
@@ -1197,14 +1074,12 @@ window.addEventListener('load', () => {
   buildHabitSelectGrid();
   renderTodo();
   renderRecordHistory();
-  updateReportPage();
   if (state.goalCreated) {
     showGoalView();
   }
 });
 
 function loadFromStorage() {
-  loadJournalData();
   try {
     const s = localStorage.getItem('bloom-state');
     if (s) state = {...state, ...JSON.parse(s)};
@@ -1212,6 +1087,10 @@ function loadFromStorage() {
     if (t) todoData = JSON.parse(t);
     const r = localStorage.getItem('bloom-record');
     if (r) recordData = JSON.parse(r);
+    const j = localStorage.getItem('bloom-journal');
+    if (j) journalData = JSON.parse(j);
+    const g = localStorage.getItem('bloom-group-messages');
+    if (g) groupMessages = JSON.parse(g);
     calcStreak();
   } catch(e) {}
 }
@@ -1221,6 +1100,8 @@ function saveToStorage() {
     localStorage.setItem('bloom-state', JSON.stringify(state));
     localStorage.setItem('bloom-todo', JSON.stringify(todoData));
     localStorage.setItem('bloom-record', JSON.stringify(recordData));
+    localStorage.setItem('bloom-journal', JSON.stringify(journalData));
+    localStorage.setItem('bloom-group-messages', JSON.stringify(groupMessages));
   } catch(e) {}
 }
 
@@ -1230,13 +1111,12 @@ function showPage(id) {
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   const tabs = document.querySelectorAll('.nav-tab');
-  const map = {'page-goal':0,'page-todo':1,'page-record':2,'page-report':3};
+  const map = {'page-goal':0,'page-todo':1,'page-record':2,'page-journal':3,'page-report':4,'page-group':5};
   if (map[id] !== undefined) tabs[map[id]].classList.add('active');
   if (id === 'page-todo') renderTodo();
   if (id === 'page-record') renderRecordHistory();
-  if (id === 'page-report') updateReportPage();
   if (id === 'page-journal') { renderJournalHistory(); document.getElementById('journal-date-label').textContent = formatDateLabel(journalDate); }
-  if (id === 'page-sns') { loadPosts(); }
+  if (id === 'page-group') { switchGroupTab('home'); }
   window.scrollTo(0,0);
 }
 
@@ -1256,49 +1136,10 @@ function startApp() {
 
 function toggleAuth() {
   if (currentUser) {
-    const action = confirm('プロフィール設定をしますか？\nOK → プロフィール設定\nキャンセル → ログアウト');
-    if (action) {
-      openProfileModal();
-    } else {
-      if (confirm('ログアウトしますか？')) handleLogout();
-    }
+    if (confirm('ログアウトしますか？')) handleLogout();
   } else {
     document.getElementById('auth-overlay').style.display = 'flex';
   }
-}
-
-function openProfileModal() {
-  const modal = document.getElementById('profile-modal');
-  if (modal) {
-    modal.style.display = 'flex';
-    const savedIcon = localStorage.getItem('bloom-profile-icon') || '🌸';
-    const savedName = localStorage.getItem('bloom-profile-username') || '';
-    document.getElementById('profile-icon').value = savedIcon;
-    document.getElementById('profile-username').value = savedName;
-    document.getElementById('selected-icon-preview').textContent = savedIcon;
-  }
-}
-
-function closeProfileModal() {
-  const modal = document.getElementById('profile-modal');
-  if (modal) modal.style.display = 'none';
-}
-
-function selectIcon(emoji) {
-  document.getElementById('profile-icon').value = emoji;
-  document.getElementById('selected-icon-preview').textContent = emoji;
-  document.querySelectorAll('#icon-picker span').forEach(s => s.classList.remove('selected'));
-  event.target.classList.add('selected');
-}
-
-function saveProfile() {
-  const icon = document.getElementById('profile-icon').value || '🌸';
-  const username = document.getElementById('profile-username').value.trim() || (currentUser ? currentUser.email.split('@')[0] : 'ゲスト');
-  localStorage.setItem('bloom-profile-icon', icon);
-  localStorage.setItem('bloom-profile-username', username);
-  updateAuthUI();
-  closeProfileModal();
-  alert('プロフィールを保存しました！');
 }
 
 // ========== 目標シート ==========
@@ -1327,7 +1168,7 @@ function goStep(next) {
     if (count < 3) {
       const err = document.getElementById('habits-error');
       err.style.visibility = 'visible';
-      err.textContent = `3個以上選んでください（現在${count}個）`;
+      err.textContent = '3個以上選んでください（現在' + count + '個）';
       return;
     }
   }
@@ -1449,25 +1290,8 @@ function updateHabitsPreview() {
   if (!preview) return;
   const all = state.selectedHabits;
   if (all.length === 0) { preview.innerHTML = ''; return; }
-  const freqOptions = ['毎日','週5〜6回','週3〜4回','週1〜2回','平日のみ','週末のみ'];
-  preview.innerHTML = '<div style="font-size:12px;color:var(--text-light);margin-bottom:10px;font-weight:500;">選択中 ' + all.length + ' 個 — 頻度を設定してください</div>' +
-    all.map(h => {
-      const freq = state.habitFreq[h] || '毎日';
-      return '<div style="background:white;border:1.5px solid #F0D8E2;border-radius:10px;padding:10px 12px;margin-bottom:8px;" data-habit="' + h.replace(/"/g,'&quot;') + '">' +
-        '<div style="font-size:13px;font-weight:500;margin-bottom:6px;">✅ ' + h + '</div>' +
-        '<div style="display:flex;flex-wrap:wrap;gap:6px;">' +
-        freqOptions.map(f => { const sel = freq === f ? 'selected' : ''; return '<button class="freq-btn ' + sel + '" onclick="setHabitFreq(this,&quot;' + f + '&quot;)">' + f + '</button>'; }).join('') +
-        '</div></div>';
-    }).join('');
-}
-
-function setHabitFreq(btn, freq) {
-  const card = btn.closest('[data-habit]');
-  if (card) {
-    state.habitFreq[card.dataset.habit] = freq;
-    saveToStorage();
-    updateHabitsPreview();
-  }
+  preview.innerHTML = '<div style="font-size:12px;color:var(--text-light);margin-bottom:10px;font-weight:500;">選択中 ' + all.length + ' 個</div>' +
+    all.map(h => '<div style="background:white;border:1.5px solid #F0D8E2;border-radius:10px;padding:10px 12px;margin-bottom:8px;">✅ ' + h + '</div>').join('');
 }
 
 function buildResult() {
@@ -1477,11 +1301,9 @@ function buildResult() {
   document.getElementById('res-current').textContent = state.weight + 'kg';
   document.getElementById('res-goal').textContent = state.goalWeight + 'kg';
   document.getElementById('res-bmi2').textContent = bmi;
-  const months = {'1ヶ月':1,'3ヶ月':3,'6ヶ月':6,'1年':12}[state.period] || 6;
-  const perMonth = diff > 0 ? (parseFloat(diff) / months).toFixed(1) : 0;
   const goals = [
     {text:'目標体重：' + state.goalWeight + 'kg（現在より' + diff + 'kg減）', sub:'無理のない目標で体質から変える'},
-    {text:'達成期間：' + state.period, sub:'月' + perMonth + 'kgペースの健康的な減量'},
+    {text:'達成期間：' + state.period, sub:'健康的な減量を心がけます'},
     {text:'運動レベル：' + (state.exercise || '設定なし'), sub:'あなたのペースで進めましょう'},
   ];
   document.getElementById('goal-list').innerHTML = goals.map(g =>
@@ -1567,6 +1389,14 @@ function changeRecordDate(delta) {
   document.getElementById('record-date-label').textContent = formatDateLabel(recordDate);
 }
 
+function changeJournalDate(delta) {
+  journalDate.setDate(journalDate.getDate() + delta);
+  const key = formatDate(journalDate);
+  document.getElementById('journal-date-label').textContent = formatDateLabel(journalDate);
+  document.getElementById('journal-text').value = journalData[key] || '';
+  renderJournalHistory();
+}
+
 function renderTodo() {
   document.getElementById('todo-date-label').textContent = formatDateLabel(todoDate);
   const habits = state.selectedHabits;
@@ -1593,7 +1423,6 @@ function renderTodo() {
   updateTodoStats(doneCount, habits.length);
   checkStreak();
   updateFlower();
-  checkBadges();
 }
 
 function toggleTodo(habit) {
@@ -1612,20 +1441,6 @@ function updateTodoStats(done, total) {
   document.getElementById('todo-progress').style.width = pct + '%';
 }
 
-
-function calcHabitAchieveRate(habit, freq) {
-  const freqMap = {'毎日':7,'週5〜6回':5.5,'週3〜4回':3.5,'週1〜2回':1.5,'平日のみ':5,'週末のみ':2};
-  const targetPerWeek = freqMap[freq] || 7;
-  const days28 = [];
-  for (let i = 0; i < 28; i++) {
-    const d = new Date();
-    d.setDate(d.getDate() - i);
-    days28.push(formatDate(d));
-  }
-  const doneDays = days28.filter(k => todoData[k] && todoData[k][habit]).length;
-  const targetDays = Math.round(targetPerWeek * 4);
-  return Math.min(100, Math.round((doneDays / targetDays) * 100));
-}
 function calcStreak() {
   const today = new Date();
   let count = 0;
@@ -1653,27 +1468,6 @@ function updateFlower() {
   const flowers = ['🌱','🌿','🌸','🌺','🌻','🌹','💐'];
   const idx = Math.min(Math.floor(streakCount / 5), flowers.length - 1);
   document.getElementById('flower-emoji').textContent = flowers[idx];
-  const msgs = ['習慣を続けると花が成長します','芽が出てきました！','葉っぱが増えてきた！','つぼみができました🌸','花が咲きました！🌺','満開です！🌻','あなたの花が完全に咲きました！💐'];
-  document.getElementById('flower-msg').textContent = msgs[idx];
-}
-
-function checkBadges() {
-  const newBadges = [];
-  if (streakCount >= 3 && !badges.includes('3日継続')) { newBadges.push('3日継続🏅'); badges.push('3日継続'); }
-  if (streakCount >= 7 && !badges.includes('7日継続')) { newBadges.push('7日継続🥈'); badges.push('7日継続'); }
-  if (streakCount >= 14 && !badges.includes('14日継続')) { newBadges.push('2週間継続🥇'); badges.push('14日継続'); }
-  if (streakCount >= 30 && !badges.includes('30日継続')) { newBadges.push('1ヶ月継続👑'); badges.push('30日継続'); }
-  if (state.selectedHabits.length >= 5 && !badges.includes('5習慣')) { newBadges.push('5習慣設定⭐'); badges.push('5習慣'); }
-  const list = document.getElementById('badges-list');
-  const empty = document.getElementById('badges-empty');
-  if (badges.length > 0) {
-    empty.style.display = 'none';
-    list.innerHTML = badges.map(b => '<span class="tag tag-pink">' + b + '</span>').join('');
-  }
-  if (newBadges.length > 0) {
-    setTimeout(() => alert('🎉 バッジ獲得！\n' + newBadges.join('\n')), 300);
-  }
-  saveToStorage();
 }
 
 // ========== 体調記録 ==========
@@ -1737,167 +1531,13 @@ function renderRecordHistory() {
   }).join('');
 }
 
-// ========== レポート ==========
-function updateReportPage() {
-  const now = new Date();
-  document.getElementById('report-period').textContent = now.getFullYear() + '年' + (now.getMonth()+1) + '月のレポート';
-  const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-  const days = [];
-  for (let d = new Date(firstDay); d <= now; d.setDate(d.getDate()+1)) {
-    days.push(formatDate(new Date(d)));
-  }
-  const habits = state.selectedHabits;
-  let totalPct = 0, count = 0;
-  days.forEach(k => {
-    if (todoData[k] && habits.length > 0) {
-      const done = Object.values(todoData[k]).filter(Boolean).length;
-      totalPct += done / habits.length * 100;
-      count++;
-    }
-  });
-  const avgTodo = count > 0 ? Math.round(totalPct / count) : 0;
-  document.getElementById('report-avg-todo').textContent = avgTodo + '%';
-  document.getElementById('report-streak').textContent = streakCount + '日';
-  const weights = days.map(k => recordData[k] && recordData[k].weight).filter(Boolean);
-  if (weights.length >= 2) {
-    const diff = (weights[weights.length-1] - weights[0]).toFixed(1);
-    document.getElementById('report-weight-diff').textContent = (diff > 0 ? '+' : '') + diff + 'kg';
-  } else {
-    document.getElementById('report-weight-diff').textContent = '—';
-  }
-
-  // 追加統計
-  const recordDays = days.filter(k => recordData[k] && (recordData[k].weight || recordData[k].mood)).length;
-  document.getElementById('report-record-days').textContent = recordDays + '日';
-  const stresses = days.map(k => recordData[k] && recordData[k].stress).filter(Boolean);
-  const avgStress = stresses.length > 0 ? (stresses.reduce((a,b) => a+b, 0) / stresses.length).toFixed(1) : '—';
-  document.getElementById('report-avg-stress').textContent = avgStress;
-  const journalDays = days.filter(k => journalData[k]).length;
-  document.getElementById('report-journal-days').textContent = journalDays + '件';
-
-  // 習慣別達成率
-  const habitDetails = document.getElementById('report-habit-details');
-  if (habitDetails && habits.length > 0) {
-    habitDetails.innerHTML = habits.map(h => {
-      const doneDays = days.filter(k => todoData[k] && todoData[k][h]).length;
-      const pct = days.length > 0 ? Math.round(doneDays / days.length * 100) : 0;
-      const freq = state.habitFreq[h] || '毎日';
-      return '<div style="margin-bottom:8px;">' +
-        '<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;">' +
-        '<span>' + h + ' <span style="color:var(--text-light);">(' + freq + ')</span></span>' +
-        '<span style="font-weight:600;color:' + (pct >= 80 ? 'var(--green-strong)' : pct >= 50 ? 'var(--pink-strong)' : '#E74C3C') + ';">' + pct + '%</span>' +
-        '</div>' +
-        '<div style="height:6px;background:#F0D8E2;border-radius:3px;overflow:hidden;">' +
-        '<div style="height:100%;width:' + pct + '%;background:' + (pct >= 80 ? 'var(--green-strong)' : pct >= 50 ? 'var(--pink-strong)' : '#E74C3C') + ';border-radius:3px;transition:width .5s;"></div>' +
-        '</div></div>';
-    }).join('');
-  }
-
-  // 体重グラフ
-  const chart = document.getElementById('report-weight-chart');
-  if (chart && weights.length > 0) {
-    const min = Math.min(...weights) - 1;
-    const max = Math.max(...weights) + 1;
-    const weightDays = days.filter(k => recordData[k] && recordData[k].weight);
-    chart.innerHTML = weightDays.map(k => {
-      const w = recordData[k].weight;
-      const h = Math.round(((w - min) / (max - min)) * 44) + 8;
-      return '<div style="flex:1;min-width:8px;display:flex;flex-direction:column;align-items:center;gap:2px;">' +
-        '<div style="font-size:8px;color:var(--text-light);">' + w + '</div>' +
-        '<div style="width:100%;height:' + h + 'px;background:var(--pink-strong);border-radius:3px 3px 0 0;opacity:0.7;"></div>' +
-        '</div>';
-    }).join('');
-  }
-}
-
-function sendMonthlyReportToLINE() {
-  const now = new Date();
-  const monthStr = now.getFullYear() + '年' + (now.getMonth()+1) + '月';
-  const avgTodo = document.getElementById('report-avg-todo').textContent;
-  const streak = document.getElementById('report-streak').textContent;
-  const weightDiff = document.getElementById('report-weight-diff').textContent;
-  const recordDays = document.getElementById('report-record-days').textContent;
-  const avgStress = document.getElementById('report-avg-stress').textContent;
-  const journalDays = document.getElementById('report-journal-days').textContent;
-  const comment = document.getElementById('report-comment').value;
-
-  let msg = '【Bloom Journal 月次レポート】\n';
-  msg += '📅 ' + monthStr + '\n';
-  if (state.name) msg += '👤 ' + state.name + '\n';
-  msg += '\n';
-  msg += '✅ 習慣平均達成率：' + avgTodo + '\n';
-  msg += '🔥 最長継続：' + streak + '\n';
-  msg += '⚖️ 体重変化：' + weightDiff + '\n';
-  msg += '📊 記録日数：' + recordDays + '\n';
-  msg += '😤 平均ストレス：' + avgStress + '\n';
-  msg += '📓 ジャーナル：' + journalDays + '\n';
-
-  // 習慣別達成率
-  const habits = state.selectedHabits;
-  if (habits.length > 0) {
-    msg += '\n🌿 習慣別達成率：\n';
-    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-    const days = [];
-    for (let d = new Date(firstDay); d <= now; d.setDate(d.getDate()+1)) {
-      days.push(formatDate(new Date(d)));
-    }
-    habits.forEach(h => {
-      const doneDays = days.filter(k => todoData[k] && todoData[k][h]).length;
-      const pct = days.length > 0 ? Math.round(doneDays / days.length * 100) : 0;
-      msg += '  ・' + h + '：' + pct + '%\n';
-    });
-  }
-  if (comment) msg += '\n💬 コメント：\n' + comment + '\n';
-  msg += '\n#BloomJournal #月次レポート';
-
-  window.open('https://lin.ee/5EYolb7', '_blank');
-  setTimeout(() => {
-    navigator.clipboard.writeText(msg).then(() => {
-      alert('📋 月次レポートをコピーしました！\nLINEでそのままペーストして送信してください🌸');
-    }).catch(() => {
-      alert('月次レポート：\n\n' + msg);
-    });
-  }, 800);
-}
-
-function saveReportComment() {
-  saveToStorage();
-  alert('コメントを保存しました！');
-}
-
-
-
-
 // ========== ジャーナル ==========
-let journalDate = new Date();
-let journalData = {};
-
-function loadJournalData() {
-  try {
-    const j = localStorage.getItem('bloom-journal');
-    if (j) journalData = JSON.parse(j);
-  } catch(e) {}
-}
-
-function saveJournalData() {
-  try { localStorage.setItem('bloom-journal', JSON.stringify(journalData)); } catch(e) {}
-}
-
-function changeJournalDate(delta) {
-  journalDate.setDate(journalDate.getDate() + delta);
-  const key = formatDate(journalDate);
-  document.getElementById('journal-date-label').textContent = formatDateLabel(journalDate);
-  document.getElementById('journal-text').value = journalData[key] || '';
-  renderJournalHistory();
-}
-
 function saveJournal() {
   const text = document.getElementById('journal-text').value.trim();
   if (!text) { alert('内容を入力してください'); return; }
   const key = formatDate(journalDate);
   journalData[key] = text;
-  saveJournalData();
-  saveJournalToSupabase(key, text);
+  saveToStorage();
   renderJournalHistory();
   alert('保存しました！💾');
 }
@@ -1922,737 +1562,59 @@ function loadJournalEntry(key) {
   document.getElementById('journal-text').value = journalData[key] || '';
 }
 
-function sendToLINE() {
-  const dateKey = formatDate(new Date());
-  const journalText = journalData[dateKey] || '';
-  const rec = recordData[dateKey] || {};
-  const todoDay = todoData[dateKey] || {};
-  const habits = state.selectedHabits;
-  const doneCount = habits.filter(h => todoDay[h]).length;
-  const pct = habits.length > 0 ? Math.round(doneCount / habits.length * 100) : 0;
-  const moods = ['','😢','😔','😐','🙂','😄'];
-  let msg = '【Bloom Journal 今日の記録】\n';
-  msg += '📅 ' + dateKey + '\n\n';
-  if (state.name) msg += '👤 ' + state.name + '\n\n';
-  msg += '✅ 習慣達成率：' + pct + '% (' + doneCount + '/' + habits.length + ')\n';
-  if (rec.weight) msg += '⚖️ 体重：' + rec.weight + 'kg\n';
-  if (rec.mood) msg += '💭 気分：' + moods[rec.mood] + '\n';
-  if (rec.stress) msg += '😤 ストレス：' + rec.stress + '/10\n';
-  if (rec.memo) msg += '📝 体調メモ：' + rec.memo + '\n';
-  if (journalText) msg += '\n📓 ジャーナル：\n' + journalText + '\n';
-  msg += '\n#BloomJournal #習慣記録';
-  window.open('https://lin.ee/5EYolb7', '_blank');
-  setTimeout(() => {
-    navigator.clipboard.writeText(msg).then(() => {
-      alert('📋 記録内容をコピーしました！\nLINEが開いたらトークに貼り付けて送信してください\n\n--- 内容プレビュー ---\n' + msg.substring(0, 150) + '...');
-    }).catch(() => {
-      alert('LINEで以下の内容を送ってください：\n\n' + msg);
-    });
-  }, 800);
+// ========== グループ機能（Phase 1） ==========
+function switchGroupTab(tab) {
+  document.querySelectorAll('.group-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.group-screen').forEach(s => s.classList.remove('active'));
+  document.querySelector('[data-tab="' + tab + '"]').classList.add('active');
+  document.getElementById('group-' + tab).classList.add('active');
+  window.scrollTo(0, document.getElementById('group-' + tab).offsetTop - 100);
 }
 
-// ========== SNSシェア ==========
-function getShareText() {
-  const now = new Date();
-  const avgTodo = document.getElementById('report-avg-todo').textContent;
-  const streak = document.getElementById('report-streak').textContent;
-  const weightDiff = document.getElementById('report-weight-diff').textContent;
-  return '【' + now.getFullYear() + '年' + (now.getMonth()+1) + '月の記録】\n' +
-    '✅ 習慣平均達成率：' + avgTodo + '\n' +
-    '🔥 最長継続：' + streak + '\n' +
-    '⚖️ 体重変化：' + weightDiff + '\n' +
-    '\n#BloomJournal #習慣記録 #ダイエット #体質改善';
+function selectAchievement(val) {
+  selectedAchievement = val;
+  document.querySelectorAll('.achievement-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('ach-' + val).classList.add('selected');
 }
 
-function shareToX() {
-  const text = getShareText();
-  const url = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent(location.href);
-  window.open(url, '_blank');
-}
-
-function shareToInstagram() {
-  const text = getShareText();
-  navigator.clipboard.writeText(text).then(() => {
-    alert('📸 インスタストーリーズ用テキストをコピーしました！\nInstagramを開いてストーリーズに貼り付けてください\n\n推奨サイズ：1080×1920px');
-  }).catch(() => alert('コピーできませんでした'));
-}
-
-function shareToThreads() {
-  const text = getShareText();
-  const url = 'https://www.threads.net/intent/post?text=' + encodeURIComponent(text);
-  window.open(url, '_blank');
-}
-
-
-function downloadPDF() {
-  try {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-
-    // フォント設定（日本語対応のためUnicode使用）
-    doc.setFont('helvetica');
-
-    // 背景色
-    doc.setFillColor(255, 245, 248);
-    doc.rect(0, 0, 210, 297, 'F');
-
-    // ヘッダー
-    doc.setFillColor(231, 84, 128);
-    doc.rect(0, 0, 210, 28, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(18);
-    doc.text('Bloom Journal', 20, 12);
-    doc.setFontSize(10);
-    doc.text('Beauty & Health Diet Support', 20, 20);
-
-    const today = new Date();
-    doc.setFontSize(9);
-    doc.text(today.getFullYear() + '/' + (today.getMonth()+1) + '/' + today.getDate(), 170, 16);
-
-    // タイトル
-    doc.setTextColor(44, 34, 38);
-    doc.setFontSize(16);
-    doc.text('Diet Goal Sheet', 20, 42);
-
-    // ユーザー情報
-    doc.setFontSize(10);
-    doc.setTextColor(107, 79, 87);
-    let y = 52;
-    const bmi = state.height > 0 ? (state.weight / Math.pow(state.height/100, 2)).toFixed(1) : '-';
-    const diff = (state.weight - state.goalWeight).toFixed(1);
-
-    // 情報ボックス
-    doc.setFillColor(255, 255, 255);
-    doc.roundedRect(15, y, 180, 50, 3, 3, 'F');
-    doc.setDrawColor(251, 189, 208);
-    doc.roundedRect(15, y, 180, 50, 3, 3, 'S');
-
-    doc.setTextColor(44, 34, 38);
-    doc.setFontSize(11);
-    doc.text('Name: ' + (state.name || '-'), 22, y+10);
-    doc.text('Age: ' + (state.age || '-'), 22, y+20);
-    doc.text('Height: ' + (state.height || '-') + ' cm', 22, y+30);
-    doc.text('Weight: ' + (state.weight || '-') + ' kg', 22, y+40);
-    doc.text('Goal Weight: ' + state.goalWeight + ' kg', 100, y+10);
-    doc.text('BMI: ' + bmi, 100, y+20);
-    doc.text('Difference: -' + diff + ' kg', 100, y+30);
-    doc.text('Period: ' + state.period, 100, y+40);
-
-    y += 60;
-
-    // 習慣リスト
-    doc.setFillColor(231, 84, 128);
-    doc.rect(15, y, 180, 8, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(10);
-    doc.text('Selected Habits (TODO)', 20, y+5.5);
-    y += 12;
-
-    doc.setFillColor(255, 255, 255);
-    doc.setTextColor(44, 34, 38);
-    doc.setFontSize(9);
-    const habits = state.selectedHabits;
-    habits.forEach((h, i) => {
-      if (i % 2 === 0 && i > 0) {
-        doc.setFillColor(255, 245, 248);
-      } else {
-        doc.setFillColor(255, 255, 255);
-      }
-      doc.rect(15, y + i*8, 180, 8, 'F');
-      doc.setTextColor(107, 79, 87);
-      doc.text((i+1) + '. ' + h, 22, y + i*8 + 5.5);
-      if (y + i*8 > 250) {
-        doc.addPage();
-        doc.setFillColor(255, 245, 248);
-        doc.rect(0, 0, 210, 297, 'F');
-        y = 20 - i*8;
-      }
-    });
-
-    y += habits.length * 8 + 10;
-
-    // 7大栄養素チェック
-    if (y < 240) {
-      doc.setFillColor(125, 212, 168);
-      doc.rect(15, y, 180, 8, 'F');
-      doc.setTextColor(255, 255, 255);
-      doc.setFontSize(10);
-      doc.text('7 Essential Nutrients', 20, y+5.5);
-      y += 12;
-      const nutrients = ['Protein','Fat','Carbohydrate','Vitamins','Minerals','Fiber','Water'];
-      doc.setFontSize(9);
-      doc.setTextColor(44, 34, 38);
-      nutrients.forEach((n, i) => {
-        doc.setFillColor(i%2===0 ? 240 : 255, i%2===0 ? 250 : 255, i%2===0 ? 245 : 255);
-        doc.rect(15, y + i*7, 180, 7, 'F');
-        doc.text((i+1) + '. ' + n, 22, y + i*7 + 5);
-      });
-    }
-
-    // フッター
-    doc.setFillColor(231, 84, 128);
-    doc.rect(0, 289, 210, 8, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(8);
-    doc.text('Bloom Journal | Beauty & Health Diet Support', 20, 294);
-
-    doc.save('bloom-journal-goal-sheet.pdf');
-  } catch(e) {
-    console.error(e);
-    window.print();
-  }
-}
-
-function generateReport() {
-  try {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-
-    const now = new Date();
-    const monthStr = now.getFullYear() + '/' + (now.getMonth()+1);
-    const avgTodo = document.getElementById('report-avg-todo').textContent;
-    const streak = document.getElementById('report-streak').textContent;
-    const weightDiff = document.getElementById('report-weight-diff').textContent;
-    const comment = document.getElementById('report-comment').value;
-
-    // 背景
-    doc.setFillColor(255, 245, 248);
-    doc.rect(0, 0, 210, 297, 'F');
-
-    // ヘッダー
-    doc.setFillColor(231, 84, 128);
-    doc.rect(0, 0, 210, 28, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(18);
-    doc.text('Bloom Journal', 20, 12);
-    doc.setFontSize(10);
-    doc.text('Monthly Report - ' + monthStr, 20, 20);
-    doc.setFontSize(9);
-    doc.text('Created: ' + now.getFullYear() + '/' + (now.getMonth()+1) + '/' + now.getDate(), 155, 16);
-
-    doc.setTextColor(44, 34, 38);
-    doc.setFontSize(16);
-    doc.text('Monthly Report', 20, 42);
-    if (state.name) {
-      doc.setFontSize(11);
-      doc.setTextColor(107, 79, 87);
-      doc.text(state.name, 20, 50);
-    }
-
-    let y = 58;
-
-    // 統計カード3つ
-    const stats = [
-      { label: 'Habit Rate', value: avgTodo, color: [231, 84, 128] },
-      { label: 'Best Streak', value: streak, color: [125, 212, 168] },
-      { label: 'Weight Change', value: weightDiff, color: [139, 92, 246] }
-    ];
-    stats.forEach((s, i) => {
-      const x = 15 + i * 62;
-      doc.setFillColor(255, 255, 255);
-      doc.roundedRect(x, y, 55, 30, 3, 3, 'F');
-      doc.setDrawColor(...s.color);
-      doc.setLineWidth(0.5);
-      doc.roundedRect(x, y, 55, 30, 3, 3, 'S');
-      doc.setTextColor(...s.color);
-      doc.setFontSize(16);
-      doc.text(s.value, x + 27.5, y + 16, { align: 'center' });
-      doc.setTextColor(168, 136, 154);
-      doc.setFontSize(8);
-      doc.text(s.label, x + 27.5, y + 25, { align: 'center' });
-    });
-
-    y += 40;
-
-    // 習慣達成グラフ（棒グラフ風）
-    doc.setFillColor(231, 84, 128);
-    doc.rect(15, y, 180, 8, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(10);
-    doc.text('This Month Habit Achievement', 20, y+5.5);
-    y += 12;
-
-    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-    const days = [];
-    for (let d = new Date(firstDay); d <= now; d.setDate(d.getDate()+1)) {
-      days.push(formatDate(new Date(d)));
-    }
-    const habits = state.selectedHabits;
-    const barW = Math.min(5, 170 / days.length);
-    days.forEach((k, i) => {
-      const dayData = todoData[k] || {};
-      const done = habits.filter(h => dayData[h]).length;
-      const pct = habits.length > 0 ? done / habits.length : 0;
-      const barH = pct * 30;
-      doc.setFillColor(
-        pct >= 0.8 ? 125 : pct >= 0.5 ? 251 : 231,
-        pct >= 0.8 ? 212 : pct >= 0.5 ? 189 : 84,
-        pct >= 0.8 ? 168 : pct >= 0.5 ? 208 : 128
-      );
-      doc.rect(15 + i * barW, y + 30 - barH, barW - 0.5, barH, 'F');
-    });
-    y += 42;
-
-    // コメント欄
-    if (comment) {
-      doc.setFillColor(255, 255, 255);
-      doc.roundedRect(15, y, 180, 50, 3, 3, 'F');
-      doc.setDrawColor(251, 189, 208);
-      doc.roundedRect(15, y, 180, 50, 3, 3, 'S');
-      doc.setTextColor(231, 84, 128);
-      doc.setFontSize(10);
-      doc.text('My Comment', 22, y+8);
-      doc.setTextColor(44, 34, 38);
-      doc.setFontSize(9);
-      const lines = doc.splitTextToSize(comment, 165);
-      lines.slice(0, 4).forEach((line, i) => {
-        doc.text(line, 22, y + 16 + i * 7);
-      });
-      y += 55;
-    }
-
-    // 7大栄養素リマインダー
-    doc.setFillColor(125, 212, 168);
-    doc.rect(15, y, 180, 8, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(10);
-    doc.text('7 Essential Nutrients Reminder', 20, y+5.5);
-    y += 12;
-    const nutrients = [
-      'Protein - Body building material',
-      'Fat - Energy & hormones',
-      'Carbohydrate - Brain & body fuel',
-      'Vitamins - Metabolism support',
-      'Minerals - Bone & balance',
-      'Fiber - Gut health',
-      'Water - Transport & metabolism'
-    ];
-    doc.setFontSize(8);
-    nutrients.forEach((n, i) => {
-      doc.setFillColor(i%2===0 ? 240 : 255, i%2===0 ? 250 : 255, i%2===0 ? 245 : 255);
-      doc.rect(15, y + i*7, 180, 7, 'F');
-      doc.setTextColor(44, 34, 38);
-      doc.text((i+1) + '. ' + n, 22, y + i*7 + 5);
-    });
-
-    // フッター
-    doc.setFillColor(231, 84, 128);
-    doc.rect(0, 289, 210, 8, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(8);
-    doc.text('Bloom Journal | Beauty & Health Diet Support', 20, 294);
-
-    doc.save('bloom-journal-report-' + now.getFullYear() + '-' + (now.getMonth()+1) + '.pdf');
-  } catch(e) {
-    console.error(e);
-    window.print();
-  }
-}
-
-
-// ========== SNS機能 ==========
-let snsCurrentTab = 'feed';
-let postsCache = [];
-
-function switchSnsTab(tab) {
-  snsCurrentTab = tab;
-  document.querySelectorAll('.sns-tab').forEach(t => t.classList.remove('active'));
-  event.target.classList.add('active');
-  document.getElementById('sns-feed').style.display = tab === 'feed' ? 'flex' : 'none';
-  document.getElementById('sns-post').style.display = tab === 'post' ? 'block' : 'none';
-  if (tab === 'feed') loadPosts();
-}
-
-function previewImage(input) {
-  if (!input.files || !input.files[0]) return;
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    const preview = document.getElementById('post-image-preview');
-    const placeholder = document.getElementById('upload-placeholder');
-    preview.src = e.target.result;
-    preview.style.display = 'block';
-    placeholder.style.display = 'none';
-    document.getElementById('upload-area').classList.add('has-image');
+function submitGroupReport() {
+  const memo = document.getElementById('group-report-memo').value.trim();
+  const report = {
+    date: formatDate(new Date()),
+    achievement: selectedAchievement,
+    memo: memo
   };
-  reader.readAsDataURL(input.files[0]);
+  alert('報告を送信しました！🌸');
+  document.getElementById('group-report-memo').value = '';
+  selectAchievement('done');
+  saveToStorage();
 }
 
-async function submitPost() {
-  if (!supabaseClient || !currentUser) {
-    alert('投稿するにはログインが必要です');
-    document.getElementById('auth-overlay').style.display = 'flex';
-    return;
-  }
-  const caption = document.getElementById('post-caption').value.trim();
-  const imageInput = document.getElementById('post-image-input');
-  const msg = document.getElementById('post-msg');
-  if (!caption && !imageInput.files[0]) {
-    msg.textContent = '写真かキャプションを入力してください';
-    msg.style.color = '#E74C3C';
-    msg.style.display = 'block';
-    return;
-  }
-  msg.textContent = '投稿中...';
-  msg.style.color = 'var(--text-mid)';
-  msg.style.display = 'block';
-  try {
-    let imageUrl = null;
-    if (imageInput.files[0]) {
-      const file = imageInput.files[0];
-      const fileName = currentUser.id + '/' + Date.now() + '.' + file.name.split('.').pop();
-      const { data: uploadData, error: uploadError } = await supabaseClient.storage
-        .from('posts').upload(fileName, file);
-      if (uploadError) throw uploadError;
-      const { data: urlData } = supabaseClient.storage.from('posts').getPublicUrl(fileName);
-      imageUrl = urlData.publicUrl;
-    }
-    const expiresAt = new Date();
-    expiresAt.setDate(expiresAt.getDate() + 30);
-    const { error } = await supabaseClient.from('posts').insert({
-      user_id: currentUser.id,
-      image_url: imageUrl,
-      caption: caption,
-      expires_at: expiresAt.toISOString()
-    });
-    if (error) throw error;
-    msg.textContent = '投稿しました！🌸';
-    msg.style.color = 'var(--green-strong)';
-    document.getElementById('post-caption').value = '';
-    document.getElementById('post-image-preview').style.display = 'none';
-    document.getElementById('upload-placeholder').style.display = 'block';
-    document.getElementById('upload-area').classList.remove('has-image');
-    imageInput.value = '';
-    setTimeout(() => {
-      switchSnsTab('feed');
-      document.querySelectorAll('.sns-tab')[0].classList.add('active');
-      document.querySelectorAll('.sns-tab')[1].classList.remove('active');
-    }, 1000);
-  } catch(e) {
-    msg.textContent = 'エラーが発生しました: ' + e.message;
-    msg.style.color = '#E74C3C';
-  }
-}
-
-async function loadPosts() {
-  const container = document.getElementById('posts-container');
-  const loading = document.getElementById('posts-loading');
-  if (!supabaseClient) {
-    loading.textContent = 'ログインして投稿を見よう！';
-    return;
-  }
-  loading.style.display = 'block';
-  loading.textContent = '読み込み中...';
-  try {
-    const now = new Date().toISOString();
-    const { data: posts, error } = await supabaseClient
-      .from('posts').select('*')
-      .gt('expires_at', now)
-      .order('created_at', { ascending: false })
-      .limit(20);
-    if (error) throw error;
-    loading.style.display = 'none';
-    if (!posts || posts.length === 0) {
-      container.innerHTML = '<div class="no-posts"><div class="no-posts-icon">🌱</div><div style="font-size:14px;font-weight:500;margin-bottom:8px;">まだ投稿がありません</div><div style="font-size:13px;">最初の投稿をしてみよう！</div></div>';
-      return;
-    }
-    postsCache = posts;
-    const likesData = {};
-    const commentsData = {};
-    for (const post of posts) {
-      const { data: likes } = await supabaseClient.from('likes').select('user_id').eq('post_id', post.id);
-      likesData[post.id] = likes || [];
-      const { data: comments } = await supabaseClient.from('comments').select('*').eq('post_id', post.id).order('created_at');
-      commentsData[post.id] = comments || [];
-    }
-    container.innerHTML = posts.map(post => renderPost(post, likesData[post.id], commentsData[post.id])).join('');
-  } catch(e) {
-    loading.textContent = 'エラーが発生しました';
-    console.error(e);
-  }
-}
-
-function renderPost(post, likes, comments) {
-  const isLiked = currentUser && likes.some(l => l.user_id === currentUser.id);
-  const likeCount = likes.length;
-  const createdAt = new Date(post.created_at);
-  const expiresAt = new Date(post.expires_at);
-  const now = new Date();
-  const daysLeft = Math.ceil((expiresAt - now) / (1000 * 60 * 60 * 24));
-  const timeStr = formatTimeAgo(createdAt);
-  const userName = post.user_id.substring(0, 6) + '...';
-  const avatarEmojis = ['🌸','🌺','🌻','🌹','💐','🌷','🌼'];
-  const avatarEmoji = avatarEmojis[post.user_id.charCodeAt(0) % avatarEmojis.length];
-
-  const commentsHtml = comments.slice(-3).map(c => {
-    const cUser = c.user_id.substring(0, 6) + '...';
-    return '<div class="comment-item"><span class="comment-user">' + cUser + '</span>' + escapeHtml(c.content) + '</div>';
-  }).join('');
-
-  return '<div class="post-card" id="post-' + post.id + '">' +
-    '<div class="post-header">' +
-    '<div class="post-avatar">' + avatarEmoji + '</div>' +
-    '<div><div class="post-username">' + userName + '</div><div class="post-time">' + timeStr + '</div></div>' +
-    '<div class="post-expires">残り' + daysLeft + '日</div>' +
-    '</div>' +
-    (post.image_url ? '<img class="post-image" src="' + post.image_url + '" alt="投稿画像" loading="lazy">' :
-      '<div class="post-image-placeholder">🌸</div>') +
-    '<div class="post-actions">' +
-    '<button class="post-action-btn ' + (isLiked ? 'liked' : '') + '" onclick="toggleLike(\'' + post.id + '\', ' + isLiked + ')">' +
-    (isLiked ? '❤️' : '🤍') + ' <span id="like-count-' + post.id + '">' + likeCount + '</span>' +
-    '</button>' +
-    '<button class="post-action-btn" onclick="focusComment(\'' + post.id + '\')">💬 ' + comments.length + '</button>' +
-    (currentUser && post.user_id === currentUser.id ?
-      '<button class="post-action-btn" onclick="deletePost(\'' + post.id + '\')" style="margin-left:auto;color:#E74C3C;">🗑️</button>' : '') +
-    '</div>' +
-    (post.caption ? '<div class="post-caption">' + escapeHtml(post.caption) + '</div>' : '') +
-    '<div class="post-comments" id="comments-' + post.id + '">' + commentsHtml + '</div>' +
-    '<div class="comment-input-row">' +
-    '<input type="text" class="comment-input" id="comment-input-' + post.id + '" placeholder="コメントを追加...">' +
-    '<button class="comment-send-btn" onclick="addComment(\'' + post.id + '\')">送信</button>' +
-    '</div>' +
-    '</div>';
-}
-
-async function toggleLike(postId, isLiked) {
-  if (!supabaseClient || !currentUser) {
-    alert('ログインが必要です');
-    return;
-  }
-  try {
-    if (isLiked) {
-      await supabaseClient.from('likes').delete().eq('post_id', postId).eq('user_id', currentUser.id);
-    } else {
-      await supabaseClient.from('likes').insert({ post_id: postId, user_id: currentUser.id });
-    }
-    const countEl = document.getElementById('like-count-' + postId);
-    if (countEl) {
-      const current = parseInt(countEl.textContent);
-      countEl.textContent = isLiked ? current - 1 : current + 1;
-    }
-    const btn = document.querySelector('#post-' + postId + ' .post-action-btn');
-    if (btn) {
-      btn.classList.toggle('liked');
-      btn.innerHTML = (isLiked ? '🤍' : '❤️') + ' <span id="like-count-' + postId + '">' +
-        (document.getElementById('like-count-' + postId) ? document.getElementById('like-count-' + postId).textContent : '0') + '</span>';
-      btn.onclick = () => toggleLike(postId, !isLiked);
-    }
-  } catch(e) { console.error(e); }
-}
-
-async function addComment(postId) {
-  if (!supabaseClient || !currentUser) {
-    alert('ログインが必要です');
-    return;
-  }
-  const input = document.getElementById('comment-input-' + postId);
-  const content = input.value.trim();
-  if (!content) return;
-  try {
-    const { data, error } = await supabaseClient.from('comments').insert({
-      post_id: postId, user_id: currentUser.id, content
-    }).select().single();
-    if (error) throw error;
-    input.value = '';
-    const commentsEl = document.getElementById('comments-' + postId);
-    if (commentsEl) {
-      const userName = currentUser.id.substring(0, 6) + '...';
-      commentsEl.innerHTML += '<div class="comment-item"><span class="comment-user">' + userName + '</span>' + escapeHtml(content) + '</div>';
-    }
-  } catch(e) { console.error(e); }
-}
-
-function focusComment(postId) {
-  const input = document.getElementById('comment-input-' + postId);
-  if (input) input.focus();
-}
-
-async function deletePost(postId) {
-  if (!confirm('この投稿を削除しますか？')) return;
-  try {
-    await supabaseClient.from('posts').delete().eq('id', postId);
-    const postEl = document.getElementById('post-' + postId);
-    if (postEl) postEl.remove();
-  } catch(e) { console.error(e); }
-}
-
-function formatTimeAgo(date) {
-  const now = new Date();
-  const diff = Math.floor((now - date) / 1000);
-  if (diff < 60) return 'たった今';
-  if (diff < 3600) return Math.floor(diff / 60) + '分前';
-  if (diff < 86400) return Math.floor(diff / 3600) + '時間前';
-  return Math.floor(diff / 86400) + '日前';
-}
-
-// ========== シェア画像生成（1080×1350 インスタ・スレッズ用） ==========
-
-// 共通：canvasをPNG画像としてダウンロード
-async function renderShareCanvas(filename) {
-  const canvas = document.getElementById('share-canvas');
-  const wrap = document.getElementById('share-canvas-wrap');
-  wrap.style.left = '0';
-  wrap.style.top = '0';
-  wrap.style.zIndex = '9999';
-  wrap.style.position = 'fixed';
-  await new Promise(r => setTimeout(r, 100));
-  try {
-    const c = await html2canvas(canvas, {
-      scale: 1,
-      useCORS: true,
-      allowTaint: true,
-      width: 1080,
-      height: 1350,
-      backgroundColor: null,
-      logging: false
-    });
-    const dataUrl = c.toDataURL('image/png');
-    // PCもスマホも共通：aタグでダウンロード
-    const link = document.createElement('a');
-    link.download = filename;
-    link.href = dataUrl;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    setTimeout(() => {
-      alert('📸 画像を保存しました！\nダウンロードフォルダに保存されています。\nギャラリーアプリの「ダウンロード」フォルダをご確認ください📁');
-    }, 500);
-  } catch(e) {
-    console.error(e);
-    alert('画像の生成に失敗しました。もう一度お試しください。');
-  } finally {
-    wrap.style.left = '-9999px';
-    wrap.style.top = '0';
-    wrap.style.zIndex = '-1';
-    wrap.style.position = 'fixed';
-  }
-}
-
-// 月次レポートの画像を生成
-function saveReportAsImage() {
-  const now = new Date();
-  const monthStr = now.getFullYear() + '年' + (now.getMonth()+1) + '月';
-  const avgTodo = document.getElementById('report-avg-todo').textContent;
-  const streak = document.getElementById('report-streak').textContent;
-  const weightDiff = document.getElementById('report-weight-diff').textContent;
-  const recordDays = document.getElementById('report-record-days').textContent;
-  const comment = document.getElementById('report-comment').value;
-  const habits = state.selectedHabits;
-  const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-  const days = [];
-  for (let d = new Date(firstDay); d <= now; d.setDate(d.getDate()+1)) {
-    days.push(formatDate(new Date(d)));
-  }
-
-  // 習慣達成率を計算
-  const habitStats = habits.slice(0, 5).map(h => {
-    const doneDays = days.filter(k => todoData[k] && todoData[k][h]).length;
-    const pct = days.length > 0 ? Math.round(doneDays / days.length * 100) : 0;
-    return { name: h, pct };
+function sendGroupMessage(tab) {
+  const input = document.getElementById('msg-input-' + tab);
+  const msg = input.value.trim();
+  if (!msg) return;
+  groupMessages.push({
+    date: new Date().toISOString(),
+    name: localStorage.getItem('bloom-profile-username') || 'あなた',
+    text: msg
   });
-
-  const body = document.getElementById('share-canvas-body');
-  body.innerHTML = `
-    <div class="share-canvas-title">月次レポート<div class="share-canvas-month">📅 ${monthStr}</div></div>
-
-    <div class="share-stat-grid">
-      <div class="share-stat-box">
-        <div class="share-stat-num" style="color:#E75480;">${avgTodo}</div>
-        <div class="share-stat-label">平均達成率</div>
-      </div>
-      <div class="share-stat-box">
-        <div class="share-stat-num" style="color:#F59E0B;">${streak}</div>
-        <div class="share-stat-label">最長継続</div>
-      </div>
-      <div class="share-stat-box">
-        <div class="share-stat-num" style="color:#8B5CF6;">${weightDiff}</div>
-        <div class="share-stat-label">体重変化</div>
-      </div>
-    </div>
-
-    ${habitStats.length > 0 ? `
-    <div class="share-habit-list">
-      <div class="share-habit-title">🌿 習慣達成率</div>
-      ${habitStats.map(h => `
-        <div class="share-habit-item">
-          <span style="font-size:16px;flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">${h.name}</span>
-          <div class="share-habit-bar"><div class="share-habit-bar-fill" style="width:${h.pct}%;background:${h.pct>=80?'#7DD4A8':h.pct>=50?'#f0a0b8':'#F87171'};"></div></div>
-          <span class="share-habit-pct" style="color:${h.pct>=80?'#2DAA71':h.pct>=50?'#E75480':'#EF4444'};">${h.pct}%</span>
-        </div>
-      `).join('')}
-    </div>` : ''}
-
-    ${comment ? `
-    <div style="background:white;border-radius:20px;padding:28px 32px;box-shadow:0 4px 24px rgba(200,100,130,0.08);">
-      <div style="font-size:18px;font-weight:600;color:#c07090;margin-bottom:12px;">💬 今月のひとこと</div>
-      <div style="font-size:18px;color:#5a3848;line-height:1.7;">${comment.substring(0,60)}${comment.length>60?'…':''}</div>
-    </div>` : ''}
-  `;
-
-  document.getElementById('share-footer-tag').textContent = '#BloomJournal #月次レポート #習慣記録';
-  renderShareCanvas('bloom-journal-report-' + now.getFullYear() + (now.getMonth()+1) + '.png');
+  input.value = '';
+  updateGroupChat(tab);
+  saveToStorage();
 }
 
-// 習慣TODOの画像を生成
-function saveTodoAsImage() {
-  const dateStr = formatDateLabel(todoDate);
-  const habits = state.selectedHabits;
-  const dateKey = formatDate(todoDate);
-  const dayData = todoData[dateKey] || {};
-  const doneCount = habits.filter(h => dayData[h]).length;
-  const pct = habits.length > 0 ? Math.round(doneCount / habits.length * 100) : 0;
-  const flowerEmojis = ['🌱','🌿','🌸','🌺','🌻','🌹','💐'];
-  const flowerIdx = Math.min(Math.floor(streakCount / 5), flowerEmojis.length - 1);
-  const flower = flowerEmojis[flowerIdx];
-  const doneHabits = habits.filter(h => !!dayData[h]);
-  const notDoneHabits = habits.filter(h => !dayData[h]);
-
-  const body = document.getElementById('share-canvas-body');
-  body.innerHTML = `
-    <div style="text-align:center;">
-      <div style="font-family:'Noto Serif JP',serif;font-size:52px;font-weight:600;color:#3a2030;line-height:1.2;">習慣チェック</div>
-      <div style="font-size:24px;color:#c07090;font-weight:500;margin-top:4px;">📅 ${dateStr}</div>
-    </div>
-
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
-      <div style="background:white;border-radius:18px;padding:22px 12px;text-align:center;box-shadow:0 4px 20px rgba(200,100,130,0.1);">
-        <div style="font-size:60px;font-weight:700;color:#E75480;line-height:1;">${pct}%</div>
-        <div style="font-size:17px;color:#a88898;margin-top:6px;">達成率</div>
-      </div>
-      <div style="background:white;border-radius:18px;padding:22px 12px;text-align:center;box-shadow:0 4px 20px rgba(200,100,130,0.1);">
-        <div style="font-size:60px;font-weight:700;color:#F59E0B;line-height:1;">${doneCount}/${habits.length}</div>
-        <div style="font-size:17px;color:#a88898;margin-top:6px;">完了 / 全体</div>
-      </div>
-      <div style="background:white;border-radius:18px;padding:22px 12px;text-align:center;box-shadow:0 4px 20px rgba(200,100,130,0.1);">
-        <div style="font-size:60px;font-weight:700;color:#2DAA71;line-height:1;">${streakCount}日</div>
-        <div style="font-size:17px;color:#a88898;margin-top:6px;">継続中</div>
-      </div>
-    </div>
-
-    ${doneHabits.length > 0 ? `
-    <div style="background:white;border-radius:18px;padding:20px 28px;box-shadow:0 4px 20px rgba(200,100,130,0.08);">
-      <div style="font-size:24px;font-weight:600;color:#2DAA71;margin-bottom:10px;text-align:center;">✅ 達成した習慣</div>
-      ${doneHabits.slice(0,6).map(h => `
-        <div style="text-align:center;font-size:22px;font-weight:600;color:#2DAA71;padding:8px 0;border-bottom:1px solid #f0faf5;">${h}</div>
-      `).join('')}
-    </div>` : ''}
-
-    ${notDoneHabits.length > 0 ? `
-    <div style="background:white;border-radius:18px;padding:20px 28px;box-shadow:0 4px 20px rgba(200,100,130,0.08);">
-      <div style="font-size:24px;font-weight:600;color:#c07090;margin-bottom:10px;text-align:center;">🌱 明日チャレンジ</div>
-      ${notDoneHabits.slice(0,4).map(h => `
-        <div style="text-align:center;font-size:20px;color:#c0a0b0;padding:7px 0;border-bottom:1px solid #fdf0f5;">${h}</div>
-      `).join('')}
-    </div>` : ''}
-
-    <div style="text-align:center;background:white;border-radius:18px;padding:20px;box-shadow:0 4px 20px rgba(200,100,130,0.08);">
-      <div style="font-size:72px;margin-bottom:6px;">${flower}</div>
-      <div style="font-size:24px;color:#c07090;font-weight:600;">${streakCount}日連続達成中 🔥</div>
-      ${state.name ? `<div style="font-size:20px;color:#a88898;margin-top:4px;">${state.name}さん、継続中！</div>` : ''}
-    </div>
-  `;
-
-  document.getElementById('share-footer-tag').textContent = '#BloomJournal #習慣記録 #ダイエット #体質改善';
-  renderShareCanvas('bloom-journal-todo-' + formatDate(todoDate) + '.png');
+function updateGroupChat(tab) {
+  const chatArea = document.getElementById('group-chat-' + tab);
+  if (!chatArea) return;
+  chatArea.innerHTML = groupMessages.slice(-10).map(m => {
+    const isAdmin = m.name === '管理者' || m.name === 'のどか';
+    return '<div class="chat-msg' + (isAdmin ? ' admin' : '') + '">' +
+      '<div class="chat-name">' + m.name + '</div>' +
+      '<div class="chat-text">' + escapeHtml(m.text) + '</div>' +
+      '</div>';
+  }).join('');
+  chatArea.scrollTop = chatArea.scrollHeight;
 }
 
 function escapeHtml(str) {
@@ -2660,7 +1622,7 @@ function escapeHtml(str) {
   return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-
 </script>
+
 </body>
 </html>
