@@ -7,7 +7,6 @@
 <meta name="description" content="美容健康ダイエット習慣サポートアプリ。目標設定・習慣TODO管理・体調記録。">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 :root {
   --pink-light: #FFF0F3; --pink-mid: #FBBDD0; --pink-strong: #E75480; --pink-dark: #C0395D;
@@ -19,105 +18,56 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Noto Sans JP', sans-serif; background: var(--cream); color: var(--text-dark); min-height: 100vh; }
 
-/* ========== 認証画面 ========== */
-.auth-overlay {
-  position: fixed; inset: 0; background: rgba(253,250,246,0.97);
-  z-index: 300; display: flex; align-items: center; justify-content: center;
-  padding: 20px;
-}
-.auth-card {
-  background: white; border-radius: 20px; padding: 40px 32px;
-  width: 100%; max-width: 420px;
-  box-shadow: 0 8px 48px rgba(200,100,130,0.15);
-  text-align: center;
-}
+.auth-overlay { position: fixed; inset: 0; background: rgba(253,250,246,0.97); z-index: 300; display: flex; align-items: center; justify-content: center; padding: 20px; }
+.auth-card { background: white; border-radius: 20px; padding: 40px 32px; width: 100%; max-width: 420px; box-shadow: 0 8px 48px rgba(200,100,130,0.15); text-align: center; }
 .auth-logo { font-family:'Noto Serif JP',serif; font-size:28px; font-weight:600; color:#c07090; margin-bottom:6px; }
-.auth-tagline { font-size:12px; color:#c0a0b0; margin-bottom:28px; }
-.auth-title { font-size:18px; font-weight:600; color:#3a2030; margin-bottom:6px; }
-.auth-sub { font-size:13px; color:#9a7080; margin-bottom:24px; line-height:1.7; }
 .auth-tabs { display:flex; gap:0; margin-bottom:24px; border-radius:10px; overflow:hidden; border:1.5px solid #F0D8E2; }
-.auth-tab { flex:1; padding:10px; border:none; background:#FFF0F3; font-size:14px; cursor:pointer; transition:all .2s; font-family:'Noto Sans JP',sans-serif; }
+.auth-tab { flex:1; padding:10px; border:none; background:#FFF0F3; font-size:14px; cursor:pointer; font-family:'Noto Sans JP',sans-serif; }
 .auth-tab.active { background:var(--pink-strong); color:white; font-weight:500; }
 .auth-form { display:flex; flex-direction:column; gap:12px; }
 .auth-input { padding:14px 16px; border:1.5px solid #F0D8E2; border-radius:10px; font-size:15px; font-family:'Noto Sans JP',sans-serif; outline:none; background:#FFF8FA; transition:all .2s; }
 .auth-input:focus { border-color:var(--pink-strong); background:white; }
 .auth-btn { padding:16px; background:linear-gradient(135deg,#f0a0b8,#d4b8e8); color:white; border:none; border-radius:10px; font-size:16px; font-weight:700; cursor:pointer; font-family:'Noto Sans JP',sans-serif; transition:all .2s; margin-top:4px; }
-.auth-btn:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(200,140,180,0.3); }
-.auth-msg { font-size:13px; margin-top:12px; padding:10px; border-radius:8px; }
-.auth-msg.error { background:#FFF0F0; color:#E74C3C; }
-.auth-msg.success { background:#F0FAF5; color:#2DAA71; }
-.auth-skip { font-size:12px; color:#c0a0b0; margin-top:16px; cursor:pointer; text-decoration:underline; }
 
-/* ========== LP ========== */
 .lp-wrap { background: #fffaf8; }
-.lp-hero {
-  min-height: 100vh; background: linear-gradient(160deg,#fff5f8 0%,#fef0f8 40%,#f5f0ff 70%,#f0f8ff 100%);
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  text-align: center; padding: 60px 24px 80px; position: relative; overflow: hidden;
-}
-.pc { position: absolute; border-radius: 50%; pointer-events: none; }
-.pc1 { width:380px;height:380px;background:radial-gradient(circle at 40% 40%,rgba(255,210,220,0.55),rgba(255,230,200,0.25) 60%,transparent 80%);top:-120px;left:-100px;animation:floatY 7s ease-in-out infinite; }
-.pc2 { width:240px;height:240px;background:radial-gradient(circle,rgba(255,190,210,0.4),transparent 70%);top:-30px;left:10px;animation:floatY 9s ease-in-out infinite reverse; }
-.pc3 { width:200px;height:200px;background:radial-gradient(circle,rgba(210,190,240,0.4),transparent 70%);bottom:80px;left:-40px;animation:floatY 6s ease-in-out infinite; }
-.pc4 { width:280px;height:280px;background:radial-gradient(circle at 60% 60%,rgba(255,230,180,0.3),rgba(230,200,240,0.25) 60%,transparent 80%);bottom:-60px;left:30px;animation:floatY 8s ease-in-out infinite reverse; }
-.pc5 { width:320px;height:320px;background:radial-gradient(circle,rgba(255,200,220,0.35),transparent 70%);top:5%;right:-90px;animation:floatY 10s ease-in-out infinite; }
-.pc6 { width:180px;height:180px;background:radial-gradient(circle,rgba(220,210,255,0.3),transparent 70%);top:45%;right:10px;animation:floatY 7s ease-in-out 1s infinite reverse; }
-.pk { position:absolute;pointer-events:none;color:rgba(212,175,55,0.45);font-size:18px;animation:twinkle 4s ease-in-out infinite; }
-.pk1{top:18%;left:8%;} .pk2{top:28%;right:12%;animation-delay:1s;font-size:13px;}
-.pk3{bottom:28%;left:18%;animation-delay:2s;font-size:15px;} .pk4{top:58%;right:8%;animation-delay:.5s;}
-@keyframes floatY{0%,100%{transform:translateY(0) scale(1);}50%{transform:translateY(-16px) scale(1.02);}}
-@keyframes twinkle{0%,100%{opacity:0.3;transform:scale(1) rotate(0);}50%{opacity:0.8;transform:scale(1.3) rotate(15deg);}}
-.lp-logo { font-family:'Noto Serif JP',serif;font-size:clamp(36px,9vw,64px);font-weight:600;color:#c07090;line-height:1.2;margin-bottom:10px;position:relative;z-index:2;letter-spacing:.04em; }
-.lp-flower { font-size:26px;display:block;margin-bottom:20px;position:relative;z-index:2; }
-.lp-tagline { font-size:12px;color:#c0a0b0;letter-spacing:.18em;margin-bottom:40px;position:relative;z-index:2;font-style:italic; }
-.lp-sub { font-size:15px;color:#8a6070;line-height:1.9;margin-bottom:52px;position:relative;z-index:2;max-width:400px; }
-.btn-start { display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,#f0a0b8 0%,#d4b8e8 100%);color:white;border:none;border-radius:50px;padding:18px 52px;font-family:'Noto Sans JP',sans-serif;font-size:17px;font-weight:700;cursor:pointer;box-shadow:0 8px 32px rgba(200,140,180,0.3);transition:all .3s;position:relative;z-index:2;margin-bottom:16px;letter-spacing:.04em; }
-.btn-start:hover { transform:translateY(-3px);box-shadow:0 14px 40px rgba(200,140,180,0.42); }
-.top-note { font-size:12px;color:#c0a0b0;position:relative;z-index:2; }
+.lp-hero { min-height: 100vh; background: linear-gradient(160deg,#fff5f8 0%,#fef0f8 40%,#f5f0ff 70%,#f0f8ff 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 60px 24px 80px; position: relative; }
+.lp-logo { font-family:'Noto Serif JP',serif;font-size:clamp(36px,9vw,64px);font-weight:600;color:#c07090;line-height:1.2;margin-bottom:10px;letter-spacing:.04em; }
+.lp-flower { font-size:26px;display:block;margin-bottom:20px; }
+.lp-tagline { font-size:12px;color:#c0a0b0;letter-spacing:.18em;margin-bottom:40px;font-style:italic; }
+.lp-sub { font-size:15px;color:#8a6070;line-height:1.9;margin-bottom:52px;max-width:400px; }
+.btn-start { display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,#f0a0b8 0%,#d4b8e8 100%);color:white;border:none;border-radius:50px;padding:18px 52px;font-family:'Noto Sans JP',sans-serif;font-size:17px;font-weight:700;cursor:pointer;box-shadow:0 8px 32px rgba(200,140,180,0.3);transition:all .3s;margin-bottom:16px;letter-spacing:.04em; }
 
-/* ========== アプリ本体 ========== */
 .app-body { display:none; }
 .app-body.show { display:block; }
 
-/* ナビゲーション */
 .app-nav { background:white;border-bottom:1px solid #F5E0EA;position:sticky;top:0;z-index:100; }
 .nav-header { padding:12px 20px;display:flex;align-items:center;gap:10px; }
 .nav-logo { font-family:'Noto Serif JP',serif;font-size:16px;font-weight:600;color:var(--pink-dark); }
 .nav-tabs { display:flex;overflow-x:auto;padding:0 12px 0;gap:4px;scrollbar-width:none; }
-.nav-tabs::-webkit-scrollbar { display:none; }
 .nav-tab { flex-shrink:0;padding:10px 16px;border:none;background:none;font-family:'Noto Sans JP',sans-serif;font-size:13px;color:var(--text-light);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap; }
 .nav-tab.active { color:var(--pink-strong);border-bottom-color:var(--pink-strong);font-weight:500; }
 
-/* ページ */
 .page { display:none;max-width:640px;margin:0 auto;padding:24px 16px 80px; }
 .page.active { display:block;animation:fadeIn .3s ease; }
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
 
-/* カード */
 .card { background:white;border-radius:var(--radius);box-shadow:var(--shadow);padding:24px;margin-bottom:16px; }
 .card-title { font-family:'Noto Serif JP',serif;font-size:18px;font-weight:600;color:var(--text-dark);margin-bottom:16px;display:flex;align-items:center;gap:8px; }
 
-/* フォーム */
 .form-group { margin-bottom:18px; }
 .form-label { display:block;font-size:13px;font-weight:500;color:var(--text-mid);margin-bottom:6px; }
 input[type="text"],input[type="number"],input[type="date"],select,textarea {
   width:100%;padding:12px 14px;border:1.5px solid #F0D8E2;border-radius:var(--radius-sm);
   font-family:'Noto Sans JP',sans-serif;font-size:14px;color:var(--text-dark);
-  background:var(--pink-light);transition:all .2s;outline:none;appearance:none;
+  background:var(--pink-light);transition:all .2s;outline:none;
 }
 input:focus,select:focus,textarea:focus { border-color:var(--pink-strong);background:white; }
 textarea { resize:vertical;min-height:80px; }
 
-/* ボタン */
 .btn-primary { width:100%;padding:14px;background:var(--pink-strong);color:white;border:none;border-radius:var(--radius-sm);font-family:'Noto Sans JP',sans-serif;font-size:15px;font-weight:500;cursor:pointer;transition:all .2s;margin-top:8px; }
 .btn-primary:hover { background:var(--pink-dark);transform:translateY(-1px); }
 .btn-secondary { width:100%;padding:12px;background:transparent;color:var(--text-mid);border:1.5px solid #E8D0D8;border-radius:var(--radius-sm);font-family:'Noto Sans JP',sans-serif;font-size:14px;cursor:pointer;transition:all .2s;margin-top:8px; }
-.btn-secondary:hover { background:var(--pink-light); }
-.btn-sm { padding:8px 16px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;border:none; }
-.btn-sm-pink { background:var(--pink-strong);color:white; }
-.btn-sm-danger { background:#FF6B6B;color:white; }
 
-/* ========== グループ機能（Phase 3） ========== */
 .group-tabs { display:flex;gap:0;margin:0 16px 16px;border-radius:10px;overflow:hidden;border:1.5px solid #F0D8E2;background:#FFF0F3; }
 .group-tab { flex:1;padding:10px;border:none;background:transparent;font-size:12px;cursor:pointer;font-family:'Noto Sans JP',sans-serif;transition:all .2s;color:var(--text-mid); }
 .group-tab.active { background:var(--pink-strong);color:white;font-weight:500; }
@@ -125,36 +75,29 @@ textarea { resize:vertical;min-height:80px; }
 .group-screen { display:none;padding:16px; }
 .group-screen.active { display:block; }
 
-/* グループホーム */
-.group-notice { background:#FBEAF0;border:0.5px solid #F4C0D1;border-radius:10px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start;margin-bottom:14px;position:relative; }
+.group-notice { background:#FBEAF0;border:0.5px solid #F4C0D1;border-radius:10px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start;margin-bottom:14px; }
 .group-notice-icon { flex-shrink:0;width:28px;height:28px;border-radius:50%;background:#ED93B1;display:flex;align-items:center;justify-content:center;font-size:14px; }
 .group-notice-text { font-size:12px;color:#4B1528;line-height:1.5;flex:1; }
-.notice-edit-btn { position:absolute;top:8px;right:8px;background:none;border:none;font-size:16px;cursor:pointer;color:#ED93B1; }
 
 .campaign-card { background:white;border:0.5px solid #F4C0D1;border-radius:12px;overflow:hidden;margin-bottom:14px; }
-.campaign-header { background:#FBF4F7;padding:12px 14px;border-bottom:0.5px solid #F4C0D1;display:flex;justify-content:space-between;align-items:flex-start; }
-.campaign-info { flex:1; }
+.campaign-header { background:#FBF4F7;padding:12px 14px;border-bottom:0.5px solid #F4C0D1; }
 .campaign-name { font-size:14px;font-weight:600;color:#993556; }
 .campaign-progress { height:7px;background:#fff;border-radius:99px;overflow:hidden;margin:6px 0;border:0.5px solid #F4C0D1; }
 .campaign-progress-fill { height:100%;background:#ED93B1;border-radius:99px;transition:width .5s; }
 .campaign-goal { font-size:10px;color:var(--text-light);margin-top:4px; }
-.campaign-actions { display:flex;gap:6px; }
-.campaign-actions button { padding:4px 10px;border-radius:6px;border:none;font-size:11px;cursor:pointer; }
 
 .garden-grid { display:grid;grid-template-columns:repeat(2,1fr);gap:10px; }
-.garden-item { background:var(--pink-light);border:0.5px solid #F4C0D1;border-radius:10px;padding:10px;text-align:center;cursor:pointer;position:relative;transition:all .2s; }
+.garden-item { background:var(--pink-light);border:0.5px solid #F4C0D1;border-radius:10px;padding:10px;text-align:center;cursor:pointer;transition:all .2s; }
 .garden-item:hover { transform:translateY(-2px);box-shadow:0 4px 12px rgba(200,140,180,0.15); }
 .garden-name { font-size:10px;color:var(--text-primary);margin-bottom:4px;font-weight:500; }
-.garden-flower { display:flex;justify-content:center;margin:4px 0;position:relative;font-size:44px; }
+.garden-flower { display:flex;justify-content:center;margin:4px 0;font-size:44px; }
 .garden-stats-mini { font-size:8px;color:var(--text-light);margin-top:4px;display:flex;justify-content:center;gap:4px; }
 
-/* グループ報告 */
 .report-form { background:white;border-radius:10px;padding:14px;border:0.5px solid #F0D8E2; }
 .achievement-btns { display:flex;gap:8px;margin-bottom:10px; }
 .achievement-btn { flex:1;padding:10px 0;border-radius:8px;border:0.5px solid #ED93B1;background:transparent;font-size:12px;color:#993556;cursor:pointer;transition:all .2s;font-family:'Noto Sans JP',sans-serif; }
 .achievement-btn.selected { background:#FBEAF0;border-color:#ED93B1;font-weight:500; }
 
-/* わたしの花畑 */
 .personal-garden { position:relative;height:160px;background:#FBF4F7;border:0.5px solid #F4C0D1;border-radius:12px;overflow:hidden;margin:10px 0; }
 .garden-ground { position:absolute;left:0;right:0;bottom:0;height:40px;background:#DCEFD6; }
 .garden-stats { display:flex;justify-content:space-around;font-size:11px;color:var(--text-secondary);margin:10px 0;text-align:center; }
@@ -166,39 +109,13 @@ textarea { resize:vertical;min-height:80px; }
 .msg-send-btn { background:var(--pink-strong);color:white;border:none;border-radius:8px;padding:8px 14px;font-size:12px;cursor:pointer;font-family:'Noto Sans JP',sans-serif; }
 
 .chat-area { background:var(--pink-light);border-radius:10px;padding:10px;height:200px;overflow-y:auto;margin:10px 0;display:flex;flex-direction:column;gap:8px; }
-.chat-msg { display:flex;gap:6px;align-items:flex-start;position:relative; }
+.chat-msg { display:flex;gap:6px;align-items:flex-start; }
 .chat-name { font-size:10px;color:var(--text-mid);font-weight:500;min-width:40px; }
-.chat-text { font-size:12px;background:white;border-radius:8px;padding:6px 8px;border:0.5px solid #F4C0D1;line-height:1.4;flex:1; }
+.chat-text { font-size:12px;background:white;border-radius:8px;padding:6px 8px;border:0.5px solid #F4C0D1;line-height:1.4; }
 .chat-msg.admin .chat-text { background:#FBEAF0;border-color:#ED93B1; }
-.chat-delete-btn { background:none;border:none;color:#999;cursor:pointer;font-size:12px;opacity:0;transition:opacity .2s; }
-.chat-msg:hover .chat-delete-btn { opacity:1; }
+
 .admin-badge { display:inline-block;background:#ED93B1;color:white;font-size:8px;padding:2px 6px;border-radius:4px;margin-left:4px; }
 
-/* ========== 管理者画面 ========== */
-.admin-notice { background:#FFF3CD;border:1px solid #FFE69C;border-radius:10px;padding:12px;margin-bottom:16px; }
-.admin-notice-title { font-size:12px;font-weight:600;color:#856404; }
-.admin-notice-desc { font-size:11px;color:#856404;margin-top:4px; }
-
-.campaign-list { display:flex;flex-direction:column;gap:10px; }
-.campaign-list-item { background:white;border:0.5px solid #F4C0D1;border-radius:10px;padding:12px 14px;cursor:pointer;transition:all .2s; }
-.campaign-list-item:hover { border-color:#ED93B1;box-shadow:0 2px 8px rgba(237,147,177,0.2); }
-.campaign-list-item.active { background:#FBEAF0;border-color:#ED93B1; }
-.campaign-list-name { font-size:13px;font-weight:600;color:#993556; }
-.campaign-list-info { font-size:11px;color:var(--text-light);margin-top:4px; }
-
-.admin-form-section { margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid #F0D8E2; }
-.admin-form-section:last-child { border:none; }
-.admin-section-title { font-size:14px;font-weight:600;color:var(--text-dark);margin-bottom:12px; }
-
-.delete-confirm-modal { display:none;position:fixed;inset:0;background:rgba(0,0,0,0.3);z-index:200;align-items:center;justify-content:center;padding:20px; }
-.delete-confirm-modal.show { display:flex; }
-.delete-confirm-content { background:white;border-radius:var(--radius);padding:24px;max-width:320px;text-align:center; }
-.delete-confirm-content h3 { font-size:16px;font-weight:600;margin-bottom:8px; }
-.delete-confirm-content p { font-size:13px;color:var(--text-mid);margin-bottom:20px; }
-.delete-confirm-buttons { display:flex;gap:10px; }
-.delete-confirm-buttons button { flex:1;padding:10px;border:none;border-radius:8px;cursor:pointer;font-family:'Noto Sans JP',sans-serif;font-weight:500; }
-
-/* モーダル */
 .modal-overlay { display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:200;align-items:center;justify-content:center;padding:20px; }
 .modal-overlay.show { display:flex; }
 .modal-content { background:white;border-radius:var(--radius);width:100%;max-width:480px;max-height:90vh;overflow-y:auto;padding:0;box-shadow:0 20px 60px rgba(0,0,0,0.3); }
@@ -216,7 +133,6 @@ textarea { resize:vertical;min-height:80px; }
 .flower-stat-label { font-size:11px;color:var(--text-light); }
 
 .like-btn { width:100%;padding:12px;background:linear-gradient(135deg,#FF6B9D,#FFA8C6);color:white;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:16px;transition:all .2s; }
-.like-btn:hover { transform:scale(1.02);box-shadow:0 6px 20px rgba(255,107,157,0.3); }
 
 .comments-section { margin-top:16px; }
 .comments-title { font-size:13px;font-weight:600;color:var(--text-dark);margin-bottom:12px; }
@@ -236,271 +152,190 @@ textarea { resize:vertical;min-height:80px; }
 
 .footer { text-align:center;padding:24px 16px;font-size:12px;color:var(--text-light);border-top:1px solid #F5E0EA; }
 
-/* ========== 既存スタイル ========== */
 .step-card { background:white;border-radius:var(--radius);box-shadow:var(--shadow);padding:28px 24px;margin-bottom:20px;display:none;animation:fadeIn .4s ease; }
 .step-card.active { display:block; }
-.step-num { font-size:11px;color:var(--pink-strong);font-weight:500;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px; }
+.step-num { font-size:11px;color:var(--pink-strong);font-weight:500;text-transform:uppercase;margin-bottom:6px; }
 .step-title { font-family:'Noto Serif JP',serif;font-size:20px;font-weight:600;margin-bottom:6px; }
-.step-desc { font-size:13px;color:var(--text-light);margin-bottom:20px;line-height:1.7; }
-.hero-section { background:white;padding:36px 20px 28px;text-align:center;border-bottom:1px solid #F5E0EA;position:relative;overflow:hidden; }
+.hero-section { background:white;padding:36px 20px 28px;text-align:center;border-bottom:1px solid #F5E0EA; }
 .hero-badge { display:inline-block;background:var(--pink-light);color:var(--pink-strong);font-size:12px;padding:5px 14px;border-radius:20px;margin-bottom:16px;border:1px solid var(--pink-mid); }
-.hero-section h1 { font-family:'Noto Serif JP',serif;font-size:24px;font-weight:600;line-height:1.5;margin-bottom:12px; }
-.hero-section h1 span { color:var(--pink-strong); }
 .progress-wrap { margin-bottom:20px; }
 .progress-text { font-size:12px;color:var(--text-light);margin-bottom:4px;display:flex;justify-content:space-between; }
 .progress-bar-wrap { height:8px;background:#F0D8E2;border-radius:4px;overflow:hidden;margin:8px 0; }
 .progress-bar-fill { height:100%;border-radius:4px;background:linear-gradient(90deg,var(--pink-strong),var(--purple-mid));transition:width .5s ease; }
-.stat-card { background:white;border-radius:var(--radius-sm);padding:16px 12px;text-align:center;box-shadow:var(--shadow);border:1px solid #F5E0EA; }
-.stat-num { font-size:24px;font-weight:700;color:var(--pink-strong); }
-.stat-label { font-size:11px;color:var(--text-light);margin-top:4px; }
-.stats-row { display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px; }
-.result-hero { background:linear-gradient(135deg,var(--pink-strong) 0%,#FF8FAB 100%);border-radius:var(--radius);padding:28px 20px;text-align:center;color:white;margin-bottom:20px; }
-.result-stats { display:flex;justify-content:center;gap:24px;margin-top:16px;flex-wrap:wrap; }
-.result-stat-num { font-size:26px;font-weight:700; }
-.result-stat-label { font-size:11px;opacity:.8;margin-top:2px; }
-.goal-item { display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #FBF0F4; }
-.goal-item:last-child { border:none; }
-.goal-dot { width:8px;height:8px;border-radius:50%;background:var(--pink-strong);margin-top:6px;flex-shrink:0; }
-.goal-text { font-size:14px;line-height:1.6; }
-.goal-sub { font-size:12px;color:var(--text-light);margin-top:2px; }
-.habit-result-grid { display:grid;grid-template-columns:1fr 1fr;gap:8px; }
-.habit-result-item { background:var(--green-light);border:1.5px solid var(--green-mid);border-radius:var(--radius-sm);padding:12px;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500; }
 
-.date-header { display:flex;align-items:center;justify-content:space-between;margin-bottom:16px; }
-.date-nav { background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-mid);padding:4px 8px; }
-.date-label { font-size:15px;font-weight:500;color:var(--text-dark); }
+.admin-section { background:#FFF3CD;border:1px solid #FFE69C;border-radius:10px;padding:16px;margin-bottom:16px;display:none; }
+.admin-section.show { display:block; }
+.admin-title { font-size:14px;font-weight:600;color:#856404;margin-bottom:12px; }
 
-.todo-item { display:flex;align-items:center;gap:12px;padding:14px 16px;border:1.5px solid #F0D8E2;border-radius:var(--radius-sm);margin-bottom:8px;cursor:pointer;transition:all .2s;background:var(--pink-light);user-select:none; }
-.todo-item:hover { border-color:var(--pink-strong);background:white; }
-.todo-item.done { background:#F0FAF5;border-color:var(--green-mid); }
-.todo-check { width:22px;height:22px;border:2px solid #D4B0C0;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all .2s; }
-.todo-item.done .todo-check { background:var(--green-strong);border-color:var(--green-strong);color:white; }
-.todo-text { font-size:14px;flex:1; }
-.todo-item.done .todo-text { text-decoration:line-through;color:var(--text-light); }
-
-.radio-group { display:flex;flex-direction:column;gap:8px; }
-.radio-item { display:flex;align-items:center;gap:12px;padding:12px 14px;border:1.5px solid #F0D8E2;border-radius:var(--radius-sm);cursor:pointer;transition:all .2s;background:var(--pink-light); }
-.radio-item:hover,.radio-item.selected { border-color:var(--pink-strong);background:white; }
-.radio-item input { display:none; }
-.radio-dot { width:16px;height:16px;border:2px solid #D4B0C0;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center; }
-.radio-item.selected .radio-dot { border-color:var(--pink-strong);background:var(--pink-strong); }
-.radio-item.selected .radio-dot::after { content:'';width:5px;height:5px;border-radius:50%;background:white; }
-.radio-label { font-size:14px;flex:1; }
-
-.loading-overlay { display:none;position:fixed;inset:0;background:rgba(253,250,246,0.9);z-index:200;align-items:center;justify-content:center;flex-direction:column;gap:16px; }
-.loading-overlay.show { display:flex; }
-.loading-spinner { width:40px;height:40px;border:3px solid #F0D8E2;border-top-color:var(--pink-strong);border-radius:50%;animation:spin .8s linear infinite; }
-@keyframes spin{to{transform:rotate(360deg);}}
-
-input[type="number"]{-moz-appearance:textfield;}
-input[type="number"]::-webkit-inner-spin-button{-webkit-appearance:none;}
-input[type="number"]::-moz-inner-spin-button,input[type="number"]::-moz-outer-spin-button { -moz-appearance: none; }
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
 
 </style>
 </head>
 <body>
 
+<!-- ========== LPトップページ ========== -->
+<div id="top-page" class="lp-wrap">
+  <section class="lp-hero">
+    <div class="lp-logo">Bloom Journal</div>
+    <span class="lp-flower">🌸</span>
+    <div class="lp-tagline">美容健康ダイエット習慣サポート</div>
+    <p class="lp-sub">頑張りたくても続けられないあなたへ。<br>体質改善×習慣の見直しで、内側からキレイになるダイエットを。</p>
+    <button class="btn-start" onclick="startApp()">✦　無料で始める</button>
+  </section>
+</div>
+
 <!-- ========== 認証画面 ========== -->
 <div id="auth-overlay" class="auth-overlay" style="display:none;">
   <div class="auth-card">
     <div class="auth-logo">🌸 Bloom Journal</div>
-    <div class="auth-tagline">美容健康ダイエット習慣サポート</div>
-
     <div class="auth-tabs">
       <button class="auth-tab active" onclick="switchAuthTab('login')">ログイン</button>
       <button class="auth-tab" onclick="switchAuthTab('signup')">新規登録</button>
     </div>
-
     <div id="auth-login-form" class="auth-form">
-      <div class="auth-title">おかえりなさい！</div>
-      <div class="auth-sub">メールアドレスとパスワードでログイン</div>
       <input type="email" class="auth-input" id="login-email" placeholder="メールアドレス">
       <input type="password" class="auth-input" id="login-password" placeholder="パスワード">
       <button class="auth-btn" onclick="handleLogin()">ログイン</button>
-      <div id="login-msg" class="auth-msg" style="display:none;"></div>
     </div>
-
     <div id="auth-signup-form" class="auth-form" style="display:none;">
-      <div class="auth-title">はじめましょう！</div>
-      <div class="auth-sub">メールアドレスで無料登録</div>
       <input type="email" class="auth-input" id="signup-email" placeholder="メールアドレス">
-      <input type="password" class="auth-input" id="signup-password" placeholder="パスワード（8文字以上）">
-      <input type="password" class="auth-input" id="signup-password2" placeholder="パスワード（確認）">
-      <button class="auth-btn" onclick="handleSignup()">無料登録</button>
-      <div id="signup-msg" class="auth-msg" style="display:none;"></div>
+      <input type="password" class="auth-input" id="signup-password" placeholder="パスワード">
+      <input type="password" class="auth-input" id="signup-password2" placeholder="確認">
+      <button class="auth-btn" onclick="handleSignup()">新規登録</button>
     </div>
-
-    <div class="auth-skip" onclick="skipAuth()">登録せずに使う</div>
+    <div style="font-size:12px;color:#c0a0b0;margin-top:16px;cursor:pointer;" onclick="skipAuth()">登録せずに使う</div>
   </div>
 </div>
 
 <!-- ========== アプリ本体 ========== -->
 <div id="app-body" class="app-body">
 
-<div class="loading-overlay" id="loading">
-  <div class="loading-spinner"></div>
-</div>
-
-<!-- ナビゲーション -->
 <nav class="app-nav">
   <div class="nav-header">
     <span style="font-size:20px;">🌸</span>
     <span class="nav-logo">Bloom Journal</span>
-    <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
-      <button id="nav-auth-btn" onclick="toggleAuth()" style="padding:6px 14px;border-radius:20px;border:1.5px solid #F0D8E2;background:white;font-size:12px;cursor:pointer;color:var(--text-mid);display:flex;align-items:center;gap:6px;">
-        <span id="nav-icon">🔑</span><span id="nav-name">ログイン</span>
-      </button>
+    <div style="margin-left:auto;">
+      <button id="nav-auth-btn" onclick="toggleAuth()" style="padding:6px 14px;border-radius:20px;border:1.5px solid #F0D8E2;background:white;font-size:12px;cursor:pointer;color:var(--text-mid);">🔑 ログイン</button>
     </div>
   </div>
   <div class="nav-tabs">
     <button class="nav-tab active" onclick="showPage('page-goal')">🎯 目標設定</button>
-    <button class="nav-tab" onclick="showPage('page-todo')">✅ 習慣TODO</button>
-    <button class="nav-tab" onclick="showPage('page-record')">📊 体調記録</button>
+    <button class="nav-tab" onclick="showPage('page-todo')">✅ TODO</button>
+    <button class="nav-tab" onclick="showPage('page-record')">📊 体調</button>
     <button class="nav-tab" onclick="showPage('page-journal')">📓 ジャーナル</button>
-    <button class="nav-tab" onclick="showPage('page-report')">📄 レポート</button>
     <button class="nav-tab" onclick="showPage('page-group')">🌸 グループ</button>
   </div>
 </nav>
 
-<!-- ========== 目標設定ページ ========== -->
+<!-- 目標設定ページ -->
 <div id="page-goal" class="page active">
-  <div id="goal-setup" style="display:block;">
+  <div style="padding:16px;">
     <div class="hero-section">
       <div class="hero-badge">✨ 美容健康ダイエット習慣サポート</div>
-      <h1>あなた専用の<br><span>目標シートを作ろう</span></h1>
-      <p style="font-size:13px;color:var(--text-mid);line-height:1.8;margin-bottom:20px;">3分で完成。今日からはじめる習慣改善の第一歩。</p>
+      <h1 style="font-family:'Noto Serif JP',serif;font-size:24px;font-weight:600;">あなた専用の<br><span style="color:var(--pink-strong);">目標シート</span></h1>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-text"><span id="progress-label">ステップ 1 / 5</span><span id="progress-pct">20%</span></div>
+      <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-fill" style="width:20%"></div></div>
     </div>
 
-    <div style="max-width:600px;margin:0 auto;padding:20px 16px 60px;">
-      <div class="progress-wrap">
-        <div class="progress-text"><span id="progress-label">ステップ 1 / 5</span><span id="progress-pct">20%</span></div>
-        <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-fill" style="width:20%"></div></div>
+    <div class="step-card active" id="step-0">
+      <div class="step-num">STEP 01</div>
+      <div class="step-title">基本プロフィール</div>
+      <div class="form-group">
+        <label class="form-label">お名前</label>
+        <input type="text" id="inp-name" placeholder="例：みかこ" maxlength="20">
       </div>
-
-      <!-- STEP1 プロフィール -->
-      <div class="step-card active" id="step-0">
-        <div class="step-num">STEP 01</div>
-        <div class="step-title">基本プロフィール</div>
-        <div class="step-desc">BMIと目標体重の計算に使用します。</div>
-        <div class="form-group">
-          <label class="form-label">お名前（ニックネームOK）</label>
-          <input type="text" id="inp-name" placeholder="例：みかこ" maxlength="20">
-        </div>
-        <div class="form-group">
-          <label class="form-label">年齢</label>
-          <select id="inp-age">
-            <option value="">選択してください</option>
-            <option>20〜24歳</option><option>25〜29歳</option><option>30〜34歳</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">身長（cm）</label>
-          <input type="number" id="inp-height" placeholder="例：158" min="140" max="200" step="0.1">
-        </div>
-        <div class="form-group">
-          <label class="form-label">現在の体重（kg）</label>
-          <input type="number" id="inp-weight" placeholder="例：60" min="30" max="150" step="0.1">
-        </div>
-        <button class="btn-primary" onclick="goStep(1)">次へ →</button>
+      <div class="form-group">
+        <label class="form-label">年齢</label>
+        <select id="inp-age"><option>20〜24歳</option><option>25〜29歳</option><option>30〜39歳</option></select>
       </div>
-
-      <!-- STEP2 目標体重・期間 -->
-      <div class="step-card" id="step-1">
-        <div class="step-num">STEP 02</div>
-        <div class="step-title">目標体重と期間</div>
-        <div class="step-desc">無理のない目標を設定しましょう。</div>
-        <button class="btn-primary" onclick="goStep(2)">次へ →</button>
-        <button class="btn-secondary" onclick="goStep(0)">← 戻る</button>
+      <div class="form-group">
+        <label class="form-label">身長（cm）</label>
+        <input type="number" id="inp-height" placeholder="158" min="140" max="200" step="0.1">
       </div>
-
-      <!-- STEP3 生活スタイル -->
-      <div class="step-card" id="step-2">
-        <div class="step-num">STEP 03</div>
-        <div class="step-title">あなたの生活スタイル</div>
-        <button class="btn-primary" onclick="goStep(3)">次へ →</button>
-        <button class="btn-secondary" onclick="goStep(1)">← 戻る</button>
+      <div class="form-group">
+        <label class="form-label">体重（kg）</label>
+        <input type="number" id="inp-weight" placeholder="60" min="30" max="150" step="0.1">
       </div>
-
-      <!-- STEP4 習慣TODO選択 -->
-      <div class="step-card" id="step-3">
-        <div class="step-num">STEP 04</div>
-        <div class="step-title">習慣TODOを選ぼう</div>
-        <button class="btn-primary" onclick="goStep(4)">目標シートを作成する 🌸</button>
-        <button class="btn-secondary" onclick="goStep(2)">← 戻る</button>
-      </div>
-
-      <!-- STEP5 結果 -->
-      <div class="step-card" id="step-4">
-        <div class="result-hero">
-          <div style="font-size:13px;opacity:.85;margin-bottom:4px;" id="res-name-greeting">こんにちは！</div>
-        </div>
-        <button class="btn-primary" onclick="startTodo()">✅ 習慣TODOを始める</button>
-      </div>
+      <button class="btn-primary" onclick="goStep(1)">次へ →</button>
     </div>
-  </div>
 
-  <div id="goal-view" style="display:none;padding:16px;">
-    <button class="btn-secondary" onclick="resetGoal()">目標を作り直す</button>
+    <div class="step-card" id="step-1">
+      <div class="step-num">STEP 02</div>
+      <div class="step-title">目標体重と期間</div>
+      <button class="btn-primary" onclick="goStep(2)">次へ →</button>
+      <button class="btn-secondary" onclick="goStep(0)">戻る</button>
+    </div>
+
+    <div class="step-card" id="step-2">
+      <div class="step-num">STEP 03</div>
+      <div class="step-title">生活スタイル</div>
+      <button class="btn-primary" onclick="goStep(3)">次へ →</button>
+      <button class="btn-secondary" onclick="goStep(1)">戻る</button>
+    </div>
+
+    <div class="step-card" id="step-3">
+      <div class="step-num">STEP 04</div>
+      <div class="step-title">習慣を選ぼう</div>
+      <button class="btn-primary" onclick="goStep(4)">目標シートを作成 🌸</button>
+      <button class="btn-secondary" onclick="goStep(2)">戻る</button>
+    </div>
+
+    <div class="step-card" id="step-4">
+      <div style="font-family:'Noto Serif JP',serif;font-size:18px;font-weight:600;text-align:center;margin-bottom:20px;">目標シート完成！ 🌸</div>
+      <button class="btn-primary" onclick="startTodo()">✅ 習慣TODOを始める</button>
+    </div>
   </div>
 </div>
 
-<!-- ========== 習慣TODOページ ========== -->
+<!-- TODOページ -->
 <div id="page-todo" class="page">
   <div style="padding:16px;">
     <div class="card">
       <div class="card-title">✅ 今日の習慣チェック</div>
-      <div id="todo-list"></div>
+      <div id="todo-list"><div style="color:var(--text-light);text-align:center;padding:20px;">目標を設定してください 🌸</div></div>
     </div>
   </div>
 </div>
 
-<!-- ========== 体調記録ページ ========== -->
+<!-- 体調ページ -->
 <div id="page-record" class="page">
   <div style="padding:16px;">
     <div class="card">
       <div class="card-title">⚖️ 体重記録</div>
       <div class="form-group">
         <label class="form-label">今日の体重（kg）</label>
-        <input type="number" id="inp-today-weight" placeholder="例：58.5" min="30" max="150" step="0.1">
+        <input type="number" id="inp-today-weight" placeholder="58.5" min="30" max="150" step="0.1">
       </div>
-      <button class="btn-primary" onclick="saveWeight()">保存する</button>
+      <button class="btn-primary" onclick="saveWeight()">保存</button>
     </div>
   </div>
 </div>
 
-<!-- ========== ジャーナルページ ========== -->
+<!-- ジャーナルページ -->
 <div id="page-journal" class="page">
   <div style="padding:16px;">
     <div class="card">
       <div class="card-title">📓 今日のジャーナル</div>
-      <div class="form-group">
-        <label class="form-label">今日の気づき・振り返りを書こう</label>
-        <textarea id="journal-text" placeholder="今日はどんな一日でしたか？" rows="8"></textarea>
-      </div>
-      <button class="btn-primary" onclick="saveJournal()">💾 保存する</button>
+      <textarea id="journal-text" placeholder="今日の気づきを書きましょう" style="width:100%;padding:12px;border:1.5px solid #F0D8E2;border-radius:10px;font-family:'Noto Sans JP',sans-serif;min-height:100px;"></textarea>
+      <button class="btn-primary" onclick="saveJournal()">💾 保存</button>
     </div>
   </div>
 </div>
 
-<!-- ========== レポートページ ========== -->
-<div id="page-report" class="page">
-  <div style="padding:16px;">
-    <div class="card">
-      <div class="card-title">📄 月次レポート</div>
-    </div>
-  </div>
-</div>
-
-<!-- ========== グループページ（Phase 3） ========== -->
+<!-- グループページ（Phase 3） -->
 <div id="page-group" class="page">
-  
-  <!-- 管理者ならこのセクションが表示される -->
-  <div id="admin-section" style="display:none;padding:16px;margin-bottom:16px;background:#FFF3CD;border-radius:10px;">
-    <div style="font-size:14px;font-weight:600;color:#856404;margin-bottom:12px;">⚙️ 管理者ツール</div>
-    <button class="btn-sm btn-sm-pink" onclick="showAdminPanel()">管理画面を開く</button>
+  <!-- 管理者セクション -->
+  <div id="admin-section" class="admin-section">
+    <div class="admin-title">⚙️ 管理者ツール</div>
+    <button class="btn-primary" style="background:#FF9800;margin-top:0;" onclick="showAdminPanel()">管理画面を開く</button>
   </div>
 
-  <!-- グループ内タブ -->
   <div class="group-tabs">
     <button class="group-tab active" data-tab="home" onclick="switchGroupTab('home')">ホーム</button>
     <button class="group-tab" data-tab="report" onclick="switchGroupTab('report')">報告</button>
@@ -515,41 +350,36 @@ input[type="number"]::-moz-inner-spin-button,input[type="number"]::-moz-outer-sp
         <div style="font-weight:500;margin-bottom:2px;">管理者からのお知らせ</div>
         <div id="notice-content">今日もおつかれさま🌸 報告まってます💕</div>
       </div>
-      <button class="notice-edit-btn" id="notice-edit-btn" onclick="editNotice()" style="display:none;">✏️</button>
     </div>
 
     <div class="campaign-card">
       <div class="campaign-header">
-        <div class="campaign-info">
-          <div class="campaign-name" id="campaign-name-display">🍃 3日間ファスティング</div>
-          <div class="campaign-progress">
-            <div class="campaign-progress-fill" style="width:60%;"></div>
-          </div>
-          <div class="campaign-goal">進行中 · 参加者 4人</div>
-        </div>
+        <div class="campaign-name">🍃 3日間ファスティング</div>
+        <div class="campaign-progress"><div class="campaign-progress-fill" style="width:60%;"></div></div>
+        <div class="campaign-goal">参加者 4人</div>
       </div>
       <div style="padding:12px 14px;">
         <div style="font-size:12px;font-weight:500;color:var(--text-mid);margin-bottom:10px;">みんなの花畑</div>
-        <div class="garden-grid" id="home-garden-grid">
+        <div class="garden-grid">
           <div class="garden-item" onclick="openFlowerDetail('nodoka')">
             <div class="garden-name">のどか</div>
             <div class="garden-flower">🌸</div>
-            <div class="garden-stats-mini">❤️ 12 💬 5</div>
+            <div class="garden-stats-mini">❤️12 💬5</div>
           </div>
           <div class="garden-item" onclick="openFlowerDetail('miki')">
             <div class="garden-name">みき</div>
             <div class="garden-flower">🌸</div>
-            <div class="garden-stats-mini">❤️ 8 💬 3</div>
+            <div class="garden-stats-mini">❤️8 💬3</div>
           </div>
           <div class="garden-item" onclick="openFlowerDetail('sara')">
             <div class="garden-name">さら</div>
             <div class="garden-flower">🌷</div>
-            <div class="garden-stats-mini">❤️ 6 💬 2</div>
+            <div class="garden-stats-mini">❤️6 💬2</div>
           </div>
           <div class="garden-item" onclick="openFlowerDetail('yui')">
             <div class="garden-name">ゆい</div>
             <div class="garden-flower">🌱</div>
-            <div class="garden-stats-mini">❤️ 3 💬 1</div>
+            <div class="garden-stats-mini">❤️3 💬1</div>
           </div>
         </div>
       </div>
@@ -558,14 +388,8 @@ input[type="number"]::-moz-inner-spin-button,input[type="number"]::-moz-outer-sp
     <div style="margin-top:14px;padding:12px 14px;background:white;border-radius:10px;border:0.5px solid #F4C0D1;">
       <div style="font-size:12px;font-weight:500;color:var(--text-mid);margin-bottom:10px;">💬 グループトーク</div>
       <div class="chat-area" id="group-chat-home">
-        <div class="chat-msg">
-          <div class="chat-name">みき</div>
-          <div class="chat-text">おはよう〜今日もがんばろ☀️</div>
-        </div>
-        <div class="chat-msg admin">
-          <div class="chat-name">のどか <span class="admin-badge">管理者</span></div>
-          <div class="chat-text">みんないい調子だね💕</div>
-        </div>
+        <div class="chat-msg"><div class="chat-name">みき</div><div class="chat-text">おはよう〜がんばろ☀️</div></div>
+        <div class="chat-msg admin"><div class="chat-name">のどか<span class="admin-badge">管理者</span></div><div class="chat-text">みんないい調子💕</div></div>
       </div>
       <div class="msg-input-row">
         <input type="text" class="msg-input" id="msg-input-home" placeholder="メッセージを入力…">
@@ -577,20 +401,17 @@ input[type="number"]::-moz-inner-spin-button,input[type="number"]::-moz-outer-sp
   <!-- 報告 -->
   <div id="group-report" class="group-screen">
     <div style="padding:14px 0;">
-      <div style="font-size:12px;font-weight:500;color:var(--text-mid);margin-bottom:8px;" id="campaign-name-report">🍃 3日間ファスティング</div>
-      
+      <div style="font-size:12px;font-weight:500;color:var(--text-mid);margin-bottom:8px;">🍃 3日間ファスティング</div>
       <div class="report-form">
         <div class="achievement-btns">
-          <button class="achievement-btn selected" id="ach-done" onclick="selectAchievement('done')">🌸 できた！</button>
-          <button class="achievement-btn" id="ach-trying" onclick="selectAchievement('trying')">💪 がんばり中</button>
+          <button class="achievement-btn selected" onclick="selectAchievement('done')">🌸 できた！</button>
+          <button class="achievement-btn" onclick="selectAchievement('trying')">💪 がんばり中</button>
         </div>
-        
         <div class="form-group">
-          <label class="form-label">ひとことメモ（任意）</label>
-          <textarea id="group-report-memo" placeholder="例：置き換えスムージー成功！" rows="2"></textarea>
+          <label class="form-label">メモ（任意）</label>
+          <textarea id="group-report-memo" placeholder="例：スムージー成功！" rows="2" style="margin:0;"></textarea>
         </div>
-
-        <button class="btn-primary" onclick="submitGroupReport()">この内容で報告する</button>
+        <button class="btn-primary" onclick="submitGroupReport()">報告する</button>
       </div>
     </div>
   </div>
@@ -599,41 +420,23 @@ input[type="number"]::-moz-inner-spin-button,input[type="number"]::-moz-outer-sp
   <div id="group-mine" class="group-screen">
     <div style="padding:14px 0;">
       <div style="font-size:13px;font-weight:500;color:var(--text-dark);margin-bottom:2px;">わたしの花畑</div>
-      <div style="font-size:11px;color:var(--text-light);margin-bottom:10px;">報告も人への応援も、ぜんぶたまります🌷</div>
-
       <div class="personal-garden">
         <div class="garden-ground"></div>
         <div style="position:absolute;left:10%;bottom:35px;font-size:50px;">🌸</div>
         <div style="position:absolute;left:45%;bottom:35px;font-size:45px;">🌸</div>
         <div style="position:absolute;left:70%;bottom:35px;font-size:40px;">🌷</div>
         <div style="position:absolute;left:25%;top:15%;font-size:20px;">🦋</div>
-        <div style="position:absolute;left:60%;top:25%;font-size:16px;">✨</div>
       </div>
-
       <div class="garden-stats">
-        <div class="garden-stat">
-          <div class="garden-stat-num">5</div>
-          <div>🌸報告</div>
-        </div>
-        <div class="garden-stat">
-          <div class="garden-stat-num">8</div>
-          <div>🌼応援</div>
-        </div>
-        <div class="garden-stat">
-          <div class="garden-stat-num">3</div>
-          <div>🦋コメント</div>
-        </div>
-        <div class="garden-stat">
-          <div class="garden-stat-num">6</div>
-          <div>✨トーク</div>
-        </div>
+        <div class="garden-stat"><div class="garden-stat-num">5</div><div>🌸報告</div></div>
+        <div class="garden-stat"><div class="garden-stat-num">8</div><div>🌼応援</div></div>
+        <div class="garden-stat"><div class="garden-stat-num">3</div><div>🦋コメント</div></div>
       </div>
     </div>
   </div>
-
 </div>
 
-<!-- ========== 管理者パネルモーダル ========== -->
+<!-- 管理画面モーダル -->
 <div id="modal-admin" class="modal-overlay">
   <div class="modal-content">
     <div class="modal-header">
@@ -641,52 +444,28 @@ input[type="number"]::-moz-inner-spin-button,input[type="number"]::-moz-outer-sp
       <button class="modal-close" onclick="closeAdminPanel()">✕</button>
     </div>
     <div class="modal-body">
-      <!-- 企画管理 -->
-      <div class="admin-form-section">
-        <div class="admin-section-title">📋 企画管理</div>
-        <div class="campaign-list" id="campaign-list">
-          <div class="campaign-list-item active">
-            <div class="campaign-list-name">🍃 3日間ファスティング</div>
-            <div class="campaign-list-info">2025-01-15 ~ 2025-01-17 · 進行中</div>
-          </div>
-          <div class="campaign-list-item">
-            <div class="campaign-list-name">🌿 1週間朝ヨガチャレンジ</div>
-            <div class="campaign-list-info">2024-12-01 ~ 2024-12-07 · 終了</div>
-          </div>
-        </div>
-        <button class="btn-primary" style="margin-top:12px;" onclick="newCampaign()">+ 新しい企画を作成</button>
+      <div style="margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid #F0D8E2;">
+        <div style="font-size:14px;font-weight:600;margin-bottom:12px;">📢 お知らせを編集</div>
+        <textarea id="admin-notice-input" placeholder="メッセージを入力…" rows="3" style="width:100%;padding:12px;border:1.5px solid #F0D8E2;border-radius:10px;font-family:'Noto Sans JP',sans-serif;margin-bottom:8px;"></textarea>
+        <button class="btn-primary" style="margin-top:0;" onclick="updateNotice()">保存</button>
       </div>
 
-      <!-- お知らせ編集 -->
-      <div class="admin-form-section">
-        <div class="admin-section-title">📢 お知らせを編集</div>
-        <div class="form-group">
-          <label class="form-label">管理者からのお知らせ</label>
-          <textarea id="admin-notice-input" placeholder="みんなへのメッセージを入力…" rows="3">今日もおつかれさま🌸 報告まってます💕</textarea>
-        </div>
-        <button class="btn-primary" onclick="updateNotice()">お知らせを保存</button>
+      <div style="margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid #F0D8E2;">
+        <div style="font-size:14px;font-weight:600;margin-bottom:12px;">📋 企画管理</div>
+        <div style="font-size:12px;color:var(--text-light);margin-bottom:12px;">企画を作成・編集・切り替えできます</div>
+        <button class="btn-primary" style="margin-top:0;" onclick="alert('企画管理機能（準備中）')">企画を管理</button>
       </div>
 
-      <!-- メッセージ管理 -->
-      <div class="admin-form-section">
-        <div class="admin-section-title">🗑️ 不適切なメッセージを削除</div>
-        <div style="font-size:12px;color:var(--text-light);margin-bottom:12px;">グループトーク内の不適切なメッセージを管理者が削除できます。</div>
-        <div id="admin-message-list" style="max-height:200px;overflow-y:auto;">
-          <div style="padding:12px;background:#F5F5F5;border-radius:8px;font-size:12px;color:var(--text-light);">メッセージがありません</div>
-        </div>
-      </div>
-
-      <!-- 過去の企画を見る -->
-      <div class="admin-form-section">
-        <div class="admin-section-title">📜 過去の企画を振り返る</div>
-        <div style="font-size:12px;color:var(--text-light);margin-bottom:12px;">終了した企画の花畑とトークを確認できます。</div>
-        <button class="btn-secondary" onclick="viewArchive()">過去の企画を見る</button>
+      <div>
+        <div style="font-size:14px;font-weight:600;margin-bottom:12px;">🗑️ メッセージ削除</div>
+        <div style="font-size:12px;color:var(--text-light);margin-bottom:12px;">不適切なメッセージを管理者が削除できます</div>
+        <button class="btn-secondary" onclick="alert('メッセージ削除機能（準備中）')">詳細を見る</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ========== 応援・コメントモーダル ========== -->
+<!-- 応援・コメントモーダル -->
 <div id="modal-flower" class="modal-overlay">
   <div class="modal-content">
     <div class="modal-header">
@@ -698,26 +477,17 @@ input[type="number"]::-moz-inner-spin-button,input[type="number"]::-moz-outer-sp
         <div class="flower-large" id="modal-flower-emoji">🌸</div>
         <div class="flower-user-name" id="modal-flower-name">ユーザー名</div>
         <div class="flower-stats-row">
-          <div class="flower-stat">
-            <div class="flower-stat-num" id="modal-flower-likes">0</div>
-            <div class="flower-stat-label">いいね</div>
-          </div>
-          <div class="flower-stat">
-            <div class="flower-stat-num" id="modal-flower-comments">0</div>
-            <div class="flower-stat-label">コメント</div>
-          </div>
+          <div class="flower-stat"><div class="flower-stat-num" id="modal-flower-likes">0</div><div class="flower-stat-label">いいね</div></div>
+          <div class="flower-stat"><div class="flower-stat-num" id="modal-flower-comments">0</div><div class="flower-stat-label">コメント</div></div>
         </div>
       </div>
-
       <button class="like-btn" onclick="sendLike()">❤️ いいね！を送る</button>
-
       <div class="comments-section">
         <div class="comments-title">コメント</div>
-        <div id="modal-comments-list"></div>
-
+        <div id="modal-comments-list"><div style="text-align:center;padding:16px;font-size:12px;color:var(--text-light);">コメント一覧</div></div>
         <div class="comment-input-section">
           <textarea class="comment-input" id="modal-comment-text" placeholder="応援コメントを書こう…"></textarea>
-          <button class="comment-submit-btn" onclick="submitComment()">コメントを送信</button>
+          <button class="comment-submit-btn" onclick="submitComment()">送信</button>
         </div>
       </div>
     </div>
@@ -732,42 +502,54 @@ input[type="number"]::-moz-inner-spin-button,input[type="number"]::-moz-outer-sp
 
 <script>
 
-// ========== Supabase設定 ==========
-const SUPABASE_URL = 'https://myxzlfoguczihvjkvccf.supabase.co';
-let supabaseClient = null;
-const SUPABASE_ANON_KEY = 'sb_publishable_kT1EbqgWCGwmxNEDWF1HpA_xthbUAKW';
 let currentUser = null;
 let isAdmin = false;
+let currentFlowerUser = null;
+let groupMessages = [];
+let noticeText = '今日もおつかれさま🌸 報告まってます💕';
+
+const SUPABASE_URL = 'https://myxzlfoguczihvjkvccf.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_kT1EbqgWCGwmxNEDWF1HpA_xthbUAKW';
+let supabaseClient = null;
 
 function initSupabase() {
-  try {
-    if (typeof window.supabase !== "undefined") {
-      supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-      checkAuthState();
-    }
-  } catch(e) {}
+  if (typeof window.supabase !== "undefined") {
+    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  }
 }
 
-async function checkAuthState() {
-  if (!supabaseClient) return;
-  try {
-    await supabaseClient.auth.startAutoRefresh();
-    const { data: { session } } = await supabaseClient.auth.getSession();
-    if (session) {
-      currentUser = session.user;
-      document.getElementById('auth-overlay').style.display = 'none';
-    }
-    supabaseClient.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_IN' && session) {
-        currentUser = session.user;
-        document.getElementById('auth-overlay').style.display = 'none';
-        updateAuthUI();
-      } else if (event === 'SIGNED_OUT') {
-        currentUser = null;
-        updateAuthUI();
-      }
-    });
-  } catch(e) {}
+window.addEventListener('load', () => {
+  initSupabase();
+  loadFromStorage();
+  checkAdminStatus();
+});
+
+function loadFromStorage() {
+  const g = localStorage.getItem('bloom-group-messages');
+  if (g) groupMessages = JSON.parse(g);
+  const n = localStorage.getItem('bloom-notice');
+  if (n) noticeText = n;
+  document.getElementById('notice-content').textContent = noticeText;
+  document.getElementById('admin-notice-input').value = noticeText;
+}
+
+function saveToStorage() {
+  localStorage.setItem('bloom-group-messages', JSON.stringify(groupMessages));
+  localStorage.setItem('bloom-notice', noticeText);
+}
+
+function startApp() {
+  document.getElementById('top-page').style.display = 'none';
+  document.getElementById('app-body').style.display = 'block';
+  document.getElementById('app-body').classList.add('show');
+}
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const map = {'page-goal':0,'page-todo':1,'page-record':2,'page-journal':3,'page-group':4};
+  if (map[id] !== undefined) document.querySelectorAll('.nav-tab')[map[id]].classList.add('active');
 }
 
 function switchAuthTab(tab) {
@@ -777,109 +559,35 @@ function switchAuthTab(tab) {
   document.getElementById('auth-signup-form').style.display = tab === 'signup' ? 'flex' : 'none';
 }
 
-async function handleLogin() {
-  if (!supabaseClient) return;
-  const email = document.getElementById('login-email').value.trim();
-  const password = document.getElementById('login-password').value;
-  if (!email || !password) return;
-  const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-  if (!error) {
-    document.getElementById('auth-overlay').style.display = 'none';
-  }
+function skipAuth() { document.getElementById('auth-overlay').style.display = 'none'; }
+function toggleAuth() { if (currentUser) alert('ログアウト'); else document.getElementById('auth-overlay').style.display = 'flex'; }
+function handleLogin() { document.getElementById('auth-overlay').style.display = 'none'; }
+function handleSignup() { document.getElementById('auth-overlay').style.display = 'none'; }
+
+function goStep(n) {
+  document.querySelectorAll('.step-card').forEach(c => c.classList.remove('active'));
+  document.getElementById('step-' + n).classList.add('active');
+  document.getElementById('progress-fill').style.width = ((n+1)*20) + '%';
+  document.getElementById('progress-label').textContent = 'ステップ ' + (n+1) + ' / 5';
 }
 
-async function handleSignup() {
-  if (!supabaseClient) return;
-  const email = document.getElementById('signup-email').value.trim();
-  const password = document.getElementById('signup-password').value;
-  if (!email || !password) return;
-  await supabaseClient.auth.signUp({ email, password });
-}
-
-function skipAuth() {
-  document.getElementById('auth-overlay').style.display = 'none';
-}
-
-function updateAuthUI() {
-  checkAdminStatus();
-}
-
-function toggleAuth() {
-  if (currentUser) {
-    if (confirm('ログアウトしますか？')) {
-      if (supabaseClient) supabaseClient.auth.signOut();
-      currentUser = null;
-    }
-  } else {
-    document.getElementById('auth-overlay').style.display = 'flex';
-  }
-}
-
-// ========== 管理者チェック ==========
 function checkAdminStatus() {
   isAdmin = localStorage.getItem('bloom-is-admin') === 'true';
-  const adminSection = document.getElementById('admin-section');
-  const noticeEditBtn = document.getElementById('notice-edit-btn');
-  
-  if (adminSection) adminSection.style.display = isAdmin ? 'block' : 'none';
-  if (noticeEditBtn) noticeEditBtn.style.display = isAdmin ? 'block' : 'none';
+  document.getElementById('admin-section').classList.toggle('show', isAdmin);
 }
 
-// ========== データ ==========
-let state = { name:'', goalCreated: false };
-let groupMessages = [];
-let flowerData = {};
-let commentsData = {};
-let noticeText = '今日もおつかれさま🌸 報告まってます💕';
-let currentFlowerUser = null;
+function showAdminPanel() { document.getElementById('modal-admin').classList.add('show'); }
+function closeAdminPanel() { document.getElementById('modal-admin').classList.remove('show'); }
 
-window.addEventListener('load', () => {
-  initSupabase();
-  loadFromStorage();
-  // デモ用：管理者フラグを設定
-  localStorage.setItem('bloom-is-admin', 'true');
-  checkAdminStatus();
-});
-
-function loadFromStorage() {
-  try {
-    const g = localStorage.getItem('bloom-group-messages');
-    if (g) groupMessages = JSON.parse(g);
-    const f = localStorage.getItem('bloom-flower-data');
-    if (f) flowerData = JSON.parse(f);
-    const c = localStorage.getItem('bloom-comments');
-    if (c) commentsData = JSON.parse(c);
-    const n = localStorage.getItem('bloom-notice');
-    if (n) noticeText = n;
-  } catch(e) {}
+function updateNotice() {
+  const text = document.getElementById('admin-notice-input').value.trim();
+  if (!text) return;
+  noticeText = text;
+  document.getElementById('notice-content').textContent = text;
+  saveToStorage();
+  alert('お知らせを保存しました');
 }
 
-function saveToStorage() {
-  try {
-    localStorage.setItem('bloom-group-messages', JSON.stringify(groupMessages));
-    localStorage.setItem('bloom-flower-data', JSON.stringify(flowerData));
-    localStorage.setItem('bloom-comments', JSON.stringify(commentsData));
-    localStorage.setItem('bloom-notice', noticeText);
-  } catch(e) {}
-}
-
-// ========== ナビゲーション ==========
-function showPage(id) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  const tabs = document.querySelectorAll('.nav-tab');
-  const map = {'page-goal':0,'page-todo':1,'page-record':2,'page-journal':3,'page-report':4,'page-group':5};
-  if (map[id] !== undefined) tabs[map[id]].classList.add('active');
-  window.scrollTo(0,0);
-}
-
-function startApp() {
-  document.getElementById('app-body').style.display = 'block';
-  document.getElementById('app-body').classList.add('show');
-}
-
-// ========== グループ機能 ==========
 function switchGroupTab(tab) {
   document.querySelectorAll('.group-tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.group-screen').forEach(s => s.classList.remove('active'));
@@ -887,97 +595,37 @@ function switchGroupTab(tab) {
   document.getElementById('group-' + tab).classList.add('active');
 }
 
+function selectAchievement(val) {
+  document.querySelectorAll('.achievement-btn').forEach(b => b.classList.remove('selected'));
+  event.target.classList.add('selected');
+}
+
 function sendGroupMessage(tab) {
   const input = document.getElementById('msg-input-' + tab);
   const msg = input.value.trim();
   if (!msg) return;
-  groupMessages.push({
-    date: new Date().toISOString(),
-    name: 'あなた',
-    text: msg,
-    id: Math.random().toString()
-  });
+  groupMessages.push({ name: 'あなた', text: msg, date: new Date().toLocaleString() });
   input.value = '';
-  updateGroupChat(tab);
-  saveToStorage();
-}
-
-function updateGroupChat(tab) {
-  const chatArea = document.getElementById('group-chat-' + tab);
-  if (!chatArea) return;
-  chatArea.innerHTML = groupMessages.slice(-10).map(m => {
+  const area = document.getElementById('group-chat-' + tab);
+  area.innerHTML = groupMessages.map(m => {
     const isAdmin = m.name === '管理者' || m.name === 'のどか';
-    const deleteBtn = isAdmin && localStorage.getItem('bloom-is-admin') === 'true' ? 
-      '<button class="chat-delete-btn" onclick="deleteMessage(\'' + m.id + '\')">×</button>' : '';
-    return '<div class="chat-msg' + (isAdmin ? ' admin' : '') + '">' +
-      '<div class="chat-name">' + m.name + (isAdmin ? ' <span class="admin-badge">管理者</span>' : '') + '</div>' +
-      '<div class="chat-text">' + m.text + deleteBtn + '</div>' +
-      '</div>';
+    return '<div class="chat-msg' + (isAdmin ? ' admin' : '') + '"><div class="chat-name">' + m.name + (isAdmin ? ' <span class="admin-badge">管理者</span>' : '') + '</div><div class="chat-text">' + m.text + '</div></div>';
   }).join('');
-}
-
-function deleteMessage(msgId) {
-  if (!confirm('このメッセージを削除しますか？')) return;
-  groupMessages = groupMessages.filter(m => m.id !== msgId);
   saveToStorage();
-  updateGroupChat('home');
-  alert('削除しました');
 }
 
-function selectAchievement(val) {
-  document.querySelectorAll('.achievement-btn').forEach(b => b.classList.remove('selected'));
-  document.getElementById('ach-' + val).classList.add('selected');
-}
+function submitGroupReport() { alert('報告を送信しました！🌸'); }
+function startTodo() { showPage('page-todo'); }
+function saveWeight() { alert('体重を記録しました'); }
+function saveJournal() { alert('保存しました'); }
 
-function submitGroupReport() {
-  alert('報告を送信しました！🌸');
-}
-
-// ========== 管理者機能 ==========
-function showAdminPanel() {
-  document.getElementById('modal-admin').classList.add('show');
-}
-
-function closeAdminPanel() {
-  document.getElementById('modal-admin').classList.remove('show');
-}
-
-function editNotice() {
-  document.getElementById('admin-notice-input').value = noticeText;
-  showAdminPanel();
-}
-
-function updateNotice() {
-  const text = document.getElementById('admin-notice-input').value.trim();
-  if (!text) { alert('お知らせを入力してください'); return; }
-  noticeText = text;
-  document.getElementById('notice-content').textContent = text;
-  saveToStorage();
-  alert('お知らせを保存しました');
-}
-
-function newCampaign() {
-  alert('新しい企画を作成します（準備中）');
-}
-
-function viewArchive() {
-  alert('過去の企画を表示します（準備中）');
-}
-
-// ========== 応援・コメント機能 ==========
 function openFlowerDetail(userName) {
   currentFlowerUser = userName;
   document.getElementById('modal-flower').classList.add('show');
-  document.getElementById('modal-flower-emoji').textContent = '🌸';
   document.getElementById('modal-flower-name').textContent = userName + 'さんのお花';
-  document.getElementById('modal-flower-likes').textContent = '12';
-  document.getElementById('modal-flower-comments').textContent = '5';
-  document.getElementById('modal-comments-list').innerHTML = '<div style="text-align:center;padding:16px;color:var(--text-light);font-size:12px;">コメント一覧</div>';
 }
 
-function closeFlowerDetail() {
-  document.getElementById('modal-flower').classList.remove('show');
-}
+function closeFlowerDetail() { document.getElementById('modal-flower').classList.remove('show'); }
 
 function sendLike() {
   if (!currentFlowerUser) return;
@@ -993,21 +641,10 @@ function sendLike() {
 
 function submitComment() {
   const text = document.getElementById('modal-comment-text').value.trim();
-  if (!text) { alert('コメントを入力してください'); return; }
+  if (!text) return;
   alert('コメントを送信しました');
   document.getElementById('modal-comment-text').value = '';
 }
-
-// ========== その他 ==========
-function formatDate(d) {
-  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
-}
-
-function saveWeight() { alert('体重を記録しました'); }
-function saveJournal() { alert('保存しました'); }
-function startTodo() { showPage('page-todo'); }
-function goStep(n) { alert('ステップ: ' + n); }
-function resetGoal() { alert('目標をリセット'); }
 
 </script>
 
