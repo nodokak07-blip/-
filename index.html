@@ -361,6 +361,27 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
 .share-footer-logo { font-family:'Noto Serif JP',serif;font-size:22px;font-weight:600; }
 .share-deco { position:absolute;pointer-events:none;opacity:.15;font-size:80px; }
 
+/* ========== コラムタブ ========== */
+.column-category-filter { display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:16px;scrollbar-width:none; }
+.column-category-filter::-webkit-scrollbar { display:none; }
+.column-cat-btn { flex-shrink:0;padding:8px 18px;border-radius:20px;border:1.5px solid #F0D8E2;background:white;font-size:13px;color:var(--text-mid);cursor:pointer;transition:all .2s;font-family:'Noto Sans JP',sans-serif;white-space:nowrap; }
+.column-cat-btn.active { background:var(--pink-strong);color:white;border-color:var(--pink-strong);font-weight:500; }
+.column-articles-list { display:flex;flex-direction:column;gap:14px;margin-bottom:20px; }
+.column-article-card { background:white;border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;gap:8px; }
+.column-article-card:hover { transform:translateY(-2px);box-shadow:0 8px 28px rgba(200,100,130,0.14); }
+.column-article-top { display:flex;align-items:center;justify-content:space-between; }
+.column-article-cat { font-size:11px;font-weight:600;padding:3px 10px;border-radius:12px; }
+.column-article-cat.cat-美容 { background:#FDE8F0;color:#C0395D; }
+.column-article-cat.cat-健康 { background:#E8F5E9;color:#2DAA71; }
+.column-article-cat.cat-ダイエット { background:#F5F0FF;color:#8B5CF6; }
+.column-article-cat.cat-習慣 { background:#FFF8E1;color:#D4A017; }
+.column-article-date { font-size:11px;color:var(--text-light); }
+.column-article-title { font-size:15px;font-weight:600;color:var(--text-dark);line-height:1.5; }
+.column-article-excerpt { font-size:13px;color:var(--text-mid);line-height:1.7; }
+.column-discord-banner { background:linear-gradient(135deg,#5865F2,#8B5CF6);border-radius:var(--radius);padding:28px 20px;text-align:center;color:white; }
+.btn-discord { display:inline-block;background:white;color:#5865F2;border:none;border-radius:8px;padding:12px 28px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Noto Sans JP',sans-serif;transition:all .2s; }
+.btn-discord:hover { transform:translateY(-1px);box-shadow:0 6px 18px rgba(0,0,0,0.15); }
+
 </style>
 </head>
 <body>
@@ -507,6 +528,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
     <button class="nav-tab" onclick="showPage('page-record')">📊 体調記録</button>
     <button class="nav-tab" onclick="showPage('page-journal')">📓 ジャーナル</button>
     <button class="nav-tab" onclick="showPage('page-report')">📄 レポート</button>
+    <button class="nav-tab" onclick="showPage('page-column')">📰 コラム</button>
     <button class="nav-tab" onclick="showPage('page-sns')">📸 みんなの記録</button>
   </div>
 </nav>
@@ -808,7 +830,11 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
   <div style="padding:16px;">
     <div class="card">
       <div class="card-title">📄 月次レポート</div>
-      <div style="font-size:13px;color:var(--text-mid);margin-bottom:16px;" id="report-period"></div>
+      <div class="date-header" style="margin-bottom:16px;">
+        <button class="date-nav" onclick="changeReportMonth(-1)">◀</button>
+        <div class="date-label" id="report-period"></div>
+        <button class="date-nav" id="report-next-btn" onclick="changeReportMonth(1)">▶</button>
+      </div>
 
       <div class="stats-row">
         <div class="stat-card"><div class="stat-num" id="report-avg-todo">—</div><div class="stat-label">平均達成率</div></div>
@@ -886,6 +912,27 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
   </div>
 </div>
 
+<!-- ========== コラムページ ========== -->
+<div id="page-column" class="page">
+  <div style="padding:16px;">
+    <div class="column-category-filter" id="column-category-filter">
+      <button class="column-cat-btn active" data-cat="全て" onclick="filterColumnCategory(this,'全て')">全て</button>
+      <button class="column-cat-btn" data-cat="美容" onclick="filterColumnCategory(this,'美容')">美容</button>
+      <button class="column-cat-btn" data-cat="健康" onclick="filterColumnCategory(this,'健康')">健康</button>
+      <button class="column-cat-btn" data-cat="ダイエット" onclick="filterColumnCategory(this,'ダイエット')">ダイエット</button>
+      <button class="column-cat-btn" data-cat="習慣" onclick="filterColumnCategory(this,'習慣')">習慣</button>
+    </div>
+
+    <div id="column-articles-list" class="column-articles-list"></div>
+
+    <div class="column-discord-banner">
+      <div style="font-size:26px;margin-bottom:6px;">💬</div>
+      <div style="font-size:15px;font-weight:700;margin-bottom:6px;">みんなと一緒に頑張ろう！</div>
+      <div style="font-size:13px;opacity:.9;margin-bottom:14px;line-height:1.7;">Discordコミュニティで仲間と情報交換したり、<br>励まし合いながら習慣を続けよう🌸</div>
+      <button class="btn-discord" onclick="openDiscordCommunity()">Discordに参加する 🎀</button>
+    </div>
+  </div>
+</div>
 
 <!-- ========== SNSページ（インスタンツ）========== -->
 <div id="page-sns" class="page">
@@ -906,7 +953,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
   <div id="sns-post" style="display:none;">
     <div class="post-create-card">
       <div class="post-create-title">📸 今日の取り組みをシェア</div>
-      <div class="expires-badge">⏰ 投稿は30日後に自動削除されます</div>
+      <div class="expires-badge">⏰ 投稿は7日後に自動削除されます</div>
 
       <div class="image-upload-area" id="upload-area" onclick="document.getElementById('post-image-input').click()">
         <div id="upload-placeholder">
@@ -960,6 +1007,10 @@ const SUPABASE_URL = 'https://myxzlfoguczihvjkvccf.supabase.co';
 let supabaseClient = null;
 const SUPABASE_ANON_KEY = 'sb_publishable_kT1EbqgWCGwmxNEDWF1HpA_xthbUAKW';
 let currentUser = null;
+
+// ========== コミュニティ・ブログ設定 ==========
+const BLOG_URL = 'https://note.com/bloom_journal';
+const COMMUNITY_URL = 'https://discord.gg/REPLACE_WITH_INVITE_CODE'; // Discordコミュニティ開設後に更新してください
 
 function initSupabase() {
   try {
@@ -1176,6 +1227,56 @@ const PRESET_HABITS = [
 
 const FREQ_OPTIONS = ['毎日','週5〜6回','週3〜4回','週1〜2回'];
 
+// ========== コラム記事（仮データ） ==========
+const COLUMN_ARTICLES = [
+  { title:'朝の白湯で体質改善', category:'健康', date:'2025.06.20', excerpt:'朝一番の白湯習慣が巡りを整え、代謝アップにつながる理由を解説します。' },
+  { title:'タンパク質の正しい摂取量', category:'ダイエット', date:'2025.06.18', excerpt:'目的別のタンパク質摂取量の目安と、無理なく摂るためのコツを紹介します。' },
+  { title:'ストレスと食欲の関係', category:'習慣', date:'2025.06.15', excerpt:'ストレスによる過食のメカニズムと、食べすぎを防ぐ習慣のヒントをまとめました。' },
+  { title:'美肌と睡眠の深い関係', category:'美容', date:'2025.06.12', excerpt:'睡眠の質が肌のターンオーバーに与える影響と、快眠のための工夫を紹介します。' },
+  { title:'16時間ファスティング完全ガイド', category:'ダイエット', date:'2025.06.10', excerpt:'話題の16時間ファスティングのやり方と、続けるためのポイントを解説します。' },
+  { title:'毎日の習慣が人生を変える', category:'習慣', date:'2025.06.07', excerpt:'小さな習慣を積み重ねることが、なぜ大きな変化につながるのかを考えます。' },
+  { title:'ホルモンバランスと体重', category:'美容', date:'2025.06.04', excerpt:'女性ホルモンの変化が体重や体調に与える影響と付き合い方を紹介します。' },
+  { title:'運動しないで体が変わる？', category:'健康', date:'2025.06.01', excerpt:'運動が苦手な人でも取り入れやすい、体質から変える生活習慣を紹介します。' }
+];
+let columnCurrentCategory = '全て';
+
+function renderColumnArticles() {
+  const list = document.getElementById('column-articles-list');
+  if (!list) return;
+  const filtered = columnCurrentCategory === '全て'
+    ? COLUMN_ARTICLES
+    : COLUMN_ARTICLES.filter(a => a.category === columnCurrentCategory);
+  if (filtered.length === 0) {
+    list.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text-light);font-size:13px;">記事がありません</div>';
+    return;
+  }
+  list.innerHTML = filtered.map(a =>
+    '<div class="column-article-card" onclick="openColumnArticle()">' +
+      '<div class="column-article-top">' +
+        '<span class="column-article-cat cat-' + a.category + '">' + a.category + '</span>' +
+        '<span class="column-article-date">' + a.date + '</span>' +
+      '</div>' +
+      '<div class="column-article-title">' + a.title + '</div>' +
+      '<div class="column-article-excerpt">' + a.excerpt + '</div>' +
+    '</div>'
+  ).join('');
+}
+
+function filterColumnCategory(btn, category) {
+  columnCurrentCategory = category;
+  document.querySelectorAll('.column-cat-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderColumnArticles();
+}
+
+function openColumnArticle() {
+  window.open(BLOG_URL, '_blank');
+}
+
+function openDiscordCommunity() {
+  window.open(COMMUNITY_URL, '_blank');
+}
+
 let state = {
   name:'', age:'', height:0, weight:0, goalWeight:55, period:'6ヶ月',
   exercise:'', foodWorries:[], selectedHabits:[], customHabits:[],
@@ -1230,12 +1331,13 @@ function showPage(id) {
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   const tabs = document.querySelectorAll('.nav-tab');
-  const map = {'page-goal':0,'page-todo':1,'page-record':2,'page-report':3};
+  const map = {'page-goal':0,'page-todo':1,'page-record':2,'page-journal':3,'page-report':4,'page-column':5,'page-sns':6};
   if (map[id] !== undefined) tabs[map[id]].classList.add('active');
   if (id === 'page-todo') renderTodo();
   if (id === 'page-record') renderRecordHistory();
   if (id === 'page-report') updateReportPage();
   if (id === 'page-journal') { renderJournalHistory(); document.getElementById('journal-date-label').textContent = formatDateLabel(journalDate); }
+  if (id === 'page-column') { renderColumnArticles(); }
   if (id === 'page-sns') { loadPosts(); }
   window.scrollTo(0,0);
 }
@@ -1738,14 +1840,41 @@ function renderRecordHistory() {
 }
 
 // ========== レポート ==========
-function updateReportPage() {
+let reportMonth = new Date();
+
+// 選択中の月の日付リストと表示用ラベルを取得
+function getReportMonthRange() {
   const now = new Date();
-  document.getElementById('report-period').textContent = now.getFullYear() + '年' + (now.getMonth()+1) + '月のレポート';
-  const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+  const isCurrentMonth = reportMonth.getFullYear() === now.getFullYear() && reportMonth.getMonth() === now.getMonth();
+  const periodEnd = isCurrentMonth ? now : new Date(reportMonth.getFullYear(), reportMonth.getMonth() + 1, 0);
+  const firstDay = new Date(reportMonth.getFullYear(), reportMonth.getMonth(), 1);
   const days = [];
-  for (let d = new Date(firstDay); d <= now; d.setDate(d.getDate()+1)) {
+  for (let d = new Date(firstDay); d <= periodEnd; d.setDate(d.getDate() + 1)) {
     days.push(formatDate(new Date(d)));
   }
+  return { days: days, monthStr: reportMonth.getFullYear() + '年' + (reportMonth.getMonth()+1) + '月' };
+}
+
+// レポートの対象月を移動（未来の月には移動不可）
+function changeReportMonth(delta) {
+  const now = new Date();
+  const target = new Date(reportMonth.getFullYear(), reportMonth.getMonth() + delta, 1);
+  if (target.getFullYear() > now.getFullYear() || (target.getFullYear() === now.getFullYear() && target.getMonth() > now.getMonth())) {
+    return;
+  }
+  reportMonth = target;
+  updateReportPage();
+}
+
+function updateReportPage() {
+  const now = new Date();
+  const range = getReportMonthRange();
+  const days = range.days;
+  document.getElementById('report-period').textContent = range.monthStr;
+  const isCurrentMonth = reportMonth.getFullYear() === now.getFullYear() && reportMonth.getMonth() === now.getMonth();
+  const nextBtn = document.getElementById('report-next-btn');
+  if (nextBtn) nextBtn.disabled = isCurrentMonth;
+  if (nextBtn) nextBtn.style.opacity = isCurrentMonth ? '0.35' : '1';
   const habits = state.selectedHabits;
   let totalPct = 0, count = 0;
   days.forEach(k => {
@@ -1811,8 +1940,8 @@ function updateReportPage() {
 }
 
 function sendMonthlyReportToLINE() {
-  const now = new Date();
-  const monthStr = now.getFullYear() + '年' + (now.getMonth()+1) + '月';
+  const range = getReportMonthRange();
+  const monthStr = range.monthStr;
   const avgTodo = document.getElementById('report-avg-todo').textContent;
   const streak = document.getElementById('report-streak').textContent;
   const weightDiff = document.getElementById('report-weight-diff').textContent;
@@ -1836,11 +1965,7 @@ function sendMonthlyReportToLINE() {
   const habits = state.selectedHabits;
   if (habits.length > 0) {
     msg += '\n🌿 習慣別達成率：\n';
-    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-    const days = [];
-    for (let d = new Date(firstDay); d <= now; d.setDate(d.getDate()+1)) {
-      days.push(formatDate(new Date(d)));
-    }
+    const days = range.days;
     habits.forEach(h => {
       const doneDays = days.filter(k => todoData[k] && todoData[k][h]).length;
       const pct = days.length > 0 ? Math.round(doneDays / days.length * 100) : 0;
@@ -2109,7 +2234,8 @@ function generateReport() {
     const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
 
     const now = new Date();
-    const monthStr = now.getFullYear() + '/' + (now.getMonth()+1);
+    const range = getReportMonthRange();
+    const monthStr = reportMonth.getFullYear() + '/' + (reportMonth.getMonth()+1);
     const avgTodo = document.getElementById('report-avg-todo').textContent;
     const streak = document.getElementById('report-streak').textContent;
     const weightDiff = document.getElementById('report-weight-diff').textContent;
@@ -2172,11 +2298,7 @@ function generateReport() {
     doc.text('This Month Habit Achievement', 20, y+5.5);
     y += 12;
 
-    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-    const days = [];
-    for (let d = new Date(firstDay); d <= now; d.setDate(d.getDate()+1)) {
-      days.push(formatDate(new Date(d)));
-    }
+    const days = range.days;
     const habits = state.selectedHabits;
     const barW = Math.min(5, 170 / days.length);
     days.forEach((k, i) => {
@@ -2307,7 +2429,7 @@ async function submitPost() {
       imageUrl = urlData.publicUrl;
     }
     const expiresAt = new Date();
-    expiresAt.setDate(expiresAt.getDate() + 30);
+    expiresAt.setDate(expiresAt.getDate() + 7);
     const { error } = await supabaseClient.from('posts').insert({
       user_id: currentUser.id,
       image_url: imageUrl,
@@ -2529,19 +2651,15 @@ async function renderShareCanvas(filename) {
 
 // 月次レポートの画像を生成
 function saveReportAsImage() {
-  const now = new Date();
-  const monthStr = now.getFullYear() + '年' + (now.getMonth()+1) + '月';
+  const range = getReportMonthRange();
+  const monthStr = range.monthStr;
   const avgTodo = document.getElementById('report-avg-todo').textContent;
   const streak = document.getElementById('report-streak').textContent;
   const weightDiff = document.getElementById('report-weight-diff').textContent;
   const recordDays = document.getElementById('report-record-days').textContent;
   const comment = document.getElementById('report-comment').value;
   const habits = state.selectedHabits;
-  const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-  const days = [];
-  for (let d = new Date(firstDay); d <= now; d.setDate(d.getDate()+1)) {
-    days.push(formatDate(new Date(d)));
-  }
+  const days = range.days;
 
   // 習慣達成率を計算
   const habitStats = habits.slice(0, 5).map(h => {
@@ -2589,7 +2707,7 @@ function saveReportAsImage() {
   `;
 
   document.getElementById('share-footer-tag').textContent = '#BloomJournal #月次レポート #習慣記録';
-  renderShareCanvas('bloom-journal-report-' + now.getFullYear() + (now.getMonth()+1) + '.png');
+  renderShareCanvas('bloom-journal-report-' + reportMonth.getFullYear() + (reportMonth.getMonth()+1) + '.png');
 }
 
 // 習慣TODOの画像を生成
