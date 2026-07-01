@@ -382,6 +382,18 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
 .btn-discord { display:inline-block;background:white;color:#5865F2;border:none;border-radius:8px;padding:12px 28px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Noto Sans JP',sans-serif;transition:all .2s; }
 .btn-discord:hover { transform:translateY(-1px);box-shadow:0 6px 18px rgba(0,0,0,0.15); }
 
+/* ========== グループ機能 ========== */
+.group-card { background:white;border:0.5px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px;cursor:pointer;transition:all .2s; }
+.group-card:hover { transform:translateY(-2px);box-shadow:var(--shadow); }
+.group-card-name { font-weight:600;font-size:14px;color:var(--text-dark);margin-bottom:4px; }
+.group-card-meta { font-size:12px;color:var(--text-light);margin-bottom:8px; }
+.group-card-btn { width:100%;padding:8px;background:var(--pink-strong);color:white;border:none;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;font-family:'Noto Sans JP',sans-serif;transition:all .2s; }
+.group-card-btn:hover { background:var(--pink-accent); }
+.group-card-btn:disabled { background:var(--border);color:var(--text-mid);cursor:not-allowed; }
+.group-card-joined { border-color:var(--success-light);background:var(--success-bg); }
+.group-card-joined .group-card-name { color:var(--success); }
+.group-card-joined .group-card-meta { color:var(--success);opacity:0.8; }
+
 </style>
 </head>
 <body>
@@ -529,6 +541,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
     <button class="nav-tab" onclick="showPage('page-journal')">📓 ジャーナル</button>
     <button class="nav-tab" onclick="showPage('page-report')">📄 レポート</button>
     <button class="nav-tab" onclick="showPage('page-column')">📰 コラム</button>
+    <button class="nav-tab" onclick="showPage('page-group')">🌸 グループ</button>
     <button class="nav-tab" onclick="showPage('page-sns')">📸 みんなの記録</button>
   </div>
 </nav>
@@ -934,6 +947,27 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
   </div>
 </div>
 
+<!-- ========== グループページ ========== -->
+<div id="page-group" class="page">
+  <div style="padding:16px;">
+    <!-- 参加可能なキャンペーン -->
+    <div class="card">
+      <div class="card-title">参加可能なキャンペーン</div>
+      <div id="group-available-list" style="display:grid;gap:10px;">
+        <div style="text-align:center;color:var(--text-mid);padding:20px;font-size:13px;">読み込み中...</div>
+      </div>
+    </div>
+
+    <!-- 参加中のキャンペーン -->
+    <div class="card">
+      <div class="card-title">参加中のキャンペーン</div>
+      <div id="group-joined-list" style="display:grid;gap:10px;">
+        <div style="text-align:center;color:var(--text-light);padding:20px;font-size:13px;">参加中のキャンペーンはありません</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ========== SNSページ（インスタンツ）========== -->
 <div id="page-sns" class="page">
 
@@ -1277,6 +1311,88 @@ function openDiscordCommunity() {
   window.open(COMMUNITY_URL, '_blank');
 }
 
+// ========== グループ機能 ==========
+const GROUP_SAMPLES = [
+  { id: 'g1', name: '朝ウォーキング30日チャレンジ', habit: '朝ウォーキング', category: 'ウォーキング', startDate: '2025-01-01', endDate: '2025-01-31', memberCount: 23, description: '毎朝30分のウォーキングで体を整えるチャレンジ' },
+  { id: 'g2', name: '16時間ファスティングの会', habit: '16時間ファスティング', category: 'ファスティング', startDate: '2025-01-01', endDate: '2025-02-28', memberCount: 15, description: '16時間ファスティングに取り組むグループ' },
+  { id: 'g3', name: '1ヶ月5kg体重減を目指す会', habit: 'ダイエット', category: 'ダイエット', startDate: '2025-01-15', endDate: '2025-02-15', memberCount: 8, description: '健康的に体重を減らすための応援コミュニティ' }
+];
+let userJoinedGroups = []; // Supabase から取得する
+
+async function loadGroupsUI() {
+  try {
+    // Supabase からデータ取得（今は仮データ）
+    const available = GROUP_SAMPLES;
+    const joined = [GROUP_SAMPLES[0]]; // 仮：最初のグループに参加中
+    
+    renderAvailableGroups(available, joined);
+    renderJoinedGroups(joined);
+  } catch (e) {
+    console.error('グループロード失敗:', e);
+  }
+}
+
+function renderAvailableGroups(available, joined) {
+  const container = document.getElementById('group-available-list');
+  if (!container) return;
+  
+  const joinedIds = joined.map(g => g.id);
+  const notJoined = available.filter(g => !joinedIds.includes(g.id));
+  
+  if (notJoined.length === 0) {
+    container.innerHTML = '<div style="text-align:center;color:var(--text-light);padding:20px;font-size:13px;">参加可能なキャンペーンはありません</div>';
+    return;
+  }
+  
+  container.innerHTML = notJoined.map(g =>
+    '<div class="group-card">' +
+      '<div class="group-card-name">' + g.name + '</div>' +
+      '<div class="group-card-meta">' + g.startDate + ' 〜 ' + g.endDate + ' • メンバー' + g.memberCount + '人</div>' +
+      '<button class="group-card-btn" onclick="requestGroupJoin(\'' + g.id + '\', \'' + g.name + '\')">参加申請</button>' +
+    '</div>'
+  ).join('');
+}
+
+function renderJoinedGroups(joined) {
+  const container = document.getElementById('group-joined-list');
+  if (!container) return;
+  
+  if (joined.length === 0) {
+    container.innerHTML = '<div style="text-align:center;color:var(--text-light);padding:20px;font-size:13px;">参加中のキャンペーンはありません</div>';
+    return;
+  }
+  
+  container.innerHTML = joined.map(g =>
+    '<div class="group-card group-card-joined">' +
+      '<div class="group-card-name">✅ ' + g.name + '</div>' +
+      '<div class="group-card-meta">メンバー' + g.memberCount + '人 • 習慣：' + g.habit + '</div>' +
+    '</div>'
+  ).join('');
+}
+
+async function requestGroupJoin(groupId, groupName) {
+  if (!currentUser) {
+    alert('ログインしてください');
+    return;
+  }
+  
+  try {
+    // Supabase に参加申請を記録（現在は仮実装）
+    alert(groupName + ' に参加申請しました！');
+    
+    // 実装時：
+    // const { error } = await supabaseClient.from('group_members').insert({
+    //   group_id: groupId,
+    //   user_id: currentUser.id,
+    //   status: 'pending'
+    // });
+  } catch (e) {
+    console.error('参加申請失敗:', e);
+    alert('申請に失敗しました');
+  }
+}
+
+
 let state = {
   name:'', age:'', height:0, weight:0, goalWeight:55, period:'6ヶ月',
   exercise:'', foodWorries:[], selectedHabits:[], customHabits:[],
@@ -1331,13 +1447,14 @@ function showPage(id) {
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   const tabs = document.querySelectorAll('.nav-tab');
-  const map = {'page-goal':0,'page-todo':1,'page-record':2,'page-journal':3,'page-report':4,'page-column':5,'page-sns':6};
+  const map = {'page-goal':0,'page-todo':1,'page-record':2,'page-journal':3,'page-report':4,'page-column':5,'page-group':6,'page-sns':7};
   if (map[id] !== undefined) tabs[map[id]].classList.add('active');
   if (id === 'page-todo') renderTodo();
   if (id === 'page-record') renderRecordHistory();
   if (id === 'page-report') updateReportPage();
   if (id === 'page-journal') { renderJournalHistory(); document.getElementById('journal-date-label').textContent = formatDateLabel(journalDate); }
   if (id === 'page-column') { renderColumnArticles(); }
+  if (id === 'page-group') { loadGroupsUI(); }
   if (id === 'page-sns') { loadPosts(); }
   window.scrollTo(0,0);
 }
