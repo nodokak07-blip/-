@@ -394,6 +394,30 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
 .group-card-joined .group-card-name { color:var(--success); }
 .group-card-joined .group-card-meta { color:var(--success);opacity:0.8; }
 
+/* ========== グループ詳細・みんなの花畑 ========== */
+.group-member-flower { text-align:center;padding:12px;border:0.5px solid var(--border);border-radius:12px;background:white;transition:all .2s; }
+.group-member-flower-emoji { font-size:40px;margin-bottom:6px; }
+.group-member-flower-name { font-size:13px;font-weight:500;color:var(--text-dark);margin-bottom:6px; }
+.group-member-flower-stats { font-size:11px;color:var(--text-light);display:flex;justify-content:center;gap:8px; }
+.group-member-flower-stat { display:flex;align-items:center;gap:2px; }
+
+/* ========== グループ報告フィード ========== */
+.group-report-card { background:white;border:0.5px solid var(--border);border-radius:12px;padding:12px; }
+.group-report-header { display:flex;justify-content:space-between;align-items:center;margin-bottom:8px; }
+.group-report-user { font-weight:500;font-size:13px;color:var(--text-dark); }
+.group-report-eval { font-size:11px;padding:2px 8px;border-radius:4px;background:var(--green-light);color:var(--green-strong); }
+.group-report-eval.soso { background:#FFF8E1;color:#D4A017; }
+.group-report-content { font-size:13px;color:var(--text-mid);margin:8px 0;line-height:1.5; }
+.group-report-actions { display:flex;gap:8px;margin-top:8px; }
+.group-action-btn { flex:1;padding:6px;background:white;border:0.5px solid var(--border);border-radius:6px;font-size:12px;cursor:pointer;transition:all .2s; }
+.group-action-btn:hover { background:var(--border); }
+.group-action-btn.active { background:var(--pink-strong);color:white;border-color:var(--pink-strong); }
+
+/* ========== 花選択 ========== */
+.flower-choice-btn { padding:14px;text-align:center;font-size:24px;border:2px solid var(--border);border-radius:8px;cursor:pointer;background:white;transition:all .2s; }
+.flower-choice-btn:hover { transform:scale(1.05); }
+.flower-choice-btn.active { border-color:var(--pink-strong);background:var(--pink-light); }
+
 </style>
 </head>
 <body>
@@ -968,6 +992,84 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
   </div>
 </div>
 
+<!-- ========== グループ詳細ページ（みんなの花畑） ========== -->
+<div id="page-group-detail" class="page">
+  <div style="padding:16px;">
+    <!-- グループ情報 -->
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div class="card-title" style="margin:0;">グループ情報</div>
+        <button onclick="backToGroupHome()" style="background:none;border:none;font-size:20px;cursor:pointer;">✕</button>
+      </div>
+      <div id="group-detail-info" style="display:grid;gap:8px;font-size:13px;color:var(--text-mid);">
+        <div>期間：<span id="group-detail-period"></span></div>
+        <div>メンバー：<span id="group-detail-member-count"></span>人</div>
+        <div>習慣：<span id="group-detail-habit"></span></div>
+      </div>
+    </div>
+
+    <!-- みんなの花畑 -->
+    <div class="card">
+      <div class="card-title" id="group-detail-title">朝ウォーキング30日チャレンジ - みんなの花畑</div>
+      <div id="group-flowers-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px;">
+        <div style="text-align:center;padding:20px;color:var(--text-light);font-size:13px;">読み込み中...</div>
+      </div>
+    </div>
+
+    <!-- グループ内でできること -->
+    <div class="card">
+      <div style="display:grid;gap:10px;">
+        <button class="btn" style="background:var(--pink-strong);width:100%;padding:12px;" onclick="openGroupReports(currentGroupId)">📝 今日の報告をする</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== グループ報告フィード ========== -->
+<div id="page-group-report" class="page">
+  <div style="padding:16px;">
+    <!-- ナビゲーション -->
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <div class="card-title" style="margin:0;">報告フィード</div>
+      <button onclick="backToGroupDetail()" style="background:none;border:none;font-size:20px;cursor:pointer;">✕</button>
+    </div>
+
+    <!-- グループ情報バー -->
+    <div class="card" style="margin-bottom:16px;padding:12px;">
+      <div style="font-size:12px;color:var(--text-mid);">
+        <span id="report-group-name">グループ名</span> • <span id="report-member-count">メンバー数</span>人
+      </div>
+    </div>
+
+    <!-- 報告フィード -->
+    <div id="group-reports-feed" style="display:grid;gap:10px;margin-bottom:16px;">
+      <div style="text-align:center;color:var(--text-light);padding:20px;font-size:13px;">読み込み中...</div>
+    </div>
+
+    <!-- あなたのお花選択 -->
+    <div class="card">
+      <div class="card-title">あなたのお花を選ぶ</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px;">
+        <div class="flower-choice-btn" onclick="selectGroupFlower('🌼', this)">🌼</div>
+        <div class="flower-choice-btn" onclick="selectGroupFlower('🌹', this)">🌹</div>
+        <div class="flower-choice-btn" onclick="selectGroupFlower('🌷', this)">🌷</div>
+        <div class="flower-choice-btn" onclick="selectGroupFlower('🌺', this)">🌺</div>
+      </div>
+    </div>
+
+    <!-- 今日の報告フォーム -->
+    <div class="card">
+      <div class="card-title">今日の取り組み</div>
+      <textarea id="group-report-content" placeholder="今日の取り組みを記入..." style="width:100%;height:80px;padding:10px;border:1px solid var(--border);border-radius:8px;font-family:'Noto Sans JP',sans-serif;font-size:13px;resize:vertical;"></textarea>
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;">
+        <button class="btn" onclick="submitGroupReport('done')" style="background:var(--green-strong);">✅ できた！</button>
+        <button class="btn" onclick="submitGroupReport('soso')" style="background:#D4A017;">💛 いまいち</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ========== SNSページ（インスタンツ）========== -->
 <div id="page-sns" class="page">
 
@@ -1363,7 +1465,7 @@ function renderJoinedGroups(joined) {
   }
   
   container.innerHTML = joined.map(g =>
-    '<div class="group-card group-card-joined">' +
+    '<div class="group-card group-card-joined" onclick="openGroupDetail(\'' + g.id + '\')" style="cursor:pointer;">' +
       '<div class="group-card-name">✅ ' + g.name + '</div>' +
       '<div class="group-card-meta">メンバー' + g.memberCount + '人 • 習慣：' + g.habit + '</div>' +
     '</div>'
@@ -1389,6 +1491,156 @@ async function requestGroupJoin(groupId, groupName) {
   } catch (e) {
     console.error('参加申請失敗:', e);
     alert('申請に失敗しました');
+  }
+}
+
+// ========== グループ詳細・みんなの花畑 ==========
+let currentGroupId = null;
+let currentGroupData = null;
+
+async function openGroupDetail(groupId) {
+  currentGroupId = groupId;
+  const group = GROUP_SAMPLES.find(g => g.id === groupId);
+  if (!group) return;
+  
+  currentGroupData = group;
+  loadGroupDetail(groupId);
+  showPage('page-group-detail');
+}
+
+function loadGroupDetail(groupId) {
+  const group = GROUP_SAMPLES.find(g => g.id === groupId);
+  if (!group) return;
+  
+  document.getElementById('group-detail-title').textContent = group.name + ' - みんなの花畑';
+  document.getElementById('group-detail-period').textContent = group.startDate + ' 〜 ' + group.endDate;
+  document.getElementById('group-detail-member-count').textContent = group.memberCount;
+  document.getElementById('group-detail-habit').textContent = group.habit;
+  
+  renderGroupFlowers(groupId);
+}
+
+function renderGroupFlowers(groupId) {
+  // 仮データ：メンバーと花の情報
+  const memberFlowers = [
+    { name: 'のどか', flower: '🌹', reports: 14, likes: 8, comments: 5 },
+    { name: 'ユーザーA', flower: '🌺', reports: 12, likes: 6, comments: 3 },
+    { name: 'ユーザーB', flower: '🌸', reports: 8, likes: 4, comments: 2 },
+    { name: 'ユーザーC', flower: '🌿', reports: 3, likes: 1, comments: 0 },
+    { name: 'ユーザーD', flower: '🌼', reports: 6, likes: 2, comments: 1 },
+    { name: 'ユーザーE', flower: '🌻', reports: 11, likes: 5, comments: 4 }
+  ];
+  
+  const container = document.getElementById('group-flowers-grid');
+  container.innerHTML = memberFlowers.map(m =>
+    '<div class="group-member-flower">' +
+      '<div class="group-member-flower-emoji">' + m.flower + '</div>' +
+      '<div class="group-member-flower-name">' + m.name + '</div>' +
+      '<div class="group-member-flower-stats">' +
+        '<div class="group-member-flower-stat">📝 ' + m.reports + '</div>' +
+        '<div class="group-member-flower-stat">❤️ ' + m.likes + '</div>' +
+        '<div class="group-member-flower-stat">💬 ' + m.comments + '</div>' +
+      '</div>' +
+    '</div>'
+  ).join('');
+}
+
+function backToGroupHome() {
+  showPage('page-group');
+}
+
+function openGroupReports(groupId) {
+  currentGroupId = groupId;
+  const group = GROUP_SAMPLES.find(g => g.id === groupId);
+  if (!group) return;
+  
+  document.getElementById('report-group-name').textContent = group.name;
+  document.getElementById('report-member-count').textContent = group.memberCount;
+  
+  renderGroupReports(groupId);
+  showPage('page-group-report');
+}
+
+function renderGroupReports(groupId) {
+  // 仮データ：報告フィード
+  const reports = [
+    { user: 'のどか 🌹', date: '1月15日 07:30', eval: 'done', content: '朝日の中でウォーキング30分達成！天気も良くて気持ちよかった。', likes: 3, comments: 2 },
+    { user: 'ユーザーA 🌺', date: '1月14日 19:20', eval: 'soso', content: '今日は仕事が遅くなって、夜間ウォーキングになってしまいました。でも歩いたことが大事😊', likes: 2, comments: 1 },
+    { user: 'ユーザーB 🌸', date: '1月13日 06:45', eval: 'done', content: '今週もウォーキング習慣を続けられてます！体が軽くなってきた気がします。', likes: 5, comments: 3 }
+  ];
+  
+  const container = document.getElementById('group-reports-feed');
+  container.innerHTML = reports.map((r, i) =>
+    '<div class="group-report-card">' +
+      '<div class="group-report-header">' +
+        '<div><div class="group-report-user">' + r.user + '</div><div style="font-size:11px;color:var(--text-light);">' + r.date + '</div></div>' +
+        '<div class="group-report-eval' + (r.eval === 'soso' ? ' soso' : '') + '">' + (r.eval === 'done' ? '✅ できた！' : '💛 いまいち') + '</div>' +
+      '</div>' +
+      '<div class="group-report-content">' + r.content + '</div>' +
+      '<div style="font-size:12px;color:var(--text-light);margin:6px 0;">❤️ ' + r.likes + ' • 💬 ' + r.comments + '</div>' +
+      '<div class="group-report-actions">' +
+        '<button class="group-action-btn" onclick="likeGroupReport(' + i + ')">❤️ いいね</button>' +
+        '<button class="group-action-btn" onclick="commentGroupReport(' + i + ')">💬 コメント</button>' +
+      '</div>' +
+    '</div>'
+  ).join('');
+}
+
+function backToGroupDetail() {
+  if (currentGroupId) {
+    loadGroupDetail(currentGroupId);
+    showPage('page-group-detail');
+  } else {
+    showPage('page-group');
+  }
+}
+
+function selectGroupFlower(flower, element) {
+  document.querySelectorAll('.flower-choice-btn').forEach(btn => btn.classList.remove('active'));
+  element.classList.add('active');
+}
+
+async function submitGroupReport(evaluation) {
+  if (!currentUser) {
+    alert('ログインしてください');
+    return;
+  }
+  
+  const content = document.getElementById('group-report-content').value;
+  const flowerBtn = document.querySelector('.flower-choice-btn.active');
+  
+  if (!content.trim()) {
+    alert('取り組み内容を入力してください');
+    return;
+  }
+  
+  try {
+    // Supabase に報告を保存（現在は仮実装）
+    alert('報告を送信しました！');
+    document.getElementById('group-report-content').value = '';
+    
+    // 実装時：
+    // const { error } = await supabaseClient.from('group_reports').insert({
+    //   group_id: currentGroupId,
+    //   user_id: currentUser.id,
+    //   date: new Date().toISOString().split('T')[0],
+    //   content: content,
+    //   self_evaluation: evaluation
+    // });
+  } catch (e) {
+    console.error('報告送信失敗:', e);
+    alert('送信に失敗しました');
+  }
+}
+
+function likeGroupReport(index) {
+  alert('いいねしました！');
+}
+
+function commentGroupReport(index) {
+  const message = prompt('コメントを入力してください：');
+  if (message) {
+    alert('コメントを送信しました：' + message);
   }
 }
 
