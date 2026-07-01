@@ -418,6 +418,27 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
 .flower-choice-btn:hover { transform:scale(1.05); }
 .flower-choice-btn.active { border-color:var(--pink-strong);background:var(--pink-light); }
 
+/* ========== グループ報告ボタン（かわいいデザイン） ========== */
+.group-submit-btn { width:100%;padding:14px 16px;border:1.5px solid;border-radius:16px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Noto Sans JP',sans-serif;transition:all .2s;box-shadow:0 2px 8px rgba(200,100,130,0.08); }
+.group-submit-btn:hover { transform:translateY(-2px);box-shadow:0 4px 16px rgba(200,100,130,0.15); }
+.group-submit-btn:active { transform:translateY(0); }
+
+/* ピンク系（今日の報告をする） */
+.group-submit-pink { background:linear-gradient(135deg,rgba(255,208,232,0.4),rgba(255,190,220,0.4));border-color:rgba(231,84,128,0.3);color:var(--pink-dark); }
+.group-submit-pink:hover { background:linear-gradient(135deg,rgba(255,200,225,0.5),rgba(255,180,210,0.5)); }
+
+/* グリーン系（できた！） */
+.group-eval-btn { width:100%;padding:14px 16px;border:1.5px solid;border-radius:16px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Noto Sans JP',sans-serif;transition:all .2s;box-shadow:0 2px 8px rgba(45,170,113,0.08); }
+.group-eval-btn:hover { transform:translateY(-2px);box-shadow:0 4px 16px rgba(45,170,113,0.12); }
+.group-eval-btn:active { transform:translateY(0); }
+
+.group-eval-done { background:linear-gradient(135deg,rgba(45,170,113,0.15),rgba(112,210,153,0.15));border-color:rgba(45,170,113,0.3);color:var(--green-strong); }
+.group-eval-done:hover { background:linear-gradient(135deg,rgba(45,170,113,0.25),rgba(112,210,153,0.25)); }
+
+/* ゴールド系（いまいち） */
+.group-eval-soso { background:linear-gradient(135deg,rgba(255,235,150,0.3),rgba(255,225,100,0.3));border-color:rgba(212,160,23,0.3);color:#B8860B; }
+.group-eval-soso:hover { background:linear-gradient(135deg,rgba(255,235,150,0.45),rgba(255,225,100,0.45)); }
+
 </style>
 </head>
 <body>
@@ -989,6 +1010,19 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
         <div style="text-align:center;color:var(--text-light);padding:20px;font-size:13px;">参加中のキャンペーンはありません</div>
       </div>
     </div>
+
+    <!-- わたしの花畑（簡易版） -->
+    <div class="card">
+      <div class="card-title">🌷 わたしの花畑</div>
+      <div style="text-align:center;padding:16px;">
+        <div style="font-size:48px;margin-bottom:8px;">🌹</div>
+        <div style="font-size:14px;font-weight:500;color:var(--text-dark);margin-bottom:4px;">あなたの花</div>
+        <div style="font-size:12px;color:var(--text-light);margin-bottom:12px;">朝ウォーキング30日チャレンジ</div>
+      </div>
+      <div id="my-group-stats" style="font-size:12px;color:var(--text-mid);text-align:center;padding:8px;background:var(--pink-light);border-radius:8px;">
+        ❤️ いいね送信：0 • 💬 コメント送信：0
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1019,7 +1053,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
     <!-- グループ内でできること -->
     <div class="card">
       <div style="display:grid;gap:10px;">
-        <button class="btn" style="background:var(--pink-strong);width:100%;padding:12px;" onclick="openGroupReports(currentGroupId)">📝 今日の報告をする</button>
+        <button class="group-submit-btn group-submit-pink" onclick="openGroupReports(currentGroupId)">📝 今日の報告をする</button>
       </div>
     </div>
   </div>
@@ -1063,8 +1097,8 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
       <textarea id="group-report-content" placeholder="今日の取り組みを記入..." style="width:100%;height:80px;padding:10px;border:1px solid var(--border);border-radius:8px;font-family:'Noto Sans JP',sans-serif;font-size:13px;resize:vertical;"></textarea>
       
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;">
-        <button class="btn" onclick="submitGroupReport('done')" style="background:var(--green-strong);">✅ できた！</button>
-        <button class="btn" onclick="submitGroupReport('soso')" style="background:#D4A017;">💛 いまいち</button>
+        <button class="group-eval-btn group-eval-done" onclick="submitGroupReport('done')">✅ できた！</button>
+        <button class="group-eval-btn group-eval-soso" onclick="submitGroupReport('soso')">💛 いまいち</button>
       </div>
     </div>
   </div>
@@ -1562,28 +1596,76 @@ function openGroupReports(groupId) {
 }
 
 function renderGroupReports(groupId) {
-  // 仮データ：報告フィード
+  // 仮データ：報告フィード（コメント情報も含む）
   const reports = [
-    { user: 'のどか 🌹', date: '1月15日 07:30', eval: 'done', content: '朝日の中でウォーキング30分達成！天気も良くて気持ちよかった。', likes: 3, comments: 2 },
-    { user: 'ユーザーA 🌺', date: '1月14日 19:20', eval: 'soso', content: '今日は仕事が遅くなって、夜間ウォーキングになってしまいました。でも歩いたことが大事😊', likes: 2, comments: 1 },
-    { user: 'ユーザーB 🌸', date: '1月13日 06:45', eval: 'done', content: '今週もウォーキング習慣を続けられてます！体が軽くなってきた気がします。', likes: 5, comments: 3 }
+    { 
+      id: 'r1',
+      user: 'のどか 🌹', 
+      date: '1月15日 07:30', 
+      eval: 'done', 
+      content: '朝日の中でウォーキング30分達成！天気も良くて気持ちよかった。', 
+      likes: 3, 
+      likedByUser: false,
+      commentsList: [
+        { user: 'ユーザーA', text: '頑張ってますね！' },
+        { user: 'ユーザーB', text: '素晴らしい！' }
+      ]
+    },
+    { 
+      id: 'r2',
+      user: 'ユーザーA 🌺', 
+      date: '1月14日 19:20', 
+      eval: 'soso', 
+      content: '今日は仕事が遅くなって、夜間ウォーキングになってしまいました。でも歩いたことが大事😊', 
+      likes: 2, 
+      likedByUser: false,
+      commentsList: [
+        { user: 'のどか', text: '報告することが大事！' }
+      ]
+    },
+    { 
+      id: 'r3',
+      user: 'ユーザーB 🌸', 
+      date: '1月13日 06:45', 
+      eval: 'done', 
+      content: '今週もウォーキング習慣を続けられてます！体が軽くなってきた気がします。', 
+      likes: 5, 
+      likedByUser: false,
+      commentsList: [
+        { user: 'のどか', text: '継続は力ですね！' },
+        { user: 'ユーザーC', text: '応援してます！' },
+        { user: 'ユーザーD', text: '一緒に頑張ろう！' }
+      ]
+    }
   ];
   
   const container = document.getElementById('group-reports-feed');
   container.innerHTML = reports.map((r, i) =>
-    '<div class="group-report-card">' +
+    '<div class="group-report-card" id="report-' + r.id + '">' +
       '<div class="group-report-header">' +
         '<div><div class="group-report-user">' + r.user + '</div><div style="font-size:11px;color:var(--text-light);">' + r.date + '</div></div>' +
         '<div class="group-report-eval' + (r.eval === 'soso' ? ' soso' : '') + '">' + (r.eval === 'done' ? '✅ できた！' : '💛 いまいち') + '</div>' +
       '</div>' +
       '<div class="group-report-content">' + r.content + '</div>' +
-      '<div style="font-size:12px;color:var(--text-light);margin:6px 0;">❤️ ' + r.likes + ' • 💬 ' + r.comments + '</div>' +
+      '<div style="font-size:12px;color:var(--text-light);margin:8px 0;display:flex;gap:12px;">❤️ <span id="likes-' + r.id + '">' + r.likes + '</span> • 💬 <span id="comments-' + r.id + '">' + r.commentsList.length + '</span></div>' +
       '<div class="group-report-actions">' +
-        '<button class="group-action-btn" onclick="likeGroupReport(' + i + ')">❤️ いいね</button>' +
-        '<button class="group-action-btn" onclick="commentGroupReport(' + i + ')">💬 コメント</button>' +
+        '<button class="group-action-btn" id="like-btn-' + r.id + '" onclick="likeGroupReport(\'' + r.id + '\',' + i + ')">❤️ いいね</button>' +
+        '<button class="group-action-btn" onclick="toggleCommentForm(\'' + r.id + '\')">💬 コメント</button>' +
+      '</div>' +
+      '<div id="comment-section-' + r.id + '" style="display:none;margin-top:12px;padding-top:12px;border-top:0.5px solid var(--border);">' +
+        '<div style="display:grid;gap:8px;margin-bottom:10px;">' +
+          r.commentsList.map(c => '<div style="font-size:12px;color:var(--text-mid);"><strong>' + c.user + '：</strong>' + c.text + '</div>').join('') +
+        '</div>' +
+        '<div style="display:flex;gap:6px;">' +
+          '<input type="text" class="comment-input" id="comment-input-' + r.id + '" placeholder="コメントを入力..." style="flex:1;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-size:12px;font-family:\'Noto Sans JP\',sans-serif;">' +
+          '<button onclick="submitComment(\'' + r.id + '\',' + i + ')" style="padding:8px 16px;background:var(--pink-strong);color:white;border:none;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s;font-family:\'Noto Sans JP\',sans-serif;">送信</button>' +
+        '</div>' +
       '</div>' +
     '</div>'
   ).join('');
+  
+  // グローバルで報告データを保存（いいね・コメント管理用）
+  window.groupReportsData = reports;
 }
 
 function backToGroupDetail() {
@@ -1633,14 +1715,74 @@ async function submitGroupReport(evaluation) {
   }
 }
 
-function likeGroupReport(index) {
-  alert('いいねしました！');
+function likeGroupReport(reportId, index) {
+  alert('いいねしました！（Supabase連携で保存）');
+  
+  // いいねカウント更新
+  if (window.groupReportsData && window.groupReportsData[index]) {
+    const report = window.groupReportsData[index];
+    if (!report.likedByUser) {
+      report.likes++;
+      report.likedByUser = true;
+      document.getElementById('likes-' + reportId).textContent = report.likes;
+      document.getElementById('like-btn-' + reportId).classList.add('active');
+      
+      // わたしの統計を更新
+      if (!window.myGroupStats) window.myGroupStats = { likesSent: 0, commentsSent: 0, likesReceived: 0, commentsReceived: 0 };
+      window.myGroupStats.likesSent++;
+      updateMyFlowerStats();
+    }
+  }
 }
 
-function commentGroupReport(index) {
-  const message = prompt('コメントを入力してください：');
-  if (message) {
-    alert('コメントを送信しました：' + message);
+function toggleCommentForm(reportId) {
+  const section = document.getElementById('comment-section-' + reportId);
+  if (section) {
+    section.style.display = section.style.display === 'none' ? 'block' : 'none';
+  }
+}
+
+function submitComment(reportId, index) {
+  const input = document.getElementById('comment-input-' + reportId);
+  if (!input || !input.value.trim()) return;
+  
+  const commentText = input.value;
+  
+  // コメント追加
+  if (window.groupReportsData && window.groupReportsData[index]) {
+    const report = window.groupReportsData[index];
+    report.commentsList.push({ user: 'あなた', text: commentText });
+    
+    // 表示更新（コメント入力の上に追加）
+    const section = document.getElementById('comment-section-' + reportId);
+    const commentDisplay = section.querySelector('div:first-child');
+    const newComment = document.createElement('div');
+    newComment.style.cssText = 'font-size:12px;color:var(--text-mid);';
+    newComment.innerHTML = '<strong>あなた：</strong>' + commentText;
+    commentDisplay.appendChild(newComment);
+    
+    // カウント更新
+    document.getElementById('comments-' + reportId).textContent = report.commentsList.length;
+    
+    // わたしの統計を更新
+    if (!window.myGroupStats) window.myGroupStats = { likesSent: 0, commentsSent: 0, likesReceived: 0, commentsReceived: 0 };
+    window.myGroupStats.commentsSent++;
+    updateMyFlowerStats();
+    
+    input.value = '';
+    input.focus();
+    
+    alert('コメントを送信しました！（Supabase連携で保存）');
+  }
+}
+
+function updateMyFlowerStats() {
+  // わたしの花畑の統計を更新（ステップ5で詳細実装）
+  const statsEl = document.getElementById('my-group-stats');
+  if (statsEl && window.myGroupStats) {
+    statsEl.innerHTML = 
+      '❤️ いいね送信：' + window.myGroupStats.likesSent + ' • ' +
+      '💬 コメント送信：' + window.myGroupStats.commentsSent;
   }
 }
 
