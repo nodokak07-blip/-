@@ -520,8 +520,8 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
     <span class="lp-flower">🌸</span>
     <div class="lp-tagline">美容健康ダイエット習慣サポート</div>
     <p class="lp-sub">頑張りたくても続けられないあなたへ。<br>体質改善×習慣の見直しで、内側からキレイになるダイエットを。</p>
-    <button class="btn-start" onclick="startApp()">✦　無料で始める</button>
-    <div class="top-note">登録不要 — 完全無料</div>
+    <button class="btn-start" onclick="startApp()">✦　ログイン</button>
+    <div class="top-note">完全無料</div>
   </section>
 
   <section class="lp-concept-bg">
@@ -564,9 +564,9 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
   </section>
 
   <section class="lp-cta">
-    <p class="lp-cta-sub">完全無料・登録不要。今すぐ始められます。</p>
-    <button class="btn-start" onclick="startApp()">✦　無料で始める</button>
-    <div class="top-note" style="margin-top:12px;">登録不要 — 完全無料</div>
+    <p class="lp-cta-sub">完全無料。今すぐ始められます。</p>
+    <button class="btn-start" onclick="startApp()">✦　ログイン</button>
+    <div class="top-note" style="margin-top:12px;">完全無料</div>
   </section>
 </div>
 
@@ -594,7 +594,6 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
     <button class="nav-tab active" onclick="showPage('page-goal')">🎯 目標設定</button>
     <button class="nav-tab" onclick="showPage('page-todo')">✅ 習慣TODO</button>
     <button class="nav-tab" onclick="showPage('page-record')">📊 体調記録</button>
-    <button class="nav-tab" onclick="showPage('page-journal')">📓 ジャーナル</button>
     <button class="nav-tab" onclick="showPage('page-report')">📄 レポート</button>
     <button class="nav-tab" onclick="showPage('page-column')">📰 コラム</button>
     <button class="nav-tab" onclick="showPage('page-group')">🌸 グループ</button>
@@ -891,6 +890,39 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
       <div class="card-title">📈 直近の記録</div>
       <div id="record-history" style="font-size:13px;color:var(--text-mid);">記録がありません</div>
     </div>
+
+    <!-- ジャーナル（体調記録に統合） -->
+    <div class="date-header">
+      <button class="date-nav" onclick="changeJournalDate(-1)">‹</button>
+      <div class="date-label" id="journal-date-label">今日</div>
+      <button class="date-nav" onclick="changeJournalDate(1)">›</button>
+    </div>
+    <div class="card">
+      <div class="card-title">📓 今日のジャーナル</div>
+      <div class="form-group">
+        <label class="form-label">今日の気づき・振り返り・感情を自由に書こう</label>
+        <textarea id="journal-text" placeholder="今日はどんな一日でしたか？&#10;食事・運動・気持ち・できたこと・できなかったこと...&#10;なんでも自由に書いてください🌸" rows="8" style="font-size:15px;line-height:1.8;"></textarea>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button class="btn-primary" onclick="saveJournal()" style="flex:1;">💾 保存する</button>
+        <button class="btn-sm btn-sm-outline" onclick="sendToLINE()" style="padding:14px 16px;border-radius:var(--radius-sm);font-size:14px;">💚 LINEで相談</button>
+      </div>
+    </div>
+    <div class="card" style="background:linear-gradient(135deg,#e8f8f0,#f0fff8);border:1.5px solid #7DD4A8;">
+      <div class="card-title" style="color:#2DAA71;">💚 LINEでフィードバックをもらおう</div>
+      <p style="font-size:13px;color:#4a8a6a;line-height:1.8;margin-bottom:16px;">ジャーナルを保存してからボタンを押すと、今日の記録がLINEに送信されます。あなたの記録を見てフィードバックをお返しします！</p>
+      <div style="background:#f0fff8;border-radius:10px;padding:16px;margin-bottom:12px;font-size:13px;color:#4a8a6a;line-height:1.8;">
+        📩 <strong>nodoka に直接メッセージが届きます！</strong><br>
+        担当者直通（AIではなく本人が返信します）🌸<br>
+        LINEに移行したら、そのまま<strong>ペースト→送信</strong>してください！
+      </div>
+      <button onclick="sendToLINE()" style="width:100%;padding:16px;background:#06C755;color:white;border:none;border-radius:var(--radius-sm);font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;">💚 今日の記録をLINEで送る</button>
+      <p style="font-size:11px;color:#6aaa8a;text-align:center;margin-top:8px;">※記録内容が自動でコピーされます。LINEでそのままペーストして送信！</p>
+    </div>
+    <div class="card">
+      <div class="card-title">📖 過去のジャーナル</div>
+      <div id="journal-history" style="font-size:13px;color:var(--text-mid);">記録がありません</div>
+    </div>
   </div>
 </div>
 
@@ -940,43 +972,6 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
       </div>
       <button onclick="saveReportAsImage()" style="width:100%;padding:14px;background:linear-gradient(135deg,#f0a0b8,#e8d5c0);color:white;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:700;cursor:pointer;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:8px;">📸 SNSでシェアする(画像保存)</button>
       <button onclick="sendMonthlyReportToLINE()" style="width:100%;padding:14px;background:#06C755;color:white;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:700;cursor:pointer;margin-top:10px;">💚 月次レポートをLINEで送る</button>
-    </div>
-  </div>
-</div>
-
-<!-- ========== ジャーナルページ ========== -->
-<div id="page-journal" class="page">
-  <div style="padding:16px;">
-    <div class="date-header">
-      <button class="date-nav" onclick="changeJournalDate(-1)">‹</button>
-      <div class="date-label" id="journal-date-label">今日</div>
-      <button class="date-nav" onclick="changeJournalDate(1)">›</button>
-    </div>
-    <div class="card">
-      <div class="card-title">📓 今日のジャーナル</div>
-      <div class="form-group">
-        <label class="form-label">今日の気づき・振り返り・感情を自由に書こう</label>
-        <textarea id="journal-text" placeholder="今日はどんな一日でしたか？&#10;食事・運動・気持ち・できたこと・できなかったこと...&#10;なんでも自由に書いてください🌸" rows="8" style="font-size:15px;line-height:1.8;"></textarea>
-      </div>
-      <div style="display:flex;gap:10px;">
-        <button class="btn-primary" onclick="saveJournal()" style="flex:1;">💾 保存する</button>
-        <button class="btn-sm btn-sm-outline" onclick="sendToLINE()" style="padding:14px 16px;border-radius:var(--radius-sm);font-size:14px;">💚 LINEで相談</button>
-      </div>
-    </div>
-    <div class="card" style="background:linear-gradient(135deg,#e8f8f0,#f0fff8);border:1.5px solid #7DD4A8;">
-      <div class="card-title" style="color:#2DAA71;">💚 LINEでフィードバックをもらおう</div>
-      <p style="font-size:13px;color:#4a8a6a;line-height:1.8;margin-bottom:16px;">ジャーナルを保存してからボタンを押すと、今日の記録がLINEに送信されます。あなたの記録を見てフィードバックをお返しします！</p>
-      <div style="background:#f0fff8;border-radius:10px;padding:16px;margin-bottom:12px;font-size:13px;color:#4a8a6a;line-height:1.8;">
-        📩 <strong>nodoka に直接メッセージが届きます！</strong><br>
-        担当者直通（AIではなく本人が返信します）🌸<br>
-        LINEに移行したら、そのまま<strong>ペースト→送信</strong>してください！
-      </div>
-      <button onclick="sendToLINE()" style="width:100%;padding:16px;background:#06C755;color:white;border:none;border-radius:var(--radius-sm);font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;">💚 今日の記録をLINEで送る</button>
-      <p style="font-size:11px;color:#6aaa8a;text-align:center;margin-top:8px;">※記録内容が自動でコピーされます。LINEでそのままペーストして送信！</p>
-    </div>
-    <div class="card">
-      <div class="card-title">📖 過去のジャーナル</div>
-      <div id="journal-history" style="font-size:13px;color:var(--text-mid);">記録がありません</div>
     </div>
   </div>
 </div>
@@ -1463,11 +1458,13 @@ function updateAuthUI() {
     const username = localStorage.getItem('bloom-profile-username') || (currentUser.email || '').split('@')[0];
     if (navIcon) navIcon.textContent = icon;
     if (navName) navName.textContent = username;
-    if (adminBtn) adminBtn.style.display = 'block'; // 管理ボタンを表示
+    // 管理者かどうかをSupabaseで確認してボタン表示を判定
+    checkAdminStatus();
   } else {
     if (navIcon) navIcon.textContent = '🔑';
     if (navName) navName.textContent = 'ログイン';
-    if (adminBtn) adminBtn.style.display = 'none'; // 管理ボタンを非表示
+    isAdmin = false;
+    if (adminBtn) adminBtn.style.display = 'none';
   }
 }
 
@@ -1584,10 +1581,20 @@ const PRESET_HABITS = [
 const FREQ_OPTIONS = ['毎日','週5〜6回','週3〜4回','週1〜2回'];
 
 // ========== コラム記事（Noteから取得） ==========
-// コラム記事はNoteブログから外部APIで取得
+// ========== コラム記事 ==========
+// 【コラムの追加方法】
+// 下の COLUMN_ARTICLES = [ ] の中に、以下の形式で記事を追加してください。
+// カテゴリは「美容」「健康」「ダイエット」「習慣」のいずれかにするとフィルタが機能します。
+// url に Note記事のURLを入れると、タップでその記事が開きます。
+//
+// 例：
+// const COLUMN_ARTICLES = [
+//   { title:'記事タイトル', category:'美容', date:'2026.07.01', excerpt:'記事の紹介文（1〜2行）', url:'https://note.com/bloom_journal/n/xxxxx' },
+//   { title:'2つ目の記事', category:'健康', date:'2026.06.28', excerpt:'紹介文...', url:'https://note.com/bloom_journal/n/yyyyy' }
+// ];
+//
+// ※ 新しい記事を上に書くと、上から順に表示されます。
 const COLUMN_ARTICLES = [];
-// TODO: Note APIやRSSから記事を取得
-// const BLOG_URL = 'https://note.com/bloom_journal';
 let columnCurrentCategory = '全て';
 
 function renderColumnArticles() {
@@ -1600,16 +1607,17 @@ function renderColumnArticles() {
     list.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text-light);font-size:13px;">記事がありません</div>';
     return;
   }
-  list.innerHTML = filtered.map(a =>
-    '<div class="column-article-card" onclick="openColumnArticle()">' +
+  list.innerHTML = filtered.map((a, i) => {
+    const idx = COLUMN_ARTICLES.indexOf(a);
+    return '<div class="column-article-card" onclick="openColumnArticle(' + idx + ')">' +
       '<div class="column-article-top">' +
         '<span class="column-article-cat cat-' + a.category + '">' + a.category + '</span>' +
         '<span class="column-article-date">' + a.date + '</span>' +
       '</div>' +
       '<div class="column-article-title">' + a.title + '</div>' +
       '<div class="column-article-excerpt">' + a.excerpt + '</div>' +
-    '</div>'
-  ).join('');
+    '</div>';
+  }).join('');
 }
 
 function filterColumnCategory(btn, category) {
@@ -1619,8 +1627,11 @@ function filterColumnCategory(btn, category) {
   renderColumnArticles();
 }
 
-function openColumnArticle() {
-  window.open(BLOG_URL, '_blank');
+function openColumnArticle(index) {
+  // 記事にurlが設定されていればそれを開き、なければブログトップを開く
+  const article = COLUMN_ARTICLES[index];
+  const url = (article && article.url) ? article.url : BLOG_URL;
+  window.open(url, '_blank');
 }
 
 function openDiscordCommunity() {
@@ -1630,8 +1641,40 @@ function openDiscordCommunity() {
 // ========== グループ機能 ==========
 // ========== 管理画面（Phase 3） ==========
 let pendingApprovals = []; // 参加申請待ちデータ
+let isAdmin = false; // 管理者フラグ
+
+// 管理者かどうかをSupabaseのadminsテーブルで確認
+async function checkAdminStatus() {
+  isAdmin = false;
+  try {
+    if (supabaseClient && currentUser) {
+      const { data, error } = await supabaseClient
+        .from('admins')
+        .select('user_id')
+        .eq('user_id', currentUser.id)
+        .maybeSingle();
+      
+      if (!error && data) {
+        isAdmin = true;
+      }
+    }
+  } catch (e) {
+    console.error('管理者チェック失敗:', e);
+  }
+  
+  // 管理ボタンの表示/非表示を更新
+  const adminBtn = document.getElementById('nav-admin-btn');
+  if (adminBtn) adminBtn.style.display = isAdmin ? 'block' : 'none';
+}
 
 async function loadAdminDashboard() {
+  // 管理者以外はアクセス不可
+  if (!isAdmin) {
+    alert('管理者権限がありません');
+    showPage('page-group');
+    return;
+  }
+  
   try {
     if (!supabaseClient) return;
     
@@ -1758,7 +1801,16 @@ async function createGroup() {
     
     if (error) {
       console.error('グループ作成失敗:', error);
-      alert('グループ作成に失敗しました：' + error.message);
+      let hint = '';
+      const msg = (error.message || '') + ' ' + (error.details || '');
+      if (msg.includes('row-level security') || msg.includes('policy') || error.code === '42501') {
+        hint = '\n\n【原因】SupabaseのRLSポリシーで書き込みが許可されていません。\nSQL Editorで管理者用ポリシーを設定してください。';
+      } else if (msg.includes('null value') && msg.includes('id')) {
+        hint = '\n\n【原因】groupsテーブルのid列にデフォルト値がありません。\nSQL Editorで「ALTER TABLE groups ALTER COLUMN id SET DEFAULT gen_random_uuid();」を実行してください。';
+      } else if (msg.includes('column') && msg.includes('does not exist')) {
+        hint = '\n\n【原因】groupsテーブルに必要なカラムがありません。\nテーブルのカラム構成を確認してください。';
+      }
+      alert('グループ作成に失敗しました\n\nエラー内容：' + error.message + '\nコード：' + (error.code || '不明') + hint);
       return;
     }
     
@@ -2780,12 +2832,16 @@ function showPage(id) {
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   const tabs = document.querySelectorAll('.nav-tab');
-  const map = {'page-goal':0,'page-todo':1,'page-record':2,'page-journal':3,'page-report':4,'page-column':5,'page-group':6,'page-sns':7};
+  const map = {'page-goal':0,'page-todo':1,'page-record':2,'page-report':3,'page-column':4,'page-group':5,'page-sns':6};
   if (map[id] !== undefined) tabs[map[id]].classList.add('active');
   if (id === 'page-todo') renderTodo();
-  if (id === 'page-record') renderRecordHistory();
+  if (id === 'page-record') { 
+    renderRecordHistory(); 
+    renderJournalHistory(); 
+    const jl = document.getElementById('journal-date-label');
+    if (jl) jl.textContent = formatDateLabel(journalDate);
+  }
   if (id === 'page-report') updateReportPage();
-  if (id === 'page-journal') { renderJournalHistory(); document.getElementById('journal-date-label').textContent = formatDateLabel(journalDate); }
   if (id === 'page-column') { renderColumnArticles(); }
   if (id === 'page-group') { loadGroupsUI(); }
   if (id === 'page-admin') { loadAdminDashboard(); }
@@ -3154,6 +3210,8 @@ function toggleTodo(habit) {
   if (!todoData[dateKey]) todoData[dateKey] = {};
   todoData[dateKey][habit] = !todoData[dateKey][habit];
   saveToStorage();
+  // Supabaseにも保存（デバイス間同期）
+  saveTodoToSupabase(dateKey, habit, todoData[dateKey][habit]);
   renderTodo();
 }
 
@@ -3190,8 +3248,8 @@ function calcStreak() {
     const habits = state.selectedHabits;
     if (habits.length === 0) break;
     const done = Object.values(dayData).filter(Boolean).length;
-    const pct = done / habits.length;
-    if (pct >= 0.8) count++;
+    // 1個でも習慣を達成していればその日はカウント
+    if (done >= 1) count++;
     else if (i > 0) break;
   }
   streakCount = count;
