@@ -584,6 +584,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
     <span style="font-size:20px;">🌸</span>
     <span class="nav-logo">Bloom Journal</span>
     <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
+      <button id="nav-admin-btn" onclick="showPage('page-admin')" style="display:none;padding:6px 14px;border-radius:20px;border:1.5px solid var(--green-mid);background:var(--green-light);font-size:12px;cursor:pointer;color:var(--green-strong);font-weight:500;">⚙️ 管理</button>
       <button id="nav-auth-btn" onclick="toggleAuth()" style="padding:6px 14px;border-radius:20px;border:1.5px solid #F0D8E2;background:white;font-size:12px;cursor:pointer;color:var(--text-mid);display:flex;align-items:center;gap:6px;">
         <span id="nav-icon">🔑</span><span id="nav-name">ログイン</span>
       </button>
@@ -1213,6 +1214,78 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
   </div>
 </div>
 
+<!-- ========== 管理画面 ========== -->
+<div id="page-admin" class="page">
+  <div style="padding:16px;">
+    <!-- ナビゲーション -->
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+      <div class="card-title" style="margin:0;">⚙️ グループ管理</div>
+      <button onclick="backToMain()" style="background:none;border:none;font-size:20px;cursor:pointer;">✕</button>
+    </div>
+
+    <!-- 管理ダッシュボード -->
+    <div id="admin-dashboard" style="display:grid;gap:12px;margin-bottom:20px;">
+      <!-- ダッシュボードコンテンツ -->
+    </div>
+
+    <!-- グループ作成セクション -->
+    <div class="card">
+      <div class="card-title">➕ 新規グループを作成</div>
+      <form id="admin-group-form" style="display:grid;gap:12px;margin-top:12px;">
+        <div>
+          <label style="font-size:12px;font-weight:500;color:var(--text-dark);">グループ名 *</label>
+          <input type="text" id="admin-group-name" placeholder="グループ名を入力..." style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;margin-top:4px;font-family:'Noto Sans JP',sans-serif;">
+        </div>
+        
+        <div>
+          <label style="font-size:12px;font-weight:500;color:var(--text-dark);">説明 *</label>
+          <textarea id="admin-group-description" placeholder="グループの説明を入力..." style="width:100%;height:60px;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;margin-top:4px;resize:vertical;font-family:'Noto Sans JP',sans-serif;"></textarea>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div>
+            <label style="font-size:12px;font-weight:500;color:var(--text-dark);">習慣 *</label>
+            <input type="text" id="admin-group-habit" placeholder="習慣名" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;margin-top:4px;font-family:'Noto Sans JP',sans-serif;">
+          </div>
+          <div>
+            <label style="font-size:12px;font-weight:500;color:var(--text-dark);">カテゴリ *</label>
+            <input type="text" id="admin-group-category" placeholder="カテゴリ" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;margin-top:4px;font-family:'Noto Sans JP',sans-serif;">
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div>
+            <label style="font-size:12px;font-weight:500;color:var(--text-dark);">開始日 *</label>
+            <input type="date" id="admin-group-start" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;margin-top:4px;">
+          </div>
+          <div>
+            <label style="font-size:12px;font-weight:500;color:var(--text-dark);">終了日 *</label>
+            <input type="date" id="admin-group-end" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;margin-top:4px;">
+          </div>
+        </div>
+
+        <button type="button" onclick="createGroup()" style="padding:12px;background:var(--green-strong);color:white;border:none;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;font-family:'Noto Sans JP',sans-serif;">グループを作成</button>
+      </form>
+    </div>
+
+    <!-- グループ一覧（管理用） -->
+    <div class="card">
+      <div class="card-title">📋 グループ一覧</div>
+      <div id="admin-groups-list" style="display:grid;gap:12px;margin-top:12px;">
+        <div style="text-align:center;padding:20px;color:var(--text-light);font-size:13px;">グループはまだありません</div>
+      </div>
+    </div>
+
+    <!-- メンバー申請管理 -->
+    <div class="card">
+      <div class="card-title">👥 参加申請管理</div>
+      <div id="admin-pending-members" style="display:grid;gap:12px;margin-top:12px;">
+        <div style="text-align:center;padding:20px;color:var(--text-light);font-size:13px;">申請はありません</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ========== SNSページ（インスタンツ）========== -->
 <div id="page-sns" class="page">
 
@@ -1383,14 +1456,18 @@ async function handleLogout() {
 function updateAuthUI() {
   const navIcon = document.getElementById('nav-icon');
   const navName = document.getElementById('nav-name');
+  const adminBtn = document.getElementById('nav-admin-btn');
+  
   if (currentUser) {
     const icon = localStorage.getItem('bloom-profile-icon') || '🌸';
     const username = localStorage.getItem('bloom-profile-username') || (currentUser.email || '').split('@')[0];
     if (navIcon) navIcon.textContent = icon;
     if (navName) navName.textContent = username;
+    if (adminBtn) adminBtn.style.display = 'block'; // 管理ボタンを表示
   } else {
     if (navIcon) navIcon.textContent = '🔑';
     if (navName) navName.textContent = 'ログイン';
+    if (adminBtn) adminBtn.style.display = 'none'; // 管理ボタンを非表示
   }
 }
 
@@ -1506,17 +1583,11 @@ const PRESET_HABITS = [
 
 const FREQ_OPTIONS = ['毎日','週5〜6回','週3〜4回','週1〜2回'];
 
-// ========== コラム記事（仮データ） ==========
-const COLUMN_ARTICLES = [
-  { title:'朝の白湯で体質改善', category:'健康', date:'2025.06.20', excerpt:'朝一番の白湯習慣が巡りを整え、代謝アップにつながる理由を解説します。' },
-  { title:'タンパク質の正しい摂取量', category:'ダイエット', date:'2025.06.18', excerpt:'目的別のタンパク質摂取量の目安と、無理なく摂るためのコツを紹介します。' },
-  { title:'ストレスと食欲の関係', category:'習慣', date:'2025.06.15', excerpt:'ストレスによる過食のメカニズムと、食べすぎを防ぐ習慣のヒントをまとめました。' },
-  { title:'美肌と睡眠の深い関係', category:'美容', date:'2025.06.12', excerpt:'睡眠の質が肌のターンオーバーに与える影響と、快眠のための工夫を紹介します。' },
-  { title:'16時間ファスティング完全ガイド', category:'ダイエット', date:'2025.06.10', excerpt:'話題の16時間ファスティングのやり方と、続けるためのポイントを解説します。' },
-  { title:'毎日の習慣が人生を変える', category:'習慣', date:'2025.06.07', excerpt:'小さな習慣を積み重ねることが、なぜ大きな変化につながるのかを考えます。' },
-  { title:'ホルモンバランスと体重', category:'美容', date:'2025.06.04', excerpt:'女性ホルモンの変化が体重や体調に与える影響と付き合い方を紹介します。' },
-  { title:'運動しないで体が変わる？', category:'健康', date:'2025.06.01', excerpt:'運動が苦手な人でも取り入れやすい、体質から変える生活習慣を紹介します。' }
-];
+// ========== コラム記事（Noteから取得） ==========
+// コラム記事はNoteブログから外部APIで取得
+const COLUMN_ARTICLES = [];
+// TODO: Note APIやRSSから記事を取得
+// const BLOG_URL = 'https://note.com/bloom_journal';
 let columnCurrentCategory = '全て';
 
 function renderColumnArticles() {
@@ -1557,21 +1628,245 @@ function openDiscordCommunity() {
 }
 
 // ========== グループ機能 ==========
-const GROUP_SAMPLES = [
-  { id: 'g1', name: '美肌作りの習慣30日チャレンジ', habit: 'スキンケア習慣', category: 'スキンケア', startDate: '2025-02-01', endDate: '2025-02-28', memberCount: 45, description: '毎日のスキンケアで理想の肌を目指すグループです。一緒に美肌習慣を続けましょう。' },
-  { id: 'g2', name: '朝ヨガ習慣サークル', habit: '朝ヨガ', category: 'ヨガ', startDate: '2025-02-01', endDate: '2025-03-31', memberCount: 32, description: '毎朝15分のヨガで心身ともにリセット。一緒に健康的な習慣を作りましょう。' },
-  { id: 'g3', name: '食事記録で体質改善の会', habit: '食事記録', category: 'ダイエット', startDate: '2025-02-15', endDate: '2025-03-15', memberCount: 28, description: '毎日の食事を記録して、自分に合った食事習慣を見つけるグループです。' }
-];
-let userJoinedGroups = []; // Supabase から取得する
+// ========== 管理画面（Phase 3） ==========
+let pendingApprovals = []; // 参加申請待ちデータ
+
+async function loadAdminDashboard() {
+  // TODO: Supabaseからグループ一覧を取得
+  // const { data: groups, error } = await supabaseClient.from('groups').select('*');
+  // allGroups = groups || [];
+  
+  // TODO: Supabaseから参加申請一覧を取得
+  // const { data: pending } = await supabaseClient
+  //   .from('group_members')
+  //   .select('*, groups(*)')
+  //   .eq('status', 'pending');
+  // pendingApprovals = pending || [];
+  
+  renderAdminDashboard();
+  updateAdminGroupsList();
+  updateAdminPendingMembers();
+}
+
+function renderAdminDashboard() {
+  const dashboard = document.getElementById('admin-dashboard');
+  
+  const totalGroups = allGroups.length;
+  const totalMembers = allGroups.reduce((sum, g) => sum + (g.memberCount || 0), 0);
+  const pendingCount = pendingApprovals.length;
+  
+  dashboard.innerHTML = 
+    '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">' +
+      '<div style="background:var(--pink-light);border-radius:8px;padding:1rem;text-align:center;">' +
+        '<div style="font-size:20px;font-weight:500;color:var(--text-dark);">' + totalGroups + '</div>' +
+        '<div style="font-size:11px;color:var(--text-light);margin-top:4px;">グループ</div>' +
+      '</div>' +
+      '<div style="background:var(--green-light);border-radius:8px;padding:1rem;text-align:center;">' +
+        '<div style="font-size:20px;font-weight:500;color:var(--text-dark);">' + totalMembers + '</div>' +
+        '<div style="font-size:11px;color:var(--text-light);margin-top:4px;">総メンバー数</div>' +
+      '</div>' +
+      '<div style="background:var(--purple-light);border-radius:8px;padding:1rem;text-align:center;">' +
+        '<div style="font-size:20px;font-weight:500;color:var(--text-dark);">' + pendingCount + '</div>' +
+        '<div style="font-size:11px;color:var(--text-light);margin-top:4px;">待機中の申請</div>' +
+      '</div>' +
+    '</div>';
+}
+
+function createGroup() {
+  const name = document.getElementById('admin-group-name').value.trim();
+  const description = document.getElementById('admin-group-description').value.trim();
+  const habit = document.getElementById('admin-group-habit').value.trim();
+  const category = document.getElementById('admin-group-category').value.trim();
+  const startDate = document.getElementById('admin-group-start').value;
+  const endDate = document.getElementById('admin-group-end').value;
+  
+  // バリデーション
+  if (!name || !description || !habit || !category || !startDate || !endDate) {
+    alert('全ての項目を入力してください');
+    return;
+  }
+  
+  if (new Date(endDate) <= new Date(startDate)) {
+    alert('終了日は開始日より後にしてください');
+    return;
+  }
+  
+  // グループを作成
+  const newGroup = {
+    id: 'g-' + Date.now(),
+    name: name,
+    description: description,
+    habit: habit,
+    category: category,
+    startDate: startDate,
+    endDate: endDate,
+    memberCount: 0,
+    createdAt: new Date().toISOString()
+  };
+  
+  allGroups.push(newGroup);
+  
+  // TODO: Supabaseに保存
+  // const { error } = await supabaseClient.from('groups').insert([newGroup]);
+  // if (error) {
+  //   alert('グループ作成に失敗しました');
+  //   return;
+  // }
+  
+  alert('グループを作成しました：' + name);
+  
+  // フォームをリセット
+  document.getElementById('admin-group-form').reset();
+  
+  // 画面を更新
+  updateAdminGroupsList();
+  loadAdminDashboard();
+}
+
+function updateAdminGroupsList() {
+  const list = document.getElementById('admin-groups-list');
+  
+  if (allGroups.length === 0) {
+    list.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-light);font-size:13px;">グループはまだありません</div>';
+    return;
+  }
+  
+  list.innerHTML = allGroups.map(g => {
+    const startDate = new Date(g.startDate).toLocaleDateString('ja-JP');
+    const endDate = new Date(g.endDate).toLocaleDateString('ja-JP');
+    
+    return '<div style="background:var(--pink-light);border-radius:8px;padding:12px;border-left:4px solid var(--pink-strong);">' +
+      '<div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px;">' +
+        '<div>' +
+          '<div style="font-weight:500;color:var(--text-dark);font-size:14px;">' + g.name + '</div>' +
+          '<div style="font-size:11px;color:var(--text-light);margin-top:2px;">' + g.habit + ' • ' + g.category + '</div>' +
+        '</div>' +
+        '<div style="display:flex;gap:6px;">' +
+          '<button onclick="editGroup(\'' + g.id + '\')" style="padding:4px 8px;background:white;border:1px solid var(--pink-mid);border-radius:4px;font-size:11px;cursor:pointer;color:var(--text-dark);">✏️ 編集</button>' +
+          '<button onclick="deleteGroup(\'' + g.id + '\')" style="padding:4px 8px;background:white;border:1px solid #E74C3C;border-radius:4px;font-size:11px;cursor:pointer;color:#E74C3C;">🗑️ 削除</button>' +
+        '</div>' +
+      '</div>' +
+      '<div style="font-size:11px;color:var(--text-mid);margin-bottom:6px;line-height:1.5;">' + g.description + '</div>' +
+      '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;font-size:11px;">' +
+        '<div style="background:white;padding:6px;border-radius:4px;text-align:center;">📅 ' + startDate + '</div>' +
+        '<div style="background:white;padding:6px;border-radius:4px;text-align:center;">📅 ' + endDate + '</div>' +
+        '<div style="background:white;padding:6px;border-radius:4px;text-align:center;">👥 ' + (g.memberCount || 0) + '人</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function editGroup(groupId) {
+  const group = allGroups.find(g => g.id === groupId);
+  if (!group) return;
+  
+  const newName = prompt('グループ名を入力してください：', group.name);
+  if (newName === null) return;
+  
+  const newDescription = prompt('説明を入力してください：', group.description);
+  if (newDescription === null) return;
+  
+  group.name = newName;
+  group.description = newDescription;
+  
+  // TODO: Supabaseに保存
+  // const { error } = await supabaseClient
+  //   .from('groups')
+  //   .update({ name: newName, description: newDescription })
+  //   .eq('id', groupId);
+  
+  alert('グループを更新しました');
+  updateAdminGroupsList();
+}
+
+function deleteGroup(groupId) {
+  if (!confirm('このグループを削除してもよろしいですか？\n関連するデータもすべて削除されます。')) return;
+  
+  allGroups = allGroups.filter(g => g.id !== groupId);
+  
+  // TODO: Supabaseから削除
+  // const { error } = await supabaseClient.from('groups').delete().eq('id', groupId);
+  
+  alert('グループを削除しました');
+  updateAdminGroupsList();
+  loadAdminDashboard();
+}
+
+function updateAdminPendingMembers() {
+  const list = document.getElementById('admin-pending-members');
+  
+  if (pendingApprovals.length === 0) {
+    list.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-light);font-size:13px;">申請はありません</div>';
+    return;
+  }
+  
+  list.innerHTML = pendingApprovals.map(p => {
+    return '<div style="background:var(--purple-light);border-radius:8px;padding:12px;display:flex;justify-content:space-between;align-items:center;">' +
+      '<div style="font-size:13px;color:var(--text-dark);font-weight:500;">' +
+        (p.userName || 'ユーザー') + ' → ' + (p.groupName || 'グループ') +
+      '</div>' +
+      '<div style="display:flex;gap:6px;">' +
+        '<button onclick="approveMember(\'' + p.groupId + '\',\'' + p.userId + '\')" style="padding:6px 12px;background:var(--green-strong);color:white;border:none;border-radius:4px;font-size:12px;cursor:pointer;">✅ 承認</button>' +
+        '<button onclick="rejectMember(\'' + p.groupId + '\',\'' + p.userId + '\')" style="padding:6px 12px;background:#E74C3C;color:white;border:none;border-radius:4px;font-size:12px;cursor:pointer;">❌ 却下</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function approveMember(groupId, userId) {
+  // TODO: Supabaseで status を 'accepted' に更新
+  // const { error } = await supabaseClient
+  //   .from('group_members')
+  //   .update({ status: 'accepted' })
+  //   .match({ group_id: groupId, user_id: userId });
+  
+  pendingApprovals = pendingApprovals.filter(p => !(p.groupId === groupId && p.userId === userId));
+  alert('メンバーを承認しました');
+  updateAdminPendingMembers();
+  loadAdminDashboard();
+}
+
+function rejectMember(groupId, userId) {
+  if (!confirm('この申請を却下してもよろしいですか？')) return;
+  
+  // TODO: Supabaseで削除
+  // const { error } = await supabaseClient
+  //   .from('group_members')
+  //   .delete()
+  //   .match({ group_id: groupId, user_id: userId });
+  
+  pendingApprovals = pendingApprovals.filter(p => !(p.groupId === groupId && p.userId === userId));
+  alert('申請を却下しました');
+  updateAdminPendingMembers();
+  loadAdminDashboard();
+}
+
+function backToMain() {
+  showPage('page-group');
+}
+
+// グループデータはSupabaseから取得
+let allGroups = []; // 全グループ（作成済み）
+let userJoinedGroups = []; // ユーザーが参加中のグループ
 
 async function loadGroupsUI() {
   try {
-    // Supabase からデータ取得（今は仮データ）
-    const available = GROUP_SAMPLES;
-    const joined = userJoinedGroups.length > 0 ? userJoinedGroups : []; // 参加中のグループ（初期は空）
+    // TODO: Supabaseから全グループを取得
+    // const { data: groups, error } = await supabaseClient.from('groups').select('*');
+    // allGroups = groups || [];
     
-    renderAvailableGroups(available, joined);
-    renderJoinedGroups(joined);
+    // TODO: ユーザーの参加グループを取得
+    // const { data: joined, error: joinedError } = await supabaseClient
+    //   .from('group_members')
+    //   .select('groups(*)')
+    //   .eq('user_id', currentUser.id)
+    //   .eq('status', 'accepted');
+    // userJoinedGroups = joined ? joined.map(j => j.groups) : [];
+    
+    const available = allGroups.filter(g => !userJoinedGroups.find(j => j.id === g.id));
+    
+    renderAvailableGroups(available, userJoinedGroups);
+    renderJoinedGroups(userJoinedGroups);
   } catch (e) {
     console.error('グループロード失敗:', e);
   }
@@ -1623,14 +1918,14 @@ async function requestGroupJoin(groupId, groupName) {
   
   try {
     // 参加申請グループを userJoinedGroups に追加
-    const group = GROUP_SAMPLES.find(g => g.id === groupId);
+    const group = allGroups.find(g => g.id === groupId);
     if (group && !userJoinedGroups.find(g => g.id === groupId)) {
       userJoinedGroups.push(group);
       alert(groupName + ' に参加申請しました！');
       loadGroupsUI(); // グループリスト再読み込み
     }
     
-    // Supabase 実装時：
+    // TODO: Supabaseに参加申請を記録
     // const { error } = await supabaseClient.from('group_members').insert({
     //   group_id: groupId,
     //   user_id: currentUser.id,
@@ -1648,7 +1943,7 @@ let currentGroupData = null;
 
 async function openGroupDetail(groupId) {
   currentGroupId = groupId;
-  const group = GROUP_SAMPLES.find(g => g.id === groupId);
+  const group = allGroups.find(g => g.id === groupId);
   if (!group) return;
   
   currentGroupData = group;
@@ -1657,7 +1952,7 @@ async function openGroupDetail(groupId) {
 }
 
 function loadGroupDetail(groupId) {
-  const group = GROUP_SAMPLES.find(g => g.id === groupId);
+  const group = allGroups.find(g => g.id === groupId);
   if (!group) return;
   
   document.getElementById('group-detail-title').textContent = group.name + ' - みんなの花畑';
@@ -1669,23 +1964,28 @@ function loadGroupDetail(groupId) {
 }
 
 function renderGroupFlowers(groupId) {
-  // 仮データ：メンバーと花の情報
-  const memberFlowers = [
-    { name: 'のどか', flower: '🌹', reports: 14 },
-    { name: 'ユーザーA', flower: '🌺', reports: 12 },
-    { name: 'ユーザーB', flower: '🌸', reports: 8 },
-    { name: 'ユーザーC', flower: '🌿', reports: 3 },
-    { name: 'ユーザーD', flower: '🌼', reports: 6 },
-    { name: 'ユーザーE', flower: '🌻', reports: 11 }
-  ];
+  // TODO: Supabaseからグループメンバーの情報を取得
+  // const { data: members } = await supabaseClient
+  //   .from('group_members')
+  //   .select('*, profiles(*)')
+  //   .eq('group_id', groupId)
+  //   .eq('status', 'accepted');
+  
+  const memberFlowers = [];
   
   const container = document.getElementById('group-flowers-grid');
+  
+  if (memberFlowers.length === 0) {
+    container.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:20px;color:var(--text-light);font-size:13px;">メンバーがまだいません</div>';
+    return;
+  }
+  
   container.innerHTML = memberFlowers.map(m =>
     '<div class="group-member-flower">' +
-      '<div class="group-member-flower-emoji">' + m.flower + '</div>' +
-      '<div class="group-member-flower-name">' + m.name + '</div>' +
+      '<div class="group-member-flower-emoji">' + (m.flower || '🌼') + '</div>' +
+      '<div class="group-member-flower-name">' + (m.name || 'ユーザー') + '</div>' +
       '<div class="group-member-flower-stats">' +
-        '<div class="group-member-flower-stat">📝 ' + m.reports + '</div>' +
+        '<div class="group-member-flower-stat">📝 ' + (m.reports || 0) + '</div>' +
       '</div>' +
     '</div>'
   ).join('');
@@ -1697,7 +1997,7 @@ function backToGroupHome() {
 
 function openGroupReports(groupId) {
   currentGroupId = groupId;
-  const group = GROUP_SAMPLES.find(g => g.id === groupId);
+  const group = allGroups.find(g => g.id === groupId);
   if (!group) return;
   
   document.getElementById('report-group-name').textContent = group.name;
@@ -1708,51 +2008,21 @@ function openGroupReports(groupId) {
 }
 
 function renderGroupReports(groupId) {
-  // 仮データ：報告フィード（コメント情報も含む）
-  const reports = [
-    { 
-      id: 'r1',
-      user: 'のどか 🌹', 
-      date: '2月18日 07:30', 
-      dateOnly: '2月18日',
-      eval: 'done', 
-      content: 'スキンケアを丁寧に行いました。化粧水から乳液まで全て完了！',
-      likes: 3, 
-      likedByUser: false,
-      commentsList: [
-        { user: 'ユーザーA', text: '素晴らしい！継続ですね' },
-        { user: 'ユーザーB', text: 'お疲れ様です！' }
-      ]
-    },
-    { 
-      id: 'r2',
-      user: 'ユーザーA 🌺', 
-      date: '2月18日 19:20', 
-      dateOnly: '2月18日',
-      eval: 'done', 
-      content: '仕事の後でもスキンケア習慣を忘れずに。毎日の積み重ねが大事！',
-      likes: 2, 
-      likedByUser: false,
-      commentsList: [
-        { user: 'のどか', text: 'そうですね！応援してます' }
-      ]
-    },
-    { 
-      id: 'r3',
-      user: 'ユーザーB 🌸', 
-      date: '2月17日 06:45', 
-      dateOnly: '2月17日',
-      eval: 'done', 
-      content: '朝のヨガでリフレッシュしてからスキンケア。気持ちいい！',
-      likes: 5, 
-      likedByUser: false,
-      commentsList: [
-        { user: 'のどか', text: '素敵な習慣ですね' },
-        { user: 'ユーザーC', text: '参考になります' },
-        { user: 'ユーザーD', text: '一緒に頑張ろう' }
-      ]
-    }
-  ];
+  // TODO: Supabaseからグループの報告を取得
+  // const { data: reports, error } = await supabaseClient
+  //   .from('group_reports')
+  //   .select('*')
+  //   .eq('group_id', groupId)
+  //   .order('created_at', { ascending: false });
+  
+  const reports = [];
+  
+  if (reports.length === 0) {
+    document.getElementById('group-reports-feed').innerHTML = 
+      '<div style="text-align:center;padding:20px;color:var(--text-light);font-size:13px;">報告はまだありません。最初の報告をしてみましょう！</div>';
+    window.groupReportsData = [];
+    return;
+  }
   
   // 日付でグループ化
   const groupedByDate = {};
@@ -1834,11 +2104,11 @@ async function submitGroupReport(evaluation) {
   }
   
   try {
-    // Supabase に報告を保存（現在は仮実装）
+    // グループに報告を追加
     alert('報告を送信しました！');
     document.getElementById('group-report-content').value = '';
     
-    // 実装時：
+    // TODO: Supabaseに報告データを保存
     // const { error } = await supabaseClient.from('group_reports').insert({
     //   group_id: currentGroupId,
     //   user_id: currentUser.id,
@@ -1924,7 +2194,7 @@ function submitComment(reportId, index) {
 }
 
 function updateMyFlowerStats() {
-  // わたしの花畑の統計を更新（ステップ5で詳細実装）
+  // グループホームの統計情報を更新
   const statsEl = document.getElementById('my-group-stats');
   if (statsEl && window.myGroupStats) {
     statsEl.innerHTML = 
@@ -2080,6 +2350,7 @@ function showPage(id) {
   if (id === 'page-journal') { renderJournalHistory(); document.getElementById('journal-date-label').textContent = formatDateLabel(journalDate); }
   if (id === 'page-column') { renderColumnArticles(); }
   if (id === 'page-group') { loadGroupsUI(); }
+  if (id === 'page-admin') { loadAdminDashboard(); }
   if (id === 'page-sns') { loadPosts(); }
   window.scrollTo(0,0);
 }
