@@ -1632,16 +1632,61 @@ function openDiscordCommunity() {
 let pendingApprovals = []; // 参加申請待ちデータ
 
 async function loadAdminDashboard() {
-  // TODO: Supabaseからグループ一覧を取得
-  // const { data: groups, error } = await supabaseClient.from('groups').select('*');
-  // allGroups = groups || [];
-  
-  // TODO: Supabaseから参加申請一覧を取得
-  // const { data: pending } = await supabaseClient
-  //   .from('group_members')
-  //   .select('*, groups(*)')
-  //   .eq('status', 'pending');
-  // pendingApprovals = pending || [];
+  try {
+    if (!supabaseClient) return;
+    
+    // Supabaseからグループ一覧を取得
+    const { data: groups, error } = await supabaseClient
+      .from('groups')
+      .select('*')
+      .order('created_at', { ascending: false });
+    
+    if (!error && groups) {
+      allGroups = groups.map(g => ({
+        id: g.id,
+        name: g.name,
+        description: g.description,
+        habit: g.habit,
+        category: g.category,
+        startDate: g.start_date,
+        endDate: g.end_date,
+        memberCount: g.member_count || 0,
+        status: g.status
+      }));
+    }
+    
+    // Supabaseから参加申請一覧を取得（承認待ちのみ）
+    const { data: pending, error: pendingError } = await supabaseClient
+      .from('group_members')
+      .select('id, group_id, user_id, joined_at')
+      .eq('status', 'pending');
+    
+    pendingApprovals = [];
+    if (!pendingError && pending && pending.length > 0) {
+      // 申請者のプロフィールを取得
+      const userIds = [...new Set(pending.map(p => p.user_id))];
+      const { data: profiles } = await supabaseClient
+        .from('profiles')
+        .select('id, username')
+        .in('id', userIds);
+      
+      const profileMap = {};
+      (profiles || []).forEach(p => { profileMap[p.id] = p; });
+      
+      pendingApprovals = pending.map(p => {
+        const group = allGroups.find(g => g.id === p.group_id);
+        const profile = profileMap[p.user_id];
+        return {
+          groupId: p.group_id,
+          userId: p.user_id,
+          groupName: group ? group.name : 'グループ',
+          userName: profile ? (profile.username || 'ユーザー') : 'ユーザー'
+        };
+      });
+    }
+  } catch (e) {
+    console.error('管理データ取得失敗:', e);
+  }
   
   renderAdminDashboard();
   updateAdminGroupsList();
@@ -1672,7 +1717,12 @@ function renderAdminDashboard() {
     '</div>';
 }
 
-function createGroup() {
+async function createGroup() {
+  if (!currentUser) {
+    alert('ログインしてください');
+    return;
+  }
+  
   const name = document.getElementById('admin-group-name').value.trim();
   const description = document.getElementById('admin-group-description').value.trim();
   const habit = document.getElementById('admin-group-habit').value.trim();
@@ -1691,36 +1741,38 @@ function createGroup() {
     return;
   }
   
-  // グループを作成
-  const newGroup = {
-    id: 'g-' + Date.now(),
-    name: name,
-    description: description,
-    habit: habit,
-    category: category,
-    startDate: startDate,
-    endDate: endDate,
-    memberCount: 0,
-    createdAt: new Date().toISOString()
-  };
-  
-  allGroups.push(newGroup);
-  
-  // TODO: Supabaseに保存
-  // const { error } = await supabaseClient.from('groups').insert([newGroup]);
-  // if (error) {
-  //   alert('グループ作成に失敗しました');
-  //   return;
-  // }
-  
-  alert('グループを作成しました：' + name);
-  
-  // フォームをリセット
-  document.getElementById('admin-group-form').reset();
-  
-  // 画面を更新
-  updateAdminGroupsList();
-  loadAdminDashboard();
+  try {
+    if (!supabaseClient) throw new Error('接続エラー');
+    
+    // Supabaseにグループを保存
+    const { error } = await supabaseClient.from('groups').insert({
+      name: name,
+      description: description,
+      habit: habit,
+      category: category,
+      start_date: startDate,
+      end_date: endDate,
+      member_count: 0,
+      status: 'active'
+    });
+    
+    if (error) {
+      console.error('グループ作成失敗:', error);
+      alert('グループ作成に失敗しました：' + error.message);
+      return;
+    }
+    
+    alert('グループを作成しました：' + name);
+    
+    // フォームをリセット
+    document.getElementById('admin-group-form').reset();
+    
+    // 画面を更新（Supabaseから再取得）
+    loadAdminDashboard();
+  } catch (e) {
+    console.error('グループ作成失敗:', e);
+    alert('グループ作成に失敗しました');
+  }
 }
 
 function updateAdminGroupsList() {
@@ -1738,15 +1790,15 @@ function updateAdminGroupsList() {
     return '<div style="background:var(--pink-light);border-radius:8px;padding:12px;border-left:4px solid var(--pink-strong);">' +
       '<div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px;">' +
         '<div>' +
-          '<div style="font-weight:500;color:var(--text-dark);font-size:14px;">' + g.name + '</div>' +
-          '<div style="font-size:11px;color:var(--text-light);margin-top:2px;">' + g.habit + ' • ' + g.category + '</div>' +
+          '<div style="font-weight:500;color:var(--text-dark);font-size:14px;">' + escapeHtml(g.name) + '</div>' +
+          '<div style="font-size:11px;color:var(--text-light);margin-top:2px;">' + escapeHtml(g.habit) + ' • ' + escapeHtml(g.category) + '</div>' +
         '</div>' +
         '<div style="display:flex;gap:6px;">' +
           '<button onclick="editGroup(\'' + g.id + '\')" style="padding:4px 8px;background:white;border:1px solid var(--pink-mid);border-radius:4px;font-size:11px;cursor:pointer;color:var(--text-dark);">✏️ 編集</button>' +
           '<button onclick="deleteGroup(\'' + g.id + '\')" style="padding:4px 8px;background:white;border:1px solid #E74C3C;border-radius:4px;font-size:11px;cursor:pointer;color:#E74C3C;">🗑️ 削除</button>' +
         '</div>' +
       '</div>' +
-      '<div style="font-size:11px;color:var(--text-mid);margin-bottom:6px;line-height:1.5;">' + g.description + '</div>' +
+      '<div style="font-size:11px;color:var(--text-mid);margin-bottom:6px;line-height:1.5;">' + escapeHtml(g.description) + '</div>' +
       '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;font-size:11px;">' +
         '<div style="background:white;padding:6px;border-radius:4px;text-align:center;">📅 ' + startDate + '</div>' +
         '<div style="background:white;padding:6px;border-radius:4px;text-align:center;">📅 ' + endDate + '</div>' +
@@ -1756,40 +1808,61 @@ function updateAdminGroupsList() {
   }).join('');
 }
 
-function editGroup(groupId) {
+async function editGroup(groupId) {
   const group = allGroups.find(g => g.id === groupId);
   if (!group) return;
   
   const newName = prompt('グループ名を入力してください：', group.name);
-  if (newName === null) return;
+  if (newName === null || !newName.trim()) return;
   
   const newDescription = prompt('説明を入力してください：', group.description);
-  if (newDescription === null) return;
+  if (newDescription === null || !newDescription.trim()) return;
   
-  group.name = newName;
-  group.description = newDescription;
-  
-  // TODO: Supabaseに保存
-  // const { error } = await supabaseClient
-  //   .from('groups')
-  //   .update({ name: newName, description: newDescription })
-  //   .eq('id', groupId);
-  
-  alert('グループを更新しました');
-  updateAdminGroupsList();
+  try {
+    if (!supabaseClient) throw new Error('接続エラー');
+    
+    // Supabaseに保存
+    const { error } = await supabaseClient
+      .from('groups')
+      .update({ name: newName.trim(), description: newDescription.trim(), updated_at: new Date().toISOString() })
+      .eq('id', groupId);
+    
+    if (error) throw error;
+    
+    group.name = newName.trim();
+    group.description = newDescription.trim();
+    
+    alert('グループを更新しました');
+    updateAdminGroupsList();
+  } catch (e) {
+    console.error('グループ更新失敗:', e);
+    alert('更新に失敗しました');
+  }
 }
 
-function deleteGroup(groupId) {
+async function deleteGroup(groupId) {
   if (!confirm('このグループを削除してもよろしいですか？\n関連するデータもすべて削除されます。')) return;
   
-  allGroups = allGroups.filter(g => g.id !== groupId);
-  
-  // TODO: Supabaseから削除
-  // const { error } = await supabaseClient.from('groups').delete().eq('id', groupId);
-  
-  alert('グループを削除しました');
-  updateAdminGroupsList();
-  loadAdminDashboard();
+  try {
+    if (!supabaseClient) throw new Error('接続エラー');
+    
+    // 関連データを削除（メンバー・報告）
+    await supabaseClient.from('group_members').delete().eq('group_id', groupId);
+    await supabaseClient.from('group_reports').delete().eq('group_id', groupId);
+    
+    // グループ本体を削除
+    const { error } = await supabaseClient.from('groups').delete().eq('id', groupId);
+    
+    if (error) throw error;
+    
+    allGroups = allGroups.filter(g => g.id !== groupId);
+    
+    alert('グループを削除しました');
+    loadAdminDashboard();
+  } catch (e) {
+    console.error('グループ削除失敗:', e);
+    alert('削除に失敗しました');
+  }
 }
 
 function updateAdminPendingMembers() {
@@ -1803,7 +1876,7 @@ function updateAdminPendingMembers() {
   list.innerHTML = pendingApprovals.map(p => {
     return '<div style="background:var(--purple-light);border-radius:8px;padding:12px;display:flex;justify-content:space-between;align-items:center;">' +
       '<div style="font-size:13px;color:var(--text-dark);font-weight:500;">' +
-        (p.userName || 'ユーザー') + ' → ' + (p.groupName || 'グループ') +
+        escapeHtml(p.userName || 'ユーザー') + ' → ' + escapeHtml(p.groupName || 'グループ') +
       '</div>' +
       '<div style="display:flex;gap:6px;">' +
         '<button onclick="approveMember(\'' + p.groupId + '\',\'' + p.userId + '\')" style="padding:6px 12px;background:var(--green-strong);color:white;border:none;border-radius:4px;font-size:12px;cursor:pointer;">✅ 承認</button>' +
@@ -1813,32 +1886,58 @@ function updateAdminPendingMembers() {
   }).join('');
 }
 
-function approveMember(groupId, userId) {
-  // TODO: Supabaseで status を 'accepted' に更新
-  // const { error } = await supabaseClient
-  //   .from('group_members')
-  //   .update({ status: 'accepted' })
-  //   .match({ group_id: groupId, user_id: userId });
-  
-  pendingApprovals = pendingApprovals.filter(p => !(p.groupId === groupId && p.userId === userId));
-  alert('メンバーを承認しました');
-  updateAdminPendingMembers();
-  loadAdminDashboard();
+async function approveMember(groupId, userId) {
+  try {
+    if (!supabaseClient) throw new Error('接続エラー');
+    
+    // Supabaseで status を 'accepted' に更新
+    const { error } = await supabaseClient
+      .from('group_members')
+      .update({ status: 'accepted' })
+      .match({ group_id: groupId, user_id: userId });
+    
+    if (error) throw error;
+    
+    // グループのメンバー数を更新
+    const group = allGroups.find(g => g.id === groupId);
+    if (group) {
+      const newCount = (group.memberCount || 0) + 1;
+      await supabaseClient
+        .from('groups')
+        .update({ member_count: newCount })
+        .eq('id', groupId);
+    }
+    
+    pendingApprovals = pendingApprovals.filter(p => !(p.groupId === groupId && p.userId === userId));
+    alert('メンバーを承認しました');
+    loadAdminDashboard();
+  } catch (e) {
+    console.error('承認失敗:', e);
+    alert('承認に失敗しました');
+  }
 }
 
-function rejectMember(groupId, userId) {
+async function rejectMember(groupId, userId) {
   if (!confirm('この申請を却下してもよろしいですか？')) return;
   
-  // TODO: Supabaseで削除
-  // const { error } = await supabaseClient
-  //   .from('group_members')
-  //   .delete()
-  //   .match({ group_id: groupId, user_id: userId });
-  
-  pendingApprovals = pendingApprovals.filter(p => !(p.groupId === groupId && p.userId === userId));
-  alert('申請を却下しました');
-  updateAdminPendingMembers();
-  loadAdminDashboard();
+  try {
+    if (!supabaseClient) throw new Error('接続エラー');
+    
+    // Supabaseで status を 'rejected' に更新
+    const { error } = await supabaseClient
+      .from('group_members')
+      .update({ status: 'rejected' })
+      .match({ group_id: groupId, user_id: userId });
+    
+    if (error) throw error;
+    
+    pendingApprovals = pendingApprovals.filter(p => !(p.groupId === groupId && p.userId === userId));
+    alert('申請を却下しました');
+    loadAdminDashboard();
+  } catch (e) {
+    console.error('却下失敗:', e);
+    alert('却下に失敗しました');
+  }
 }
 
 function backToMain() {
@@ -1851,17 +1950,51 @@ let userJoinedGroups = []; // ユーザーが参加中のグループ
 
 async function loadGroupsUI() {
   try {
-    // TODO: Supabaseから全グループを取得
-    // const { data: groups, error } = await supabaseClient.from('groups').select('*');
-    // allGroups = groups || [];
+    if (!supabaseClient) return;
     
-    // TODO: ユーザーの参加グループを取得
-    // const { data: joined, error: joinedError } = await supabaseClient
-    //   .from('group_members')
-    //   .select('groups(*)')
-    //   .eq('user_id', currentUser.id)
-    //   .eq('status', 'accepted');
-    // userJoinedGroups = joined ? joined.map(j => j.groups) : [];
+    // Supabaseから全グループを取得（募集中・進行中のみ）
+    const { data: groups, error } = await supabaseClient
+      .from('groups')
+      .select('*')
+      .order('created_at', { ascending: false });
+    
+    if (error) {
+      console.error('グループ取得失敗:', error);
+      return;
+    }
+    
+    // DB形式（snake_case）をアプリ形式（camelCase）に変換
+    allGroups = (groups || []).map(g => ({
+      id: g.id,
+      name: g.name,
+      description: g.description,
+      habit: g.habit,
+      category: g.category,
+      startDate: g.start_date,
+      endDate: g.end_date,
+      memberCount: g.member_count || 0,
+      status: g.status
+    }));
+    
+    // ユーザーの参加中グループを取得
+    userJoinedGroups = [];
+    if (currentUser) {
+      const { data: joined, error: joinedError } = await supabaseClient
+        .from('group_members')
+        .select('group_id, status')
+        .eq('user_id', currentUser.id)
+        .in('status', ['pending', 'accepted']);
+      
+      if (!joinedError && joined) {
+        const joinedIds = joined.map(j => j.group_id);
+        userJoinedGroups = allGroups.filter(g => joinedIds.includes(g.id));
+        // 参加状態（申請中/承認済み）も保持
+        userJoinedGroups.forEach(g => {
+          const membership = joined.find(j => j.group_id === g.id);
+          g.membershipStatus = membership ? membership.status : null;
+        });
+      }
+    }
     
     const available = allGroups.filter(g => !userJoinedGroups.find(j => j.id === g.id));
     
@@ -1902,12 +2035,18 @@ function renderJoinedGroups(joined) {
     return;
   }
   
-  container.innerHTML = joined.map(g =>
-    '<div class="group-card group-card-joined" onclick="openGroupDetail(\'' + g.id + '\')" style="cursor:pointer;">' +
-      '<div class="group-card-name">✅ ' + g.name + '</div>' +
-      '<div class="group-card-meta">メンバー' + g.memberCount + '人 • 習慣：' + g.habit + '</div>' +
-    '</div>'
-  ).join('');
+  container.innerHTML = joined.map(g => {
+    const isPending = g.membershipStatus === 'pending';
+    const statusIcon = isPending ? '⏳' : '✅';
+    const statusLabel = isPending ? '（承認待ち）' : '';
+    const clickAction = isPending ? '' : ' onclick="openGroupDetail(\'' + g.id + '\')"';
+    const cursorStyle = isPending ? 'default' : 'pointer';
+    
+    return '<div class="group-card group-card-joined"' + clickAction + ' style="cursor:' + cursorStyle + ';' + (isPending ? 'opacity:0.7;' : '') + '">' +
+      '<div class="group-card-name">' + statusIcon + ' ' + escapeHtml(g.name) + statusLabel + '</div>' +
+      '<div class="group-card-meta">メンバー' + (g.memberCount || 0) + '人 • 習慣：' + escapeHtml(g.habit || '') + '</div>' +
+    '</div>';
+  }).join('');
 }
 
 async function requestGroupJoin(groupId, groupName) {
@@ -1917,20 +2056,39 @@ async function requestGroupJoin(groupId, groupName) {
   }
   
   try {
-    // 参加申請グループを userJoinedGroups に追加
-    const group = allGroups.find(g => g.id === groupId);
-    if (group && !userJoinedGroups.find(g => g.id === groupId)) {
-      userJoinedGroups.push(group);
-      alert(groupName + ' に参加申請しました！');
-      loadGroupsUI(); // グループリスト再読み込み
+    if (!supabaseClient) {
+      alert('接続エラーが発生しました');
+      return;
     }
     
-    // TODO: Supabaseに参加申請を記録
-    // const { error } = await supabaseClient.from('group_members').insert({
-    //   group_id: groupId,
-    //   user_id: currentUser.id,
-    //   status: 'pending'
-    // });
+    // 既に申請済みかチェック
+    const { data: existing } = await supabaseClient
+      .from('group_members')
+      .select('id, status')
+      .eq('group_id', groupId)
+      .eq('user_id', currentUser.id)
+      .maybeSingle();
+    
+    if (existing) {
+      alert('既に申請済みです（状態：' + (existing.status === 'pending' ? '承認待ち' : '参加中') + '）');
+      return;
+    }
+    
+    // Supabaseに参加申請を記録
+    const { error } = await supabaseClient.from('group_members').insert({
+      group_id: groupId,
+      user_id: currentUser.id,
+      status: 'pending'
+    });
+    
+    if (error) {
+      console.error('参加申請失敗:', error);
+      alert('申請に失敗しました');
+      return;
+    }
+    
+    alert(groupName + ' に参加申請しました！\n運営の承認をお待ちください 🌸');
+    loadGroupsUI(); // グループリスト再読み込み
   } catch (e) {
     console.error('参加申請失敗:', e);
     alert('申請に失敗しました');
@@ -1963,17 +2121,64 @@ function loadGroupDetail(groupId) {
   renderGroupFlowers(groupId);
 }
 
-function renderGroupFlowers(groupId) {
-  // TODO: Supabaseからグループメンバーの情報を取得
-  // const { data: members } = await supabaseClient
-  //   .from('group_members')
-  //   .select('*, profiles(*)')
-  //   .eq('group_id', groupId)
-  //   .eq('status', 'accepted');
-  
-  const memberFlowers = [];
-  
+async function renderGroupFlowers(groupId) {
   const container = document.getElementById('group-flowers-grid');
+  container.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:20px;color:var(--text-light);font-size:13px;">読み込み中...</div>';
+  
+  let memberFlowers = [];
+  
+  try {
+    if (!supabaseClient) throw new Error('接続エラー');
+    
+    // グループの承認済みメンバーを取得
+    const { data: members, error } = await supabaseClient
+      .from('group_members')
+      .select('user_id')
+      .eq('group_id', groupId)
+      .eq('status', 'accepted');
+    
+    if (error) throw error;
+    
+    if (members && members.length > 0) {
+      const userIds = members.map(m => m.user_id);
+      
+      // プロフィール取得
+      const { data: profiles } = await supabaseClient
+        .from('profiles')
+        .select('id, username, avatar_icon')
+        .in('id', userIds);
+      
+      const profileMap = {};
+      (profiles || []).forEach(p => { profileMap[p.id] = p; });
+      
+      // 各メンバーの報告数を取得
+      const { data: reports } = await supabaseClient
+        .from('group_reports')
+        .select('user_id')
+        .eq('group_id', groupId);
+      
+      const reportCounts = {};
+      (reports || []).forEach(r => {
+        reportCounts[r.user_id] = (reportCounts[r.user_id] || 0) + 1;
+      });
+      
+      memberFlowers = userIds.map(uid => {
+        const profile = profileMap[uid];
+        return {
+          name: profile ? (profile.username || 'ユーザー') : 'ユーザー',
+          flower: profile ? (profile.avatar_icon || '🌼') : '🌼',
+          reports: reportCounts[uid] || 0
+        };
+      });
+      
+      // 報告数の多い順に並べる
+      memberFlowers.sort((a, b) => b.reports - a.reports);
+    }
+  } catch (e) {
+    console.error('メンバー取得失敗:', e);
+    container.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:20px;color:var(--text-light);font-size:13px;">読み込みに失敗しました</div>';
+    return;
+  }
   
   if (memberFlowers.length === 0) {
     container.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:20px;color:var(--text-light);font-size:13px;">メンバーがまだいません</div>';
@@ -1983,7 +2188,7 @@ function renderGroupFlowers(groupId) {
   container.innerHTML = memberFlowers.map(m =>
     '<div class="group-member-flower">' +
       '<div class="group-member-flower-emoji">' + (m.flower || '🌼') + '</div>' +
-      '<div class="group-member-flower-name">' + (m.name || 'ユーザー') + '</div>' +
+      '<div class="group-member-flower-name">' + escapeHtml(m.name || 'ユーザー') + '</div>' +
       '<div class="group-member-flower-stats">' +
         '<div class="group-member-flower-stat">📝 ' + (m.reports || 0) + '</div>' +
       '</div>' +
@@ -2007,18 +2212,86 @@ function openGroupReports(groupId) {
   showPage('page-group-report');
 }
 
-function renderGroupReports(groupId) {
-  // TODO: Supabaseからグループの報告を取得
-  // const { data: reports, error } = await supabaseClient
-  //   .from('group_reports')
-  //   .select('*')
-  //   .eq('group_id', groupId)
-  //   .order('created_at', { ascending: false });
+async function renderGroupReports(groupId) {
+  const feedContainer = document.getElementById('group-reports-feed');
+  feedContainer.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-light);font-size:13px;">読み込み中...</div>';
   
-  const reports = [];
+  let reports = [];
+  
+  try {
+    if (!supabaseClient) throw new Error('接続エラー');
+    
+    // Supabaseからグループの報告を取得
+    const { data: reportRows, error } = await supabaseClient
+      .from('group_reports')
+      .select('*')
+      .eq('group_id', groupId)
+      .order('created_at', { ascending: false })
+      .limit(50);
+    
+    if (error) throw error;
+    
+    if (reportRows && reportRows.length > 0) {
+      // 報告者のプロフィールを取得
+      const userIds = [...new Set(reportRows.map(r => r.user_id))];
+      const { data: profiles } = await supabaseClient
+        .from('profiles')
+        .select('id, username, avatar_icon')
+        .in('id', userIds);
+      
+      const profileMap = {};
+      (profiles || []).forEach(p => { profileMap[p.id] = p; });
+      
+      // いいね・コメントを取得
+      const reportIds = reportRows.map(r => r.id);
+      const { data: reactions } = await supabaseClient
+        .from('group_reactions')
+        .select('*')
+        .in('report_id', reportIds);
+      
+      const reactionsByReport = {};
+      (reactions || []).forEach(re => {
+        if (!reactionsByReport[re.report_id]) reactionsByReport[re.report_id] = { likes: [], comments: [] };
+        if (re.reaction_type === 'like') reactionsByReport[re.report_id].likes.push(re);
+        if (re.reaction_type === 'comment') reactionsByReport[re.report_id].comments.push(re);
+      });
+      
+      // 表示用データに変換
+      reports = reportRows.map(r => {
+        const profile = profileMap[r.user_id];
+        const userName = profile ? (profile.username || 'ユーザー') : 'ユーザー';
+        const userIcon = profile ? (profile.avatar_icon || '🌸') : '🌸';
+        const created = new Date(r.created_at);
+        const dateOnly = (created.getMonth() + 1) + '月' + created.getDate() + '日';
+        const timeStr = ('0' + created.getHours()).slice(-2) + ':' + ('0' + created.getMinutes()).slice(-2);
+        const reactionData = reactionsByReport[r.id] || { likes: [], comments: [] };
+        
+        return {
+          id: r.id,
+          user: userName + ' ' + userIcon,
+          date: dateOnly + ' ' + timeStr,
+          dateOnly: dateOnly,
+          sortKey: r.created_at,
+          eval: r.self_evaluation,
+          content: r.content,
+          likes: reactionData.likes.length,
+          likedByUser: currentUser ? reactionData.likes.some(l => l.user_id === currentUser.id) : false,
+          commentsList: reactionData.comments.map(c => {
+            const cp = profileMap[c.user_id];
+            return { user: cp ? (cp.username || 'ユーザー') : 'ユーザー', text: c.comment_content };
+          })
+        };
+      });
+    }
+  } catch (e) {
+    console.error('報告フィード取得失敗:', e);
+    feedContainer.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-light);font-size:13px;">読み込みに失敗しました</div>';
+    window.groupReportsData = [];
+    return;
+  }
   
   if (reports.length === 0) {
-    document.getElementById('group-reports-feed').innerHTML = 
+    feedContainer.innerHTML = 
       '<div style="text-align:center;padding:20px;color:var(--text-light);font-size:13px;">報告はまだありません。最初の報告をしてみましょう！</div>';
     window.groupReportsData = [];
     return;
@@ -2026,15 +2299,17 @@ function renderGroupReports(groupId) {
   
   // 日付でグループ化
   const groupedByDate = {};
+  const dateOrder = [];
   reports.forEach(r => {
     if (!groupedByDate[r.dateOnly]) {
       groupedByDate[r.dateOnly] = [];
+      dateOrder.push(r.dateOnly);
     }
     groupedByDate[r.dateOnly].push(r);
   });
   
-  // 日付順にソート（新しい順）
-  const dates = Object.keys(groupedByDate).sort().reverse();
+  // 新しい日付順（取得時に created_at 降順のため dateOrder のまま）
+  const dates = dateOrder;
   
   const container = document.getElementById('group-reports-feed');
   const html = dates.map((date, dateIndex) => {
@@ -2043,29 +2318,30 @@ function renderGroupReports(groupId) {
     
     return '<div style="padding:12px;background:' + bgColor + ';border-radius:8px;margin-bottom:0;">' +
       '<div style="font-size:12px;font-weight:500;color:var(--text-dark);margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border);">' + date + '</div>' +
-      reportsForDate.map((r, i) =>
-        '<div class="group-report-card" id="report-' + r.id + '" style="margin-bottom:10px;background:transparent;border:none;padding:0;">' +
+      reportsForDate.map(r => {
+        const globalIndex = reports.indexOf(r);
+        return '<div class="group-report-card" id="report-' + r.id + '" style="margin-bottom:10px;background:transparent;border:none;padding:0;">' +
           '<div class="group-report-header">' +
             '<div><div class="group-report-user">' + r.user + '</div><div style="font-size:11px;color:var(--text-light);">' + r.date + '</div></div>' +
             '<div class="group-report-eval' + (r.eval === 'soso' ? ' soso' : '') + '">' + (r.eval === 'done' ? '✅ できた！' : '💛 いまいち') + '</div>' +
           '</div>' +
-          '<div class="group-report-content">' + r.content + '</div>' +
+          '<div class="group-report-content">' + escapeHtml(r.content) + '</div>' +
           '<div style="font-size:12px;color:var(--text-light);margin:8px 0;display:flex;gap:12px;">❤️ <span id="likes-' + r.id + '">' + r.likes + '</span> • 💬 <span id="comments-' + r.id + '">' + r.commentsList.length + '</span></div>' +
           '<div class="group-report-actions">' +
-            '<button class="group-action-btn" id="like-btn-' + r.id + '" onclick="likeGroupReport(\'' + r.id + '\',' + i + ')">❤️ いいね</button>' +
+            '<button class="group-action-btn' + (r.likedByUser ? ' active' : '') + '" id="like-btn-' + r.id + '" onclick="likeGroupReport(\'' + r.id + '\',' + globalIndex + ')">❤️ いいね</button>' +
             '<button class="group-action-btn" onclick="toggleCommentForm(\'' + r.id + '\')">💬 コメント</button>' +
           '</div>' +
           '<div id="comment-section-' + r.id + '" style="display:none;margin-top:12px;padding-top:12px;border-top:0.5px solid var(--border);">' +
-            '<div style="display:grid;gap:8px;margin-bottom:10px;">' +
-              r.commentsList.map(c => '<div style="font-size:12px;color:var(--text-mid);"><strong>' + c.user + '：</strong>' + c.text + '</div>').join('') +
+            '<div id="comment-list-' + r.id + '" style="display:grid;gap:8px;margin-bottom:10px;">' +
+              r.commentsList.map(c => '<div style="font-size:12px;color:var(--text-mid);"><strong>' + escapeHtml(c.user) + '：</strong>' + escapeHtml(c.text) + '</div>').join('') +
             '</div>' +
             '<div style="display:flex;gap:6px;">' +
               '<input type="text" class="comment-input" id="comment-input-' + r.id + '" placeholder="コメントを入力..." style="flex:1;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-size:12px;font-family:\'Noto Sans JP\',sans-serif;">' +
-              '<button onclick="submitComment(\'' + r.id + '\',' + i + ')" style="padding:8px 16px;background:var(--pink-strong);color:white;border:none;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s;font-family:\'Noto Sans JP\',sans-serif;">送信</button>' +
+              '<button onclick="submitComment(\'' + r.id + '\',' + globalIndex + ')" style="padding:8px 16px;background:var(--pink-strong);color:white;border:none;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s;font-family:\'Noto Sans JP\',sans-serif;">送信</button>' +
             '</div>' +
           '</div>' +
-        '</div>'
-      ).join('') +
+        '</div>';
+      }).join('') +
     '</div>';
   }).join('');
   
@@ -2073,6 +2349,16 @@ function renderGroupReports(groupId) {
   
   // グローバルで報告データを保存（いいね・コメント管理用）
   window.groupReportsData = reports;
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 function backToGroupDetail() {
@@ -2096,7 +2382,6 @@ async function submitGroupReport(evaluation) {
   }
   
   const content = document.getElementById('group-report-content').value;
-  const flowerBtn = document.querySelector('.flower-choice-btn.active');
   
   if (!content.trim()) {
     alert('取り組み内容を入力してください');
@@ -2104,45 +2389,81 @@ async function submitGroupReport(evaluation) {
   }
   
   try {
-    // グループに報告を追加
-    alert('報告を送信しました！');
+    if (!supabaseClient) {
+      alert('接続エラーが発生しました');
+      return;
+    }
+    
+    // Supabaseに報告データを保存
+    const { error } = await supabaseClient.from('group_reports').insert({
+      group_id: currentGroupId,
+      user_id: currentUser.id,
+      date: new Date().toISOString().split('T')[0],
+      content: content,
+      self_evaluation: evaluation
+    });
+    
+    if (error) {
+      console.error('報告送信失敗:', error);
+      alert('送信に失敗しました');
+      return;
+    }
+    
+    alert('報告を送信しました！🌸');
     document.getElementById('group-report-content').value = '';
     
-    // TODO: Supabaseに報告データを保存
-    // const { error } = await supabaseClient.from('group_reports').insert({
-    //   group_id: currentGroupId,
-    //   user_id: currentUser.id,
-    //   date: new Date().toISOString().split('T')[0],
-    //   content: content,
-    //   self_evaluation: evaluation
-    // });
+    // フィードを再読み込みして自分の報告を表示
+    renderGroupReports(currentGroupId);
   } catch (e) {
     console.error('報告送信失敗:', e);
     alert('送信に失敗しました');
   }
 }
 
-function likeGroupReport(reportId, index) {
-  // いいねカウント更新
-  if (window.groupReportsData && window.groupReportsData[index]) {
-    const report = window.groupReportsData[index];
-    if (!report.likedByUser) {
-      report.likes++;
-      report.likedByUser = true;
-      document.getElementById('likes-' + reportId).textContent = report.likes;
-      document.getElementById('like-btn-' + reportId).classList.add('active');
-      
-      // わたしの花のポイント更新
-      myFlowerData.likesSent++;
-      myFlowerData.points++; // いいね送信 +1ポイント
-      
-      // グループホームの統計更新
-      if (!window.myGroupStats) window.myGroupStats = { likesSent: 0, commentsSent: 0, likesReceived: 0, commentsReceived: 0 };
-      window.myGroupStats.likesSent++;
-      updateMyFlowerStats();
-      
-      alert('いいねしました！🌸');
-    }
+async function likeGroupReport(reportId, index) {
+  if (!currentUser) {
+    alert('ログインしてください');
+    return;
+  }
+  
+  if (!window.groupReportsData || !window.groupReportsData[index]) return;
+  const report = window.groupReportsData[index];
+  
+  if (report.likedByUser) {
+    alert('既にいいね済みです 🌸');
+    return;
+  }
+  
+  try {
+    if (!supabaseClient) throw new Error('接続エラー');
+    
+    // Supabaseにいいねを保存
+    const { error } = await supabaseClient.from('group_reactions').insert({
+      report_id: reportId,
+      user_id: currentUser.id,
+      reaction_type: 'like'
+    });
+    
+    if (error) throw error;
+    
+    // 画面更新
+    report.likes++;
+    report.likedByUser = true;
+    document.getElementById('likes-' + reportId).textContent = report.likes;
+    document.getElementById('like-btn-' + reportId).classList.add('active');
+    
+    // わたしの花のポイント更新
+    myFlowerData.likesSent++;
+    myFlowerData.points++; // いいね送信 +1ポイント
+    saveMyFlowerStats('like_sent');
+    
+    // グループホームの統計更新
+    if (!window.myGroupStats) window.myGroupStats = { likesSent: 0, commentsSent: 0, likesReceived: 0, commentsReceived: 0 };
+    window.myGroupStats.likesSent++;
+    updateMyFlowerStats();
+  } catch (e) {
+    console.error('いいね失敗:', e);
+    alert('いいねに失敗しました');
   }
 }
 
@@ -2153,24 +2474,44 @@ function toggleCommentForm(reportId) {
   }
 }
 
-function submitComment(reportId, index) {
+async function submitComment(reportId, index) {
+  if (!currentUser) {
+    alert('ログインしてください');
+    return;
+  }
+  
   const input = document.getElementById('comment-input-' + reportId);
   if (!input || !input.value.trim()) return;
   
-  const commentText = input.value;
+  const commentText = input.value.trim();
   
-  // コメント追加
-  if (window.groupReportsData && window.groupReportsData[index]) {
-    const report = window.groupReportsData[index];
-    report.commentsList.push({ user: 'あなた', text: commentText });
+  if (!window.groupReportsData || !window.groupReportsData[index]) return;
+  const report = window.groupReportsData[index];
+  
+  try {
+    if (!supabaseClient) throw new Error('接続エラー');
     
-    // 表示更新（コメント入力の上に追加）
-    const section = document.getElementById('comment-section-' + reportId);
-    const commentDisplay = section.querySelector('div:first-child');
-    const newComment = document.createElement('div');
-    newComment.style.cssText = 'font-size:12px;color:var(--text-mid);';
-    newComment.innerHTML = '<strong>あなた：</strong>' + commentText;
-    commentDisplay.appendChild(newComment);
+    // Supabaseにコメントを保存
+    const { error } = await supabaseClient.from('group_reactions').insert({
+      report_id: reportId,
+      user_id: currentUser.id,
+      reaction_type: 'comment',
+      comment_content: commentText
+    });
+    
+    if (error) throw error;
+    
+    // 画面更新
+    const myName = localStorage.getItem('bloom-profile-username') || 'あなた';
+    report.commentsList.push({ user: myName, text: commentText });
+    
+    const commentList = document.getElementById('comment-list-' + reportId);
+    if (commentList) {
+      const newComment = document.createElement('div');
+      newComment.style.cssText = 'font-size:12px;color:var(--text-mid);';
+      newComment.innerHTML = '<strong>' + escapeHtml(myName) + '：</strong>' + escapeHtml(commentText);
+      commentList.appendChild(newComment);
+    }
     
     // カウント更新
     document.getElementById('comments-' + reportId).textContent = report.commentsList.length;
@@ -2178,8 +2519,7 @@ function submitComment(reportId, index) {
     // わたしの花のポイント更新
     myFlowerData.commentsSent++;
     myFlowerData.points += 2; // コメント送信 +2ポイント
-    myFlowerData.commentsReceived++; // 相手がコメント受け取ったことになるので1ポイント
-    myFlowerData.points++; // 相手のコメント受け取り +1ポイント
+    saveMyFlowerStats('comment_sent');
     
     // グループホームの統計更新
     if (!window.myGroupStats) window.myGroupStats = { likesSent: 0, commentsSent: 0, likesReceived: 0, commentsReceived: 0 };
@@ -2188,8 +2528,23 @@ function submitComment(reportId, index) {
     
     input.value = '';
     input.focus();
-    
-    alert('コメントを送信しました！💬');
+  } catch (e) {
+    console.error('コメント送信失敗:', e);
+    alert('コメント送信に失敗しました');
+  }
+}
+
+async function saveMyFlowerStats(actionType) {
+  // ユーザーのアクションログをSupabaseに記録
+  try {
+    if (!supabaseClient || !currentUser || !currentGroupId) return;
+    await supabaseClient.from('user_action_log').insert({
+      user_id: currentUser.id,
+      group_id: currentGroupId,
+      action_type: actionType
+    });
+  } catch (e) {
+    console.error('アクションログ保存失敗:', e);
   }
 }
 
@@ -2205,14 +2560,14 @@ function updateMyFlowerStats() {
 
 // ========== わたしの花畑 ==========
 let myFlowerData = {
-  currentFlower: '🌹',
-  points: 125,
-  stage: 6,
-  likesSent: 8,
-  commentsSent: 5,
-  likesReceived: 12,
-  commentsReceived: 7,
-  reportsCount: 14
+  currentFlower: '🌼',
+  points: 0,
+  stage: 0,
+  likesSent: 0,
+  commentsSent: 0,
+  likesReceived: 0,
+  commentsReceived: 0,
+  reportsCount: 0
 };
 
 const flowerStages = [
@@ -2230,10 +2585,83 @@ function openMyFlower() {
   showPage('page-group-my-flower');
 }
 
-function loadMyFlowerPage() {
+async function loadMyFlowerPage() {
   // グループ情報設定
-  document.getElementById('myflower-group-name').textContent = currentGroupData ? currentGroupData.name : 'グループ名';
-  document.getElementById('myflower-member-count').textContent = currentGroupData ? currentGroupData.memberCount : 0;
+  const targetGroup = currentGroupData || (userJoinedGroups.length > 0 ? userJoinedGroups[0] : null);
+  document.getElementById('myflower-group-name').textContent = targetGroup ? targetGroup.name : '参加中のグループなし';
+  document.getElementById('myflower-member-count').textContent = targetGroup ? (targetGroup.memberCount || 0) : 0;
+  
+  // Supabaseから自分の活動統計を取得
+  try {
+    if (supabaseClient && currentUser && targetGroup) {
+      const groupId = targetGroup.id;
+      
+      // 自分の報告数
+      const { data: myReports } = await supabaseClient
+        .from('group_reports')
+        .select('id')
+        .eq('group_id', groupId)
+        .eq('user_id', currentUser.id);
+      
+      const myReportIds = (myReports || []).map(r => r.id);
+      myFlowerData.reportsCount = myReportIds.length;
+      
+      // 自分が送ったいいね・コメント（このグループの報告に対して）
+      const { data: groupReports } = await supabaseClient
+        .from('group_reports')
+        .select('id')
+        .eq('group_id', groupId);
+      
+      const allReportIds = (groupReports || []).map(r => r.id);
+      
+      let sentLikes = 0, sentComments = 0;
+      if (allReportIds.length > 0) {
+        const { data: mySent } = await supabaseClient
+          .from('group_reactions')
+          .select('reaction_type')
+          .eq('user_id', currentUser.id)
+          .in('report_id', allReportIds);
+        
+        (mySent || []).forEach(re => {
+          if (re.reaction_type === 'like') sentLikes++;
+          if (re.reaction_type === 'comment') sentComments++;
+        });
+      }
+      myFlowerData.likesSent = sentLikes;
+      myFlowerData.commentsSent = sentComments;
+      
+      // 自分がもらったいいね・コメント
+      let receivedLikes = 0, receivedComments = 0;
+      if (myReportIds.length > 0) {
+        const { data: received } = await supabaseClient
+          .from('group_reactions')
+          .select('reaction_type, user_id')
+          .in('report_id', myReportIds);
+        
+        (received || []).forEach(re => {
+          if (re.user_id === currentUser.id) return; // 自分のリアクションは除外
+          if (re.reaction_type === 'like') receivedLikes++;
+          if (re.reaction_type === 'comment') receivedComments++;
+        });
+      }
+      myFlowerData.likesReceived = receivedLikes;
+      myFlowerData.commentsReceived = receivedComments;
+      
+      // ポイント計算（報告+3 / いいね送信+1 / コメント送信+2 / いいね受け取り+1 / コメント受け取り+1）
+      myFlowerData.points = 
+        myFlowerData.reportsCount * 3 +
+        myFlowerData.likesSent * 1 +
+        myFlowerData.commentsSent * 2 +
+        myFlowerData.likesReceived * 1 +
+        myFlowerData.commentsReceived * 1;
+      
+      // 保存済みの花の種類を取得
+      const savedFlower = localStorage.getItem('bloom-my-flower');
+      if (savedFlower) myFlowerData.currentFlower = savedFlower;
+    }
+  } catch (e) {
+    console.error('花畑データ取得失敗:', e);
+  }
   
   // 花の成長度に応じて表示更新
   updateMyFlowerDisplay();
@@ -2284,6 +2712,16 @@ function changeMyFlower(flower, element) {
   document.querySelectorAll('.flower-choice-btn').forEach(btn => btn.classList.remove('active'));
   element.classList.add('active');
   document.getElementById('my-flower-emoji').textContent = flower;
+  
+  // 選択した花を保存
+  localStorage.setItem('bloom-my-flower', flower);
+  
+  // プロフィールのアイコンとしても保存（みんなの花畑に反映）
+  if (supabaseClient && currentUser) {
+    supabaseClient.from('profiles').update({ avatar_icon: flower }).eq('id', currentUser.id)
+      .then(() => {})
+      .catch(e => console.error('花の保存失敗:', e));
+  }
 }
 
 
