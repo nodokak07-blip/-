@@ -102,7 +102,7 @@ body { font-family: 'Noto Sans JP', sans-serif; background: var(--cream); color:
 
 /* ナビゲーション */
 .app-nav { background:white;border-bottom:1px solid #F5E0EA;position:sticky;top:0;z-index:100; }
-.nav-header { padding:12px 20px;display:flex;align-items:center;gap:10px; }
+.nav-header { padding:12px 16px;display:flex;align-items:center;gap:8px;flex-wrap:nowrap; }
 .nav-logo { font-family:'Noto Serif JP',serif;font-size:16px;font-weight:600;color:var(--pink-dark); }
 .nav-tabs { display:flex;overflow-x:auto;padding:0 12px 0;gap:4px;scrollbar-width:none; }
 .nav-tabs::-webkit-scrollbar { display:none; }
@@ -605,12 +605,12 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
 <!-- ナビゲーション -->
 <nav class="app-nav">
   <div class="nav-header">
-    <span style="font-size:20px;">🌸</span>
-    <span class="nav-logo">Bloom Journal</span>
-    <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
-      <button id="nav-admin-btn" onclick="showPage('page-admin')" style="display:none;padding:6px 14px;border-radius:20px;border:1.5px solid var(--green-mid);background:var(--green-light);font-size:12px;cursor:pointer;color:var(--green-strong);font-weight:500;">⚙️ 管理</button>
-      <button id="nav-auth-btn" onclick="toggleAuth()" style="padding:6px 14px;border-radius:20px;border:1.5px solid #F0D8E2;background:white;font-size:12px;cursor:pointer;color:var(--text-mid);display:flex;align-items:center;gap:6px;">
-        <span id="nav-icon">🔑</span><span id="nav-name">ログイン</span>
+    <span style="font-size:20px;flex-shrink:0;">🌸</span>
+    <span class="nav-logo" style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Bloom Journal</span>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:4px;flex-shrink:0;">
+      <button id="nav-admin-btn" onclick="showPage('page-admin')" style="display:none;padding:3px 8px;border-radius:16px;border:1.5px solid var(--green-mid);background:var(--green-light);font-size:10px;cursor:pointer;color:var(--green-strong);font-weight:500;white-space:nowrap;">⚙️ 管理</button>
+      <button id="nav-auth-btn" onclick="toggleAuth()" style="padding:3px 8px;border-radius:16px;border:1.5px solid #F0D8E2;background:white;font-size:10px;cursor:pointer;color:var(--text-mid);display:flex;align-items:center;gap:3px;white-space:nowrap;max-width:120px;overflow:hidden;">
+        <span id="nav-icon" style="flex-shrink:0;">🔑</span><span id="nav-name" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">ログイン</span>
       </button>
     </div>
   </div>
@@ -1488,15 +1488,21 @@ function updateAuthUI() {
   const adminBtn = document.getElementById('nav-admin-btn');
   
   if (currentUser) {
-    const icon = localStorage.getItem('bloom-profile-icon') || '🌸';
+    const icon = localStorage.getItem('bloom-profile-icon') || '\u{1F338}';
+    const photo = localStorage.getItem('bloom-profile-photo') || '';
     const username = localStorage.getItem('bloom-profile-username') || (currentUser.email || '').split('@')[0];
-    if (navIcon) navIcon.textContent = icon;
+    if (navIcon) {
+      if (photo) {
+        navIcon.innerHTML = '<img src="' + photo + '" style="width:18px;height:18px;border-radius:50%;object-fit:cover;vertical-align:middle;">';
+      } else {
+        navIcon.textContent = icon;
+      }
+    }
     if (navName) navName.textContent = username;
-    // 管理者かどうかをSupabaseで確認してボタン表示を判定
     checkAdminStatus();
   } else {
-    if (navIcon) navIcon.textContent = '🔑';
-    if (navName) navName.textContent = 'ログイン';
+    if (navIcon) navIcon.textContent = '\u{1F511}';
+    if (navName) navName.textContent = '\u30ED\u30B0\u30A4\u30F3';
     isAdmin = false;
     if (adminBtn) adminBtn.style.display = 'none';
   }
@@ -1513,7 +1519,10 @@ async function saveToSupabase() {
       goal_weight: state.goalWeight, period: state.period,
       exercise: state.exercise, food_worries: state.foodWorries,
       selected_habits: state.selectedHabits, custom_habits: state.customHabits,
-      goal_created: state.goalCreated, updated_at: new Date().toISOString()
+      goal_created: state.goalCreated, updated_at: new Date().toISOString(),
+      username: localStorage.getItem('bloom-profile-username') || null,
+      avatar_icon: localStorage.getItem('bloom-profile-icon') || null,
+      avatar_url: localStorage.getItem('bloom-profile-photo') || null
     });
     saveToStorage();
   } catch(e) { saveToStorage(); }
@@ -1574,6 +1583,13 @@ async function loadUserDataFromSupabase() {
       if (profile.username) localStorage.setItem('bloom-profile-username', profile.username);
       if (profile.avatar_icon) localStorage.setItem('bloom-profile-icon', profile.avatar_icon);
       if (profile.avatar_url) localStorage.setItem('bloom-profile-photo', profile.avatar_url);
+      // Supabaseにusernameが未設定の場合、localStorageの値があればプッシュ
+      if (!profile.username) {
+        var localName = localStorage.getItem('bloom-profile-username');
+        if (localName) {
+          supabaseClient.from('profiles').update({ username: localName, avatar_icon: localStorage.getItem('bloom-profile-icon') || null }).eq('id', currentUser.id).then(function(){});
+        }
+      }
     }
     const { data: todos } = await supabaseClient.from('todos').select('*').eq('user_id', currentUser.id);
     if (todos) {
