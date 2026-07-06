@@ -1571,6 +1571,9 @@ async function loadUserDataFromSupabase() {
         selectedHabits: profile.selected_habits || [], customHabits: profile.custom_habits || [],
         goalCreated: profile.goal_created || false
       };
+      if (profile.username) localStorage.setItem('bloom-profile-username', profile.username);
+      if (profile.avatar_icon) localStorage.setItem('bloom-profile-icon', profile.avatar_icon);
+      if (profile.avatar_url) localStorage.setItem('bloom-profile-photo', profile.avatar_url);
     }
     const { data: todos } = await supabaseClient.from('todos').select('*').eq('user_id', currentUser.id);
     if (todos) {
