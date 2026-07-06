@@ -417,6 +417,16 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
 .flower-choice-btn { padding:14px;text-align:center;font-size:24px;border:2px solid var(--border);border-radius:8px;cursor:pointer;background:white;transition:all .2s; }
 .flower-choice-btn:hover { transform:scale(1.05); }
 .flower-choice-btn.active { border-color:var(--pink-strong);background:var(--pink-light); }
+.group-report-banner { border-radius:10px;padding:10px 12px; }
+.group-report-banner-top { display:flex;align-items:center;gap:8px; }
+.group-report-banner-name { font-weight:500;font-size:12px;color:var(--text-dark);flex-shrink:0; }
+.group-report-banner-eval { font-size:10px;padding:1px 7px;border-radius:4px;background:var(--green-light);color:var(--green-strong);flex-shrink:0; }
+.group-report-banner-eval.soso { background:#FFF8E1;color:#D4A017; }
+.group-report-banner-content { font-size:12px;color:var(--text-mid);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
+.group-report-banner-time { font-size:10px;color:var(--text-light);flex-shrink:0;margin-left:auto; }
+.group-report-banner-actions { display:flex;gap:10px;margin-top:6px;padding-left:32px; }
+.group-report-banner-action { background:none;border:none;font-size:11px;color:var(--text-mid);cursor:pointer;display:flex;align-items:center;gap:3px;padding:2px 4px; }
+.group-report-banner-action.active { color:var(--pink-strong);font-weight:600; }
 
 /* ========== グループ報告ボタン（かわいいデザイン） ========== */
 .group-submit-btn { width:100%;padding:14px 16px;border:1.5px solid;border-radius:16px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Noto Sans JP',sans-serif;transition:all .2s;box-shadow:0 2px 8px rgba(200,100,130,0.08); }
@@ -502,7 +512,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
           <button type="button" onclick="removeAvatarPhoto()" style="width:100%;padding:6px;background:none;border:none;font-size:11px;cursor:pointer;color:var(--text-light);text-decoration:underline;margin-top:4px;">写真を削除して絵文字に戻す</button>
         </div>
       </div>
-      <p style="font-size:11px;color:var(--text-light);">写真を設定すると絵文字より優先して表示されます</p>
+      <p id="avatar-photo-hint" style="font-size:11px;color:var(--text-light);">写真を設定すると絵文字より優先して表示されます（JPG/PNG/WebP、10MBまで）</p>
     </div>
     
     <div class="form-group">
@@ -1117,20 +1127,12 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
       </div>
     </div>
 
-    <!-- あなたのお花選択 -->
-    <div class="card">
-      <div class="card-title">あなたのお花を選ぶ</div>
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px;">
-        <div class="flower-choice-btn" onclick="selectGroupFlower('🌼', this)">🌼</div>
-        <div class="flower-choice-btn" onclick="selectGroupFlower('🌹', this)">🌹</div>
-        <div class="flower-choice-btn" onclick="selectGroupFlower('🌷', this)">🌷</div>
-        <div class="flower-choice-btn" onclick="selectGroupFlower('🌺', this)">🌺</div>
-      </div>
-    </div>
-
     <!-- 報告フィード -->
-    <div id="group-reports-feed" style="display:grid;gap:10px;margin-bottom:16px;">
-      <div style="text-align:center;color:var(--text-light);padding:20px;font-size:13px;">読み込み中...</div>
+    <div class="card">
+      <div class="card-title">みんなの報告</div>
+      <div id="group-reports-feed" style="display:grid;gap:6px;">
+        <div style="text-align:center;color:var(--text-light);padding:20px;font-size:13px;">読み込み中...</div>
+      </div>
     </div>
   </div>
 </div>
@@ -2457,48 +2459,47 @@ async function renderGroupReports(groupId) {
   // 新しい日付順（取得時に created_at 降順のため dateOrder のまま）
   const dates = dateOrder;
   
-  const container = document.getElementById('group-reports-feed');
   const html = dates.map((date, dateIndex) => {
-    const bgColor = dateIndex % 2 === 0 ? 'white' : 'var(--pink-light)';
+    const bgColor = dateIndex % 2 === 0 ? '#FFF8FA' : 'var(--pink-light)';
     const reportsForDate = groupedByDate[date];
-    
-    return '<div style="padding:12px;background:' + bgColor + ';border-radius:8px;margin-bottom:0;">' +
-      '<div style="font-size:12px;font-weight:500;color:var(--text-dark);margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border);">' + date + '</div>' +
+
+    return '<div style="padding:10px;background:' + bgColor + ';border-radius:10px;">' +
+      '<div style="font-size:11px;font-weight:600;color:var(--text-mid);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid rgba(0,0,0,0.06);">\u{1F4C5} ' + date + '</div>' +
+      '<div style="display:grid;gap:6px;">' +
       reportsForDate.map(r => {
         const globalIndex = reports.indexOf(r);
-        // アバター表示（写真優先、なければ絵文字）
         const avatarHtml = r.userPhoto
-          ? '<div style="width:36px;height:36px;border-radius:50%;overflow:hidden;flex-shrink:0;background:#FFF0F3;"><img src="' + r.userPhoto + '" style="width:100%;height:100%;object-fit:cover;"></div>'
-          : '<div style="width:36px;height:36px;border-radius:50%;background:#FFF0F3;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">' + (r.userIcon || '🌸') + '</div>';
-        
-        return '<div class="group-report-card" id="report-' + r.id + '" style="margin-bottom:10px;background:transparent;border:none;padding:0;">' +
-          '<div class="group-report-header">' +
-            '<div style="display:flex;align-items:center;gap:8px;">' +
-              avatarHtml +
-              '<div><div class="group-report-user">' + escapeHtml(r.user) + '</div><div style="font-size:11px;color:var(--text-light);">' + r.date + '</div></div>' +
-            '</div>' +
-            '<div class="group-report-eval' + (r.eval === 'soso' ? ' soso' : '') + '">' + (r.eval === 'done' ? '✅ できた！' : '💛 いまいち') + '</div>' +
+          ? '<div style="width:26px;height:26px;border-radius:50%;overflow:hidden;flex-shrink:0;background:#FFF0F3;"><img src="' + r.userPhoto + '" style="width:100%;height:100%;object-fit:cover;"></div>'
+          : '<div style="width:26px;height:26px;border-radius:50%;background:#FFF0F3;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">' + (r.userIcon || '\u{1F338}') + '</div>';
+
+        return '<div class="group-report-banner" id="report-' + r.id + '" style="background:white;">' +
+          '<div class="group-report-banner-top">' +
+            avatarHtml +
+            '<span class="group-report-banner-name">' + escapeHtml(r.user) + '</span>' +
+            '<span class="group-report-banner-eval' + (r.eval === 'soso' ? ' soso' : '') + '">' + (r.eval === 'done' ? '\u2705' : '\u{1F49B}') + '</span>' +
+            '<span class="group-report-banner-content">' + escapeHtml(r.content) + '</span>' +
+            '<span class="group-report-banner-time">' + r.date.split(' ')[1] + '</span>' +
           '</div>' +
-          '<div class="group-report-content">' + escapeHtml(r.content) + '</div>' +
-          '<div style="font-size:12px;color:var(--text-light);margin:8px 0;display:flex;gap:12px;">❤️ <span id="likes-' + r.id + '">' + r.likes + '</span> • 💬 <span id="comments-' + r.id + '">' + r.commentsList.length + '</span></div>' +
-          '<div class="group-report-actions">' +
-            '<button class="group-action-btn' + (r.likedByUser ? ' active' : '') + '" id="like-btn-' + r.id + '" onclick="likeGroupReport(\'' + r.id + '\',' + globalIndex + ')">❤️ いいね</button>' +
-            '<button class="group-action-btn" onclick="toggleCommentForm(\'' + r.id + '\')">💬 コメント</button>' +
+          '<div class="group-report-banner-actions">' +
+            '<button class="group-report-banner-action' + (r.likedByUser ? ' active' : '') + '" id="like-btn-' + r.id + '" onclick="likeGroupReport(\'' + r.id + '\',' + globalIndex + ')">\u2764\uFE0F <span id="likes-' + r.id + '">' + r.likes + '</span></button>' +
+            '<button class="group-report-banner-action" onclick="toggleCommentForm(\'' + r.id + '\')">\u{1F4AC} <span id="comments-' + r.id + '">' + r.commentsList.length + '</span></button>' +
           '</div>' +
-          '<div id="comment-section-' + r.id + '" style="display:none;margin-top:12px;padding-top:12px;border-top:0.5px solid var(--border);">' +
-            '<div id="comment-list-' + r.id + '" style="display:grid;gap:8px;margin-bottom:10px;">' +
-              r.commentsList.map(c => '<div style="font-size:12px;color:var(--text-mid);"><strong>' + escapeHtml(c.user) + '：</strong>' + escapeHtml(c.text) + '</div>').join('') +
+          '<div id="comment-section-' + r.id + '" style="display:none;margin-top:8px;padding-left:32px;">' +
+            '<div id="comment-list-' + r.id + '" style="display:grid;gap:6px;margin-bottom:8px;">' +
+              r.commentsList.map(c => '<div style="font-size:11px;color:var(--text-mid);"><strong>' + escapeHtml(c.user) + '\uFF1A</strong>' + escapeHtml(c.text) + '</div>').join('') +
             '</div>' +
             '<div style="display:flex;gap:6px;">' +
-              '<input type="text" class="comment-input" id="comment-input-' + r.id + '" placeholder="コメントを入力..." style="flex:1;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-size:12px;font-family:\'Noto Sans JP\',sans-serif;">' +
-              '<button onclick="submitComment(\'' + r.id + '\',' + globalIndex + ')" style="padding:8px 16px;background:var(--pink-strong);color:white;border:none;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s;font-family:\'Noto Sans JP\',sans-serif;">送信</button>' +
+              '<input type="text" class="comment-input" id="comment-input-' + r.id + '" placeholder="\u30B3\u30E1\u30F3\u30C8\u3092\u5165\u529B..." style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-size:12px;font-family:\'Noto Sans JP\',sans-serif;">' +
+              '<button onclick="submitComment(\'' + r.id + '\',' + globalIndex + ')" style="padding:6px 14px;background:var(--pink-strong);color:white;border:none;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;font-family:\'Noto Sans JP\',sans-serif;">\u9001\u4FE1</button>' +
             '</div>' +
           '</div>' +
         '</div>';
       }).join('') +
+      '</div>' +
     '</div>';
   }).join('');
   
+  const container = document.getElementById('group-reports-feed');
   container.innerHTML = html;
   
   // グローバルで報告データを保存（いいね・コメント管理用）
@@ -2524,10 +2525,7 @@ function backToGroupDetail() {
   }
 }
 
-function selectGroupFlower(flower, element) {
-  document.querySelectorAll('.flower-choice-btn').forEach(btn => btn.classList.remove('active'));
-  element.classList.add('active');
-}
+
 
 async function submitGroupReport(evaluation) {
   if (!currentUser) {
@@ -3021,32 +3019,40 @@ let pendingAvatarPhoto = null;
 let removePhotoFlag = false;
 
 function previewAvatarPhoto(event) {
-  const file = event.target.files[0];
+  var file = event.target.files[0];
   if (!file) return;
-  
-  // Canvasで圧縮（256x256）
-  const reader = new FileReader();
+  var hintEl = document.getElementById('avatar-photo-hint');
+  var setHint = function(msg, isError) { if (!hintEl) return; hintEl.textContent = msg; hintEl.style.color = isError ? '#E74C3C' : 'var(--text-light)'; };
+  var maxSizeBytes = 10 * 1024 * 1024;
+  if (file.size > maxSizeBytes) { setHint('\u30D5\u30A1\u30A4\u30EB\u30B5\u30A4\u30BA\u304C\u5927\u304D\u3059\u304E\u307E\u3059\uFF0810MB\u307E\u3067\uFF09\u3002\u5225\u306E\u5199\u771F\u3092\u9078\u3093\u3067\u304F\u3060\u3055\u3044\u3002', true); event.target.value = ''; return; }
+  setHint('\u5199\u771F\u3092\u51E6\u7406\u3057\u3066\u3044\u307E\u3059...', false);
+  var reader = new FileReader();
+  reader.onerror = function() { setHint('\u5199\u771F\u306E\u8AAD\u307F\u8FBC\u307F\u306B\u5931\u6557\u3057\u307E\u3057\u305F\u3002\u5225\u306E\u5199\u771F\u3067\u304A\u8A66\u3057\u304F\u3060\u3055\u3044\u3002', true); event.target.value = ''; };
   reader.onload = function(e) {
-    const img = new Image();
+    var img = new Image();
+    img.onerror = function() { setHint('\u3053\u306E\u753B\u50CF\u306F\u8868\u793A\u3067\u304D\u307E\u305B\u3093\u3067\u3057\u305F\uFF08HEIC\u5F62\u5F0F\u306A\u3069\u975E\u5BFE\u5FDC\u306E\u53EF\u80FD\u6027\u304C\u3042\u308A\u307E\u3059\uFF09\u3002\u5225\u306E\u5199\u771F\u3001\u307E\u305F\u306F\u30B9\u30AF\u30EA\u30FC\u30F3\u30B7\u30E7\u30C3\u30C8\u3067\u304A\u8A66\u3057\u304F\u3060\u3055\u3044\u3002', true); event.target.value = ''; };
     img.onload = function() {
-      const canvas = document.createElement('canvas');
-      const size = 256;
-      canvas.width = size;
-      canvas.height = size;
-      const ctx = canvas.getContext('2d');
-      
-      // 正方形にトリミング（中央）
-      const minDim = Math.min(img.width, img.height);
-      const sx = (img.width - minDim) / 2;
-      const sy = (img.height - minDim) / 2;
-      ctx.drawImage(img, sx, sy, minDim, minDim, 0, 0, size, size);
-      
-      canvas.toBlob(function(blob) {
-        pendingAvatarPhoto = blob;
-        removePhotoFlag = false;
-        const url = URL.createObjectURL(blob);
-        document.getElementById('avatar-photo-preview').innerHTML = '<img src="' + url + '" style="width:100%;height:100%;object-fit:cover;">';
-      }, 'image/jpeg', 0.85);
+      try {
+        var canvas = document.createElement('canvas');
+        var size = 256;
+        canvas.width = size; canvas.height = size;
+        var ctx = canvas.getContext('2d');
+        var minDim = Math.min(img.width, img.height);
+        var sx = (img.width - minDim) / 2;
+        var sy = (img.height - minDim) / 2;
+        ctx.drawImage(img, sx, sy, minDim, minDim, 0, 0, size, size);
+        canvas.toBlob(function(blob) {
+          if (!blob) { setHint('\u5199\u771F\u306E\u5909\u63DB\u306B\u5931\u6557\u3057\u307E\u3057\u305F\u3002\u5225\u306E\u5199\u771F\u3067\u304A\u8A66\u3057\u304F\u3060\u3055\u3044\u3002', true); return; }
+          pendingAvatarPhoto = blob;
+          removePhotoFlag = false;
+          var url = URL.createObjectURL(blob);
+          document.getElementById('avatar-photo-preview').innerHTML = '<img src="' + url + '" style="width:100%;height:100%;object-fit:cover;">';
+          setHint('\u5199\u771F\u3092\u8A2D\u5B9A\u3057\u307E\u3057\u305F\uFF08\u4FDD\u5B58\u3092\u62BC\u3057\u3066\u78BA\u5B9A\u3057\u3066\u304F\u3060\u3055\u3044\uFF09', false);
+        }, 'image/jpeg', 0.85);
+      } catch (err) {
+        console.error('画像処理エラー:', err);
+        setHint('\u5199\u771F\u306E\u51E6\u7406\u4E2D\u306B\u30A8\u30E9\u30FC\u304C\u767A\u751F\u3057\u307E\u3057\u305F\u3002\u5225\u306E\u5199\u771F\u3067\u304A\u8A66\u3057\u304F\u3060\u3055\u3044\u3002', true);
+      }
     };
     img.src = e.target.result;
   };
@@ -3056,9 +3062,11 @@ function previewAvatarPhoto(event) {
 function removeAvatarPhoto() {
   pendingAvatarPhoto = null;
   removePhotoFlag = true;
-  const savedIcon = document.getElementById('profile-icon').value || '🌸';
+  var savedIcon = document.getElementById('profile-icon').value || '\u{1F338}';
   document.getElementById('avatar-photo-preview').textContent = savedIcon;
   document.getElementById('avatar-photo-input').value = '';
+  var hint = document.getElementById('avatar-photo-hint');
+  if (hint) { hint.textContent = '\u5199\u771F\u3092\u524A\u9664\u3057\u307E\u3057\u305F\uFF08\u4FDD\u5B58\u3092\u62BC\u3057\u3066\u78BA\u5B9A\u3057\u3066\u304F\u3060\u3055\u3044\uFF09'; hint.style.color = 'var(--text-light)'; }
 }
 
 async function saveProfile() {
@@ -3068,10 +3076,10 @@ async function saveProfile() {
   localStorage.setItem('bloom-profile-username', username);
   
   let avatarUrl = localStorage.getItem('bloom-profile-photo') || null;
+  let photoUploadFailed = false;
   
   try {
     if (supabaseClient && currentUser) {
-      // 写真がアップロードされた場合はStorageに保存
       if (pendingAvatarPhoto) {
         const filePath = currentUser.id + '/avatar.jpg';
         const { error: uploadError } = await supabaseClient.storage
@@ -3079,23 +3087,30 @@ async function saveProfile() {
           .upload(filePath, pendingAvatarPhoto, { upsert: true, contentType: 'image/jpeg' });
         
         if (uploadError) {
-          console.error('写真アップロード失敗:', uploadError);
-          alert('写真のアップロードに失敗しました：' + uploadError.message);
+          console.error('\u5199\u771F\u30A2\u30C3\u30D7\u30ED\u30FC\u30C9\u5931\u6557:', uploadError);
+          photoUploadFailed = true;
+          let hint = '';
+          const msg = ((uploadError.message || '') + ' ' + (uploadError.error || '') + ' ' + (uploadError.statusCode || '')).toLowerCase();
+          if (msg.includes('bucket not found') || msg.includes('not found')) {
+            hint = '\n\n\u3010\u539F\u56E0\u3011Storage\u306B"avatars"\u30D0\u30B1\u30C3\u30C8\u304C\u5B58\u5728\u3057\u306A\u3044\u53EF\u80FD\u6027\u304C\u3042\u308A\u307E\u3059\u3002\nSupabase\u7BA1\u7406\u753B\u9762\u3067\u30D0\u30B1\u30C3\u30C8\u3092\u4F5C\u6210\u3057\u3066\u304F\u3060\u3055\u3044\u3002';
+          } else if (msg.includes('row-level security') || msg.includes('policy') || msg.includes('403') || msg.includes('unauthorized')) {
+            hint = '\n\n\u3010\u539F\u56E0\u3011Storage\u306E\u6A29\u9650\uFF08RLS\u30DD\u30EA\u30B7\u30FC\uFF09\u3067\u5199\u771F\u30A2\u30C3\u30D7\u30ED\u30FC\u30C9\u304C\u8A31\u53EF\u3055\u308C\u3066\u3044\u307E\u305B\u3093\u3002\navatars\u30D0\u30B1\u30C3\u30C8\u306ERLS\u30DD\u30EA\u30B7\u30FC\u3092\u78BA\u8A8D\u3057\u3066\u304F\u3060\u3055\u3044\u3002';
+          } else if (msg.includes('payload too large') || msg.includes('413')) {
+            hint = '\n\n\u3010\u539F\u56E0\u3011\u30D5\u30A1\u30A4\u30EB\u30B5\u30A4\u30BA\u306E\u4E0A\u9650\u3092\u8D85\u3048\u3066\u3044\u307E\u3059\u3002';
+          }
+          alert('\u5199\u771F\u306E\u30A2\u30C3\u30D7\u30ED\u30FC\u30C9\u306B\u5931\u6557\u3057\u307E\u3057\u305F\uFF1A' + uploadError.message + hint + '\n\n\uFF08\u5199\u771F\u4EE5\u5916\u306E\u30D7\u30ED\u30D5\u30A3\u30FC\u30EB\u9805\u76EE\u306F\u4FDD\u5B58\u3092\u7D9A\u3051\u307E\u3059\uFF09');
         } else {
           const { data: urlData } = supabaseClient.storage.from('avatars').getPublicUrl(filePath);
-          // キャッシュ回避のためタイムスタンプ付与
           avatarUrl = urlData.publicUrl + '?t=' + Date.now();
           localStorage.setItem('bloom-profile-photo', avatarUrl);
         }
       }
       
-      // 写真削除が選択された場合
       if (removePhotoFlag) {
         avatarUrl = null;
         localStorage.removeItem('bloom-profile-photo');
       }
       
-      // profilesテーブルに同期（フィード・花畑での表示用）
       const { error } = await supabaseClient.from('profiles').upsert({
         id: currentUser.id,
         username: username,
@@ -3104,17 +3119,18 @@ async function saveProfile() {
       });
       
       if (error) {
-        console.error('プロフィール同期失敗:', error);
-        alert('プロフィールのオンライン同期に失敗しました：' + error.message + '\n（ローカルには保存されています）');
+        console.error('\u30D7\u30ED\u30D5\u30A3\u30FC\u30EB\u540C\u671F\u5931\u6557:', error);
+        alert('\u30D7\u30ED\u30D5\u30A3\u30FC\u30EB\u306E\u30AA\u30F3\u30E9\u30A4\u30F3\u540C\u671F\u306B\u5931\u6557\u3057\u307E\u3057\u305F\uFF1A' + error.message + '\n\uFF08\u30ED\u30FC\u30AB\u30EB\u306B\u306F\u4FDD\u5B58\u3055\u308C\u3066\u3044\u307E\u3059\uFF09');
       }
     }
   } catch (e) {
-    console.error('プロフィール保存エラー:', e);
+    console.error('\u30D7\u30ED\u30D5\u30A3\u30FC\u30EB\u4FDD\u5B58\u30A8\u30E9\u30FC:', e);
+    alert('\u30D7\u30ED\u30D5\u30A3\u30FC\u30EB\u4FDD\u5B58\u4E2D\u306B\u4E88\u671F\u3057\u306A\u3044\u30A8\u30E9\u30FC\u304C\u767A\u751F\u3057\u307E\u3057\u305F\uFF1A' + (e && e.message ? e.message : e));
   }
   
   updateAuthUI();
   closeProfileModal();
-  alert('プロフィールを保存しました！');
+  if (!photoUploadFailed) { alert('\u30D7\u30ED\u30D5\u30A3\u30FC\u30EB\u3092\u4FDD\u5B58\u3057\u307E\u3057\u305F\uFF01'); }
 }
 
 // ========== 目標シート ==========
