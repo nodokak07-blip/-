@@ -14,34 +14,50 @@
   --green-light: #F0FAF5; --green-mid: #7DD4A8; --green-strong: #2DAA71;
   --purple-light: #F5F0FF; --purple-mid: #C4B0E8; --purple-strong: #8B5CF6;
   --cream: #FDFAF6; --text-dark: #2C2226; --text-mid: #6B4F57; --text-light: #A8889A;
-  --shadow: 0 4px 24px rgba(200,100,130,0.08); --radius: 16px; --radius-sm: 10px;
+  --shadow: 0 6px 24px rgba(200,130,155,0.1); --radius: 20px; --radius-sm: 14px;
+  --glass-bg: rgba(255,255,255,0.28);
+  --glass-border: 2px solid rgba(255,255,255,0.6);
+  --glass-blur: blur(24px) saturate(1.4);
+  --glass-inset: inset 0 2px 6px rgba(255,255,255,0.7), inset 0 -2px 4px rgba(220,160,180,0.05);
+  --glass-pill-border: 1.5px solid rgba(255,255,255,0.65);
+  --font-main: "Tsukushi A Round Gothic", "\u7B51\u7D2BA\u4E38\u30B4\u30B7\u30C3\u30AF", "Hiragino Maru Gothic Pro", "Noto Sans JP", sans-serif;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Noto Sans JP', sans-serif; background: var(--cream); color: var(--text-dark); min-height: 100vh; }
+body {
+  font-family: var(--font-main);
+  background: linear-gradient(165deg, #FFCDD8 0%, #FFD9DE 20%, #FFE4E0 40%, #FFEEE6 60%, #FFF3EE 80%, #FFF8F4 100%);
+  background-attachment: fixed;
+  color: var(--text-dark); min-height: 100vh;
+  position: relative;
+}
 
 /* ========== 認証画面 ========== */
 .auth-overlay {
-  position: fixed; inset: 0; background: rgba(253,250,246,0.97);
+  position: fixed; inset: 0; background: rgba(255,220,230,0.85);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
   z-index: 300; display: flex; align-items: center; justify-content: center;
   padding: 20px;
 }
 .auth-card {
-  background: white; border-radius: 20px; padding: 40px 32px;
+  background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+  border: var(--glass-border); border-radius: 24px; padding: 40px 32px;
   width: 100%; max-width: 420px;
-  box-shadow: 0 8px 48px rgba(200,100,130,0.15);
-  text-align: center;
+  box-shadow: var(--shadow), var(--glass-inset);
+  text-align: center; position: relative; overflow: hidden;
 }
-.auth-logo { font-family:'Noto Serif JP',serif; font-size:28px; font-weight:600; color:#c07090; margin-bottom:6px; }
+.auth-card::after { content:''; position:absolute; top:0; left:5%; right:5%; height:14px; border-radius:0 0 50% 50%; background:linear-gradient(180deg,rgba(255,255,255,0.75),transparent); pointer-events:none; }
+.auth-logo { font-family:var(--font-main); font-size:28px; font-weight:600; color:#c07090; margin-bottom:6px; }
 .auth-tagline { font-size:12px; color:#c0a0b0; margin-bottom:28px; }
 .auth-title { font-size:18px; font-weight:600; color:#3a2030; margin-bottom:6px; }
 .auth-sub { font-size:13px; color:#9a7080; margin-bottom:24px; line-height:1.7; }
-.auth-tabs { display:flex; gap:0; margin-bottom:24px; border-radius:10px; overflow:hidden; border:1.5px solid #F0D8E2; }
-.auth-tab { flex:1; padding:10px; border:none; background:#FFF0F3; font-size:14px; cursor:pointer; transition:all .2s; font-family:'Noto Sans JP',sans-serif; }
+.auth-tabs { display:flex; gap:0; margin-bottom:24px; border-radius:14px; overflow:hidden; border:var(--glass-pill-border); background:rgba(255,255,255,0.2); }
+.auth-tab { flex:1; padding:10px; border:none; background:rgba(255,240,243,0.3); font-size:14px; cursor:pointer; transition:all .2s; font-family:var(--font-main); }
 .auth-tab.active { background:var(--pink-strong); color:white; font-weight:500; }
 .auth-form { display:flex; flex-direction:column; gap:12px; }
-.auth-input { padding:14px 16px; border:1.5px solid #F0D8E2; border-radius:10px; font-size:15px; font-family:'Noto Sans JP',sans-serif; outline:none; background:#FFF8FA; transition:all .2s; }
-.auth-input:focus { border-color:var(--pink-strong); background:white; }
-.auth-btn { padding:16px; background:linear-gradient(135deg,#f0a0b8,#d4b8e8); color:white; border:none; border-radius:10px; font-size:16px; font-weight:700; cursor:pointer; font-family:'Noto Sans JP',sans-serif; transition:all .2s; margin-top:4px; }
+.auth-input { padding:14px 16px; border:var(--glass-pill-border); border-radius:14px; font-size:15px; font-family:var(--font-main); outline:none; background:rgba(255,255,255,0.3); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); transition:all .2s; box-shadow:inset 0 1px 3px rgba(255,255,255,0.6); }
+.auth-input:focus { border-color:var(--pink-strong); background:rgba(255,255,255,0.5); }
+.auth-btn { padding:16px; background:linear-gradient(135deg,rgba(240,160,184,0.7),rgba(212,184,232,0.6)); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); color:white; border:1.5px solid rgba(255,200,215,0.6); border-radius:16px; font-size:16px; font-weight:700; cursor:pointer; font-family:var(--font-main); transition:all .2s; margin-top:4px; box-shadow:0 4px 16px rgba(200,100,140,0.15), inset 0 2px 4px rgba(255,220,230,0.7); position:relative; overflow:hidden; }
+.auth-btn::after { content:''; position:absolute; top:0; left:10%; right:10%; height:40%; border-radius:0 0 50% 50%; background:linear-gradient(180deg,rgba(255,230,240,0.7),transparent); pointer-events:none; }
 .auth-btn:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(200,140,180,0.3); }
 .auth-msg { font-size:13px; margin-top:12px; padding:10px; border-radius:8px; }
 .auth-msg.error { background:#FFF0F0; color:#E74C3C; }
@@ -67,16 +83,16 @@ body { font-family: 'Noto Sans JP', sans-serif; background: var(--cream); color:
 .pk3{bottom:28%;left:18%;animation-delay:2s;font-size:15px;} .pk4{top:58%;right:8%;animation-delay:.5s;}
 @keyframes floatY{0%,100%{transform:translateY(0) scale(1);}50%{transform:translateY(-16px) scale(1.02);}}
 @keyframes twinkle{0%,100%{opacity:0.3;transform:scale(1) rotate(0);}50%{opacity:0.8;transform:scale(1.3) rotate(15deg);}}
-.lp-logo { font-family:'Noto Serif JP',serif;font-size:clamp(36px,9vw,64px);font-weight:600;color:#c07090;line-height:1.2;margin-bottom:10px;position:relative;z-index:2;letter-spacing:.04em; }
+.lp-logo { font-family:var(--font-main);font-size:clamp(36px,9vw,64px);font-weight:600;color:#c07090;line-height:1.2;margin-bottom:10px;position:relative;z-index:2;letter-spacing:.04em; }
 .lp-flower { font-size:26px;display:block;margin-bottom:20px;position:relative;z-index:2; }
 .lp-tagline { font-size:12px;color:#c0a0b0;letter-spacing:.18em;margin-bottom:40px;position:relative;z-index:2;font-style:italic; }
 .lp-sub { font-size:15px;color:#8a6070;line-height:1.9;margin-bottom:52px;position:relative;z-index:2;max-width:400px; }
-.btn-start { display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,#f0a0b8 0%,#d4b8e8 100%);color:white;border:none;border-radius:50px;padding:18px 52px;font-family:'Noto Sans JP',sans-serif;font-size:17px;font-weight:700;cursor:pointer;box-shadow:0 8px 32px rgba(200,140,180,0.3);transition:all .3s;position:relative;z-index:2;margin-bottom:16px;letter-spacing:.04em; }
+.btn-start { display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,#f0a0b8 0%,#d4b8e8 100%);color:white;border:none;border-radius:50px;padding:18px 52px;font-family:var(--font-main);font-size:17px;font-weight:700;cursor:pointer;box-shadow:0 8px 32px rgba(200,140,180,0.3);transition:all .3s;position:relative;z-index:2;margin-bottom:16px;letter-spacing:.04em; }
 .btn-start:hover { transform:translateY(-3px);box-shadow:0 14px 40px rgba(200,140,180,0.42); }
 .top-note { font-size:12px;color:#c0a0b0;position:relative;z-index:2; }
 .lp-section { padding:72px 24px;max-width:680px;margin:0 auto;text-align:center; }
 .lp-section-label { font-size:11px;letter-spacing:.2em;color:#d4a0b8;text-transform:uppercase;margin-bottom:12px; }
-.lp-section-title { font-family:'Noto Serif JP',serif;font-size:clamp(22px,5vw,32px);font-weight:600;color:#3a2030;margin-bottom:24px;line-height:1.5; }
+.lp-section-title { font-family:var(--font-main);font-size:clamp(22px,5vw,32px);font-weight:600;color:#3a2030;margin-bottom:24px;line-height:1.5; }
 .lp-section-body { font-size:15px;color:#7a5060;line-height:2.0; }
 .lp-divider { width:48px;height:2px;background:linear-gradient(90deg,#f0c0d0,#d4b8e8);border-radius:1px;margin:0 auto 32px; }
 .lp-concept-bg { background:linear-gradient(160deg,#fff8fc 0%,#f8f0ff 100%);border-top:1px solid #f5e8f0;border-bottom:1px solid #f5e8f0; }
@@ -101,13 +117,14 @@ body { font-family: 'Noto Sans JP', sans-serif; background: var(--cream); color:
 .app-body.show { display:block; }
 
 /* ナビゲーション */
-.app-nav { background:white;border-bottom:1px solid #F5E0EA;position:sticky;top:0;z-index:100; }
+.app-nav { background:rgba(255,230,235,0.4); backdrop-filter:blur(28px) saturate(1.5); -webkit-backdrop-filter:blur(28px) saturate(1.5); border-bottom:1px solid rgba(255,255,255,0.5); position:sticky;top:0;z-index:100; }
 .nav-header { padding:12px 16px;display:flex;align-items:center;gap:8px;flex-wrap:nowrap; }
-.nav-logo { font-family:'Noto Serif JP',serif;font-size:16px;font-weight:600;color:var(--pink-dark); }
-.nav-tabs { display:flex;overflow-x:auto;padding:0 12px 0;gap:4px;scrollbar-width:none; }
+.nav-logo { font-family:var(--font-main);font-size:16px;font-weight:600;color:var(--pink-dark); }
+.nav-tabs { display:flex;overflow-x:auto;padding:6px 12px;gap:4px;scrollbar-width:none;background:rgba(255,225,230,0.25);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px); }
 .nav-tabs::-webkit-scrollbar { display:none; }
-.nav-tab { flex-shrink:0;padding:10px 16px;border:none;background:none;font-family:'Noto Sans JP',sans-serif;font-size:13px;color:var(--text-light);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap; }
-.nav-tab.active { color:var(--pink-strong);border-bottom-color:var(--pink-strong);font-weight:500; }
+.nav-tab { flex-shrink:0;padding:7px 14px;border:1px solid transparent;background:none;font-family:var(--font-main);font-size:13px;color:var(--text-light);cursor:pointer;border-radius:20px;transition:all .2s;white-space:nowrap; }
+.nav-tab.active { color:var(--pink-strong);font-weight:600;background:rgba(255,255,255,0.35);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1.5px solid rgba(255,255,255,0.7);box-shadow:0 3px 12px rgba(200,120,145,0.12),inset 0 2px 6px rgba(255,255,255,0.85);position:relative;overflow:hidden; }
+.nav-tab.active::after { content:'';position:absolute;top:1px;left:12%;right:12%;height:35%;border-radius:0 0 50% 50%;background:linear-gradient(180deg,rgba(255,255,255,0.9),transparent);pointer-events:none; }
 
 /* ページ */
 .page { display:none;max-width:640px;margin:0 auto;padding:24px 16px 80px; }
@@ -115,8 +132,9 @@ body { font-family: 'Noto Sans JP', sans-serif; background: var(--cream); color:
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
 
 /* カード */
-.card { background:white;border-radius:var(--radius);box-shadow:var(--shadow);padding:24px;margin-bottom:16px; }
-.card-title { font-family:'Noto Serif JP',serif;font-size:18px;font-weight:600;color:var(--text-dark);margin-bottom:16px;display:flex;align-items:center;gap:8px; }
+.card { background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:var(--glass-border);border-radius:var(--radius);box-shadow:var(--shadow),var(--glass-inset);padding:24px;margin-bottom:16px;position:relative;overflow:hidden; }
+.card::after { content:'';position:absolute;top:0;left:5%;right:5%;height:12px;border-radius:0 0 50% 50%;background:linear-gradient(180deg,rgba(255,255,255,0.75),transparent);pointer-events:none; }
+.card-title { font-family:var(--font-main);font-size:18px;font-weight:600;color:var(--text-dark);margin-bottom:16px;display:flex;align-items:center;gap:8px;position:relative;z-index:1; }
 .section-label { font-size:11px;letter-spacing:.15em;color:var(--pink-strong);text-transform:uppercase;margin-bottom:8px; }
 
 /* フォーム */
@@ -124,23 +142,26 @@ body { font-family: 'Noto Sans JP', sans-serif; background: var(--cream); color:
 .form-label { display:block;font-size:13px;font-weight:500;color:var(--text-mid);margin-bottom:6px; }
 .form-label span { color:var(--pink-strong);font-size:11px;margin-left:4px; }
 input[type="text"],input[type="number"],input[type="date"],select,textarea {
-  width:100%;padding:12px 14px;border:1.5px solid #F0D8E2;border-radius:var(--radius-sm);
-  font-family:'Noto Sans JP',sans-serif;font-size:14px;color:var(--text-dark);
-  background:var(--pink-light);transition:all .2s;outline:none;appearance:none;
+  width:100%;padding:12px 14px;border:var(--glass-pill-border);border-radius:var(--radius-sm);
+  font-family:var(--font-main);font-size:14px;color:var(--text-dark);
+  background:rgba(255,255,255,0.25);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  transition:all .2s;outline:none;appearance:none;
+  box-shadow:inset 0 1px 3px rgba(255,255,255,0.6);
 }
-input:focus,select:focus,textarea:focus { border-color:var(--pink-strong);background:white; }
+input:focus,select:focus,textarea:focus { border-color:var(--pink-strong);background:rgba(255,255,255,0.45); }
 input[type="number"]{-moz-appearance:textfield;}
 input[type="number"]::-webkit-inner-spin-button{-webkit-appearance:none;}
 textarea { resize:vertical;min-height:80px; }
 
 /* ボタン */
-.btn-primary { width:100%;padding:14px;background:var(--pink-strong);color:white;border:none;border-radius:var(--radius-sm);font-family:'Noto Sans JP',sans-serif;font-size:15px;font-weight:500;cursor:pointer;transition:all .2s;margin-top:8px; }
-.btn-primary:hover { background:var(--pink-dark);transform:translateY(-1px); }
-.btn-secondary { width:100%;padding:12px;background:transparent;color:var(--text-mid);border:1.5px solid #E8D0D8;border-radius:var(--radius-sm);font-family:'Noto Sans JP',sans-serif;font-size:14px;cursor:pointer;transition:all .2s;margin-top:8px; }
-.btn-secondary:hover { background:var(--pink-light); }
-.btn-sm { padding:8px 16px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;border:none; }
-.btn-sm-pink { background:var(--pink-strong);color:white; }
-.btn-sm-outline { background:transparent;color:var(--pink-strong);border:1.5px solid var(--pink-mid); }
+.btn-primary { width:100%;padding:14px;background:linear-gradient(135deg,rgba(231,84,128,0.6),rgba(200,160,180,0.5));backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:white;border:1.5px solid rgba(255,200,215,0.6);border-radius:var(--radius-sm);font-family:var(--font-main);font-size:15px;font-weight:500;cursor:pointer;transition:all .2s;margin-top:8px;box-shadow:0 4px 16px rgba(200,90,130,0.15),inset 0 2px 5px rgba(255,210,225,0.7);position:relative;overflow:hidden; }
+.btn-primary::after { content:'';position:absolute;top:0;left:10%;right:10%;height:40%;border-radius:0 0 50% 50%;background:linear-gradient(180deg,rgba(255,230,240,0.6),transparent);pointer-events:none; }
+.btn-primary:hover { transform:translateY(-1px); }
+.btn-secondary { width:100%;padding:12px;background:rgba(255,255,255,0.25);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:var(--text-mid);border:var(--glass-pill-border);border-radius:var(--radius-sm);font-family:var(--font-main);font-size:14px;cursor:pointer;transition:all .2s;margin-top:8px;box-shadow:inset 0 1px 3px rgba(255,255,255,0.6); }
+.btn-secondary:hover { background:rgba(255,255,255,0.4); }
+.btn-sm { padding:8px 16px;border-radius:12px;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;border:none; }
+.btn-sm-pink { background:rgba(231,84,128,0.6);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:white;border:1px solid rgba(255,200,215,0.5); }
+.btn-sm-outline { background:rgba(255,255,255,0.25);color:var(--pink-strong);border:var(--glass-pill-border); }
 
 /* チップ・タグ */
 .tag { display:inline-block;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:500;margin:3px; }
@@ -149,9 +170,10 @@ textarea { resize:vertical;min-height:80px; }
 .tag-purple { background:var(--purple-light);color:var(--purple-strong);border:1px solid var(--purple-mid); }
 
 /* TODO チェックリスト */
-.todo-item { display:flex;align-items:center;gap:12px;padding:14px 16px;border:1.5px solid #F0D8E2;border-radius:var(--radius-sm);margin-bottom:8px;cursor:pointer;transition:all .2s;background:var(--pink-light);user-select:none; }
-.todo-item:hover { border-color:var(--pink-strong);background:white; }
-.todo-item.done { background:#F0FAF5;border-color:var(--green-mid); }
+.todo-item { display:flex;align-items:center;gap:12px;padding:14px 16px;border:var(--glass-pill-border);border-radius:var(--radius-sm);margin-bottom:8px;cursor:pointer;transition:all .2s;background:rgba(255,255,255,0.22);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);user-select:none;box-shadow:0 2px 10px rgba(200,140,160,0.06),inset 0 1px 4px rgba(255,255,255,0.65);position:relative;overflow:hidden; }
+.todo-item::after { content:'';position:absolute;top:0;left:8%;right:8%;height:8px;border-radius:0 0 50% 50%;background:linear-gradient(180deg,rgba(255,255,255,0.7),transparent);pointer-events:none; }
+.todo-item:hover { border-color:rgba(255,255,255,0.8);background:rgba(255,255,255,0.35); }
+.todo-item.done { background:rgba(240,252,245,0.25);border-color:rgba(125,212,168,0.45); }
 .todo-check { width:22px;height:22px;border:2px solid #D4B0C0;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all .2s; }
 .todo-item.done .todo-check { background:var(--green-strong);border-color:var(--green-strong);color:white; }
 .todo-text { font-size:14px;flex:1; }
@@ -161,9 +183,9 @@ textarea { resize:vertical;min-height:80px; }
 /* 習慣選択グリッド */
 .habit-select-grid { display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px;max-height:320px;overflow-y:auto;padding-right:4px; }
 @media(max-width:400px){.habit-select-grid{grid-template-columns:1fr;}}
-.habit-select-item { padding:12px;border:1.5px solid #F0D8E2;border-radius:var(--radius-sm);cursor:pointer;transition:all .2s;background:var(--pink-light);font-size:13px;text-align:center; }
-.habit-select-item:hover { border-color:var(--pink-strong);background:white; }
-.habit-select-item.selected { border-color:var(--pink-strong);background:white;font-weight:500; }
+.habit-select-item { padding:12px;border:var(--glass-pill-border);border-radius:var(--radius-sm);cursor:pointer;transition:all .2s;background:rgba(255,255,255,0.2);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);font-size:13px;text-align:center;box-shadow:inset 0 1px 3px rgba(255,255,255,0.5); }
+.habit-select-item:hover { border-color:rgba(255,255,255,0.8);background:rgba(255,255,255,0.35); }
+.habit-select-item.selected { border-color:var(--pink-strong);background:rgba(255,255,255,0.4);font-weight:500; }
 .habit-select-item.selected::after { content:'✓';color:var(--pink-strong);margin-left:4px; }
 
 /* 頻度選択 */
@@ -185,7 +207,8 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
 
 /* 統計カード */
 .stats-row { display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px; }
-.stat-card { background:white;border-radius:var(--radius-sm);padding:16px 12px;text-align:center;box-shadow:var(--shadow);border:1px solid #F5E0EA; }
+.stat-card { background:rgba(255,255,255,0.25);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1.5px solid rgba(255,255,255,0.6);border-radius:var(--radius-sm);padding:16px 12px;text-align:center;box-shadow:0 3px 14px rgba(200,130,155,0.08),inset 0 2px 5px rgba(255,255,255,0.75);position:relative;overflow:hidden; }
+.stat-card::after { content:'';position:absolute;top:0;left:12%;right:12%;height:8px;border-radius:0 0 50% 50%;background:linear-gradient(180deg,rgba(255,255,255,0.8),transparent);pointer-events:none; }
 .stat-num { font-size:24px;font-weight:700;color:var(--pink-strong); }
 .stat-label { font-size:11px;color:var(--text-light);margin-top:4px; }
 
@@ -202,7 +225,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
 .error-msg { font-size:12px;color:#E74C3C;margin-top:4px;display:none; }
 
 /* ローディング */
-.loading-overlay { display:none;position:fixed;inset:0;background:rgba(253,250,246,0.9);z-index:200;align-items:center;justify-content:center;flex-direction:column;gap:16px; }
+.loading-overlay { display:none;position:fixed;inset:0;background:rgba(255,220,230,0.7);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);z-index:200;align-items:center;justify-content:center;flex-direction:column;gap:16px; }
 .loading-overlay.show { display:flex; }
 .loading-spinner { width:40px;height:40px;border:3px solid #F0D8E2;border-top-color:var(--pink-strong);border-radius:50%;animation:spin .8s linear infinite; }
 @keyframes spin{to{transform:rotate(360deg);}}
@@ -255,13 +278,14 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
 .btn-share { background:white;color:var(--text-mid);border:1.5px solid #E8D0D8; }
 
 /* フッター */
-.footer { text-align:center;padding:24px 16px;font-size:12px;color:var(--text-light);border-top:1px solid #F5E0EA; }
+.footer { text-align:center;padding:24px 16px;font-size:12px;color:var(--text-light);border-top:0.5px solid rgba(255,255,255,0.3); }
 
 /* ステップ（目標シート作成フロー） */
-.step-card { background:white;border-radius:var(--radius);box-shadow:var(--shadow);padding:28px 24px;margin-bottom:20px;display:none;animation:fadeIn .4s ease; }
+.step-card { background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:var(--glass-border);border-radius:var(--radius);box-shadow:var(--shadow),var(--glass-inset);padding:28px 24px;margin-bottom:20px;display:none;animation:fadeIn .4s ease;position:relative;overflow:hidden; }
+.step-card::after { content:'';position:absolute;top:0;left:5%;right:5%;height:12px;border-radius:0 0 50% 50%;background:linear-gradient(180deg,rgba(255,255,255,0.75),transparent);pointer-events:none; }
 .step-card.active { display:block; }
 .step-num { font-size:11px;color:var(--pink-strong);font-weight:500;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px; }
-.step-title { font-family:'Noto Serif JP',serif;font-size:20px;font-weight:600;margin-bottom:6px; }
+.step-title { font-family:var(--font-main);font-size:20px;font-weight:600;margin-bottom:6px; }
 .step-desc { font-size:13px;color:var(--text-light);margin-bottom:20px;line-height:1.7; }
 .step-bar { display:flex;justify-content:center;gap:6px;margin-top:4px; }
 .step-dot { width:28px;height:5px;border-radius:3px;background:#F0D4DC;transition:background .3s; }
@@ -269,7 +293,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
 .step-dot.done { background:var(--green-mid); }
 .hero-section { background:white;padding:36px 20px 28px;text-align:center;border-bottom:1px solid #F5E0EA;position:relative;overflow:hidden; }
 .hero-badge { display:inline-block;background:var(--pink-light);color:var(--pink-strong);font-size:12px;padding:5px 14px;border-radius:20px;margin-bottom:16px;border:1px solid var(--pink-mid); }
-.hero-section h1 { font-family:'Noto Serif JP',serif;font-size:24px;font-weight:600;line-height:1.5;margin-bottom:12px; }
+.hero-section h1 { font-family:var(--font-main);font-size:24px;font-weight:600;line-height:1.5;margin-bottom:12px; }
 .hero-section h1 span { color:var(--pink-strong); }
 .hero-sub { font-size:13px;color:var(--text-mid);line-height:1.8;margin-bottom:20px; }
 .progress-wrap { margin-bottom:20px; }
@@ -295,20 +319,20 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
 .comment-item:last-child { border:none; }
 .comment-user { font-weight:600;color:var(--text-dark);margin-right:6px; }
 .comment-input-row { display:flex;gap:8px;padding:8px 16px 12px;border-top:1px solid #F5EEF2; }
-.comment-input { flex:1;padding:8px 12px;border:1.5px solid #F0D8E2;border-radius:20px;font-size:13px;outline:none;font-family:'Noto Sans JP',sans-serif; }
+.comment-input { flex:1;padding:8px 12px;border:1.5px solid #F0D8E2;border-radius:20px;font-size:13px;outline:none;font-family:var(--font-main); }
 .comment-input:focus { border-color:var(--pink-strong); }
 .comment-send-btn { background:var(--pink-strong);color:white;border:none;border-radius:20px;padding:8px 16px;font-size:13px;cursor:pointer;white-space:nowrap; }
 
 /* 投稿作成 */
 .post-create-card { background:white;border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;margin:16px; }
-.post-create-title { font-family:'Noto Serif JP',serif;font-size:16px;font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:8px; }
+.post-create-title { font-family:var(--font-main);font-size:16px;font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:8px; }
 .image-upload-area { border:2px dashed #F0D8E2;border-radius:var(--radius-sm);padding:32px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:12px;background:#FFF8FA; }
 .image-upload-area:hover { border-color:var(--pink-strong);background:#FFF0F3; }
 .image-upload-area.has-image { padding:0;border:none; }
 .image-preview { width:100%;border-radius:var(--radius-sm);display:block; }
 .expires-badge { display:inline-block;background:#FFF0F3;color:var(--pink-strong);font-size:11px;padding:4px 10px;border-radius:10px;border:1px solid var(--pink-mid);margin-bottom:12px; }
 .sns-tabs { display:flex;gap:0;margin:16px;border-radius:10px;overflow:hidden;border:1.5px solid #F0D8E2; }
-.sns-tab { flex:1;padding:10px;border:none;background:#FFF0F3;font-size:13px;cursor:pointer;font-family:'Noto Sans JP',sans-serif;transition:all .2s; }
+.sns-tab { flex:1;padding:10px;border:none;background:#FFF0F3;font-size:13px;cursor:pointer;font-family:var(--font-main);transition:all .2s; }
 .sns-tab.active { background:var(--pink-strong);color:white;font-weight:500; }
 .no-posts { text-align:center;padding:48px 20px;color:var(--text-light); }
 .no-posts-icon { font-size:48px;margin-bottom:12px; }
@@ -322,7 +346,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
 .share-canvas {
   width:1080px; height:1350px;
   background:linear-gradient(160deg,#fff5f8 0%,#fef0f8 40%,#f5f0ff 70%,#f0f8ff 100%);
-  font-family:'Noto Sans JP',sans-serif;
+  font-family:var(--font-main);
   overflow:hidden; position:relative;
   display:flex; flex-direction:column;
 }
@@ -332,10 +356,10 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
   color:white;
   position:relative;
 }
-.share-canvas-logo { font-family:'Noto Serif JP',serif;font-size:34px;font-weight:600;margin-bottom:4px;letter-spacing:.04em; }
+.share-canvas-logo { font-family:var(--font-main);font-size:34px;font-weight:600;margin-bottom:4px;letter-spacing:.04em; }
 .share-canvas-tagline { font-size:16px;opacity:.85; }
 .share-canvas-body { flex:1;padding:20px 48px;display:flex;flex-direction:column;gap:16px; }
-.share-canvas-title { font-family:'Noto Serif JP',serif;font-size:44px;font-weight:600;color:#3a2030;line-height:1.3; }
+.share-canvas-title { font-family:var(--font-main);font-size:44px;font-weight:600;color:#3a2030;line-height:1.3; }
 .share-canvas-month { font-size:22px;color:#c07090;font-weight:500;margin-top:2px; }
 .share-stat-grid { display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px; }
 .share-stat-box {
@@ -358,16 +382,17 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
   color:white;
 }
 .share-footer-tag { font-size:17px;opacity:.85; }
-.share-footer-logo { font-family:'Noto Serif JP',serif;font-size:22px;font-weight:600; }
+.share-footer-logo { font-family:var(--font-main);font-size:22px;font-weight:600; }
 .share-deco { position:absolute;pointer-events:none;opacity:.15;font-size:80px; }
 
 /* ========== コラムタブ ========== */
 .column-category-filter { display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:16px;scrollbar-width:none; }
 .column-category-filter::-webkit-scrollbar { display:none; }
-.column-cat-btn { flex-shrink:0;padding:8px 18px;border-radius:20px;border:1.5px solid #F0D8E2;background:white;font-size:13px;color:var(--text-mid);cursor:pointer;transition:all .2s;font-family:'Noto Sans JP',sans-serif;white-space:nowrap; }
+.column-cat-btn { flex-shrink:0;padding:8px 18px;border-radius:20px;border:var(--glass-pill-border);background:rgba(255,255,255,0.25);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);font-size:13px;color:var(--text-mid);cursor:pointer;transition:all .2s;font-family:var(--font-main);white-space:nowrap;box-shadow:inset 0 1px 3px rgba(255,255,255,0.6); }
 .column-cat-btn.active { background:var(--pink-strong);color:white;border-color:var(--pink-strong);font-weight:500; }
 .column-articles-list { display:flex;flex-direction:column;gap:14px;margin-bottom:20px; }
-.column-article-card { background:white;border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;gap:8px; }
+.column-article-card { background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:var(--glass-border);border-radius:var(--radius);box-shadow:var(--shadow),var(--glass-inset);padding:20px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;gap:8px;position:relative;overflow:hidden; }
+.column-article-card::after { content:'';position:absolute;top:0;left:5%;right:5%;height:10px;border-radius:0 0 50% 50%;background:linear-gradient(180deg,rgba(255,255,255,0.7),transparent);pointer-events:none; }
 .column-article-card:hover { transform:translateY(-2px);box-shadow:0 8px 28px rgba(200,100,130,0.14); }
 .column-article-top { display:flex;align-items:center;justify-content:space-between; }
 .column-article-cat { font-size:11px;font-weight:600;padding:3px 10px;border-radius:12px; }
@@ -379,45 +404,47 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
 .column-article-title { font-size:15px;font-weight:600;color:var(--text-dark);line-height:1.5; }
 .column-article-excerpt { font-size:13px;color:var(--text-mid);line-height:1.7; }
 .column-discord-banner { background:linear-gradient(135deg,#5865F2,#8B5CF6);border-radius:var(--radius);padding:28px 20px;text-align:center;color:white; }
-.btn-discord { display:inline-block;background:white;color:#5865F2;border:none;border-radius:8px;padding:12px 28px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Noto Sans JP',sans-serif;transition:all .2s; }
+.btn-discord { display:inline-block;background:white;color:#5865F2;border:none;border-radius:8px;padding:12px 28px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font-main);transition:all .2s; }
 .btn-discord:hover { transform:translateY(-1px);box-shadow:0 6px 18px rgba(0,0,0,0.15); }
 
 /* ========== グループ機能 ========== */
-.group-card { background:white;border:0.5px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px;cursor:pointer;transition:all .2s; }
+.group-card { background:rgba(255,255,255,0.25);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:var(--glass-pill-border);border-radius:var(--radius);padding:14px;margin-bottom:10px;cursor:pointer;transition:all .2s;box-shadow:inset 0 1px 4px rgba(255,255,255,0.6);position:relative;overflow:hidden; }
+.group-card::after { content:'';position:absolute;top:0;left:8%;right:8%;height:8px;border-radius:0 0 50% 50%;background:linear-gradient(180deg,rgba(255,255,255,0.7),transparent);pointer-events:none; }
 .group-card:hover { transform:translateY(-2px);box-shadow:var(--shadow); }
 .group-card-name { font-weight:600;font-size:14px;color:var(--text-dark);margin-bottom:4px; }
 .group-card-meta { font-size:12px;color:var(--text-light);margin-bottom:8px; }
-.group-card-btn { width:100%;padding:8px;background:var(--pink-strong);color:white;border:none;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;font-family:'Noto Sans JP',sans-serif;transition:all .2s; }
-.group-card-btn:hover { background:var(--pink-accent); }
-.group-card-btn:disabled { background:var(--border);color:var(--text-mid);cursor:not-allowed; }
-.group-card-joined { border-color:var(--success-light);background:var(--success-bg); }
-.group-card-joined .group-card-name { color:var(--success); }
-.group-card-joined .group-card-meta { color:var(--success);opacity:0.8; }
+.group-card-btn { width:100%;padding:8px;background:var(--pink-strong);color:white;border:none;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;font-family:var(--font-main);transition:all .2s; }
+.group-card-btn:hover { background:var(--pink-dark); }
+.group-card-btn:disabled { background:rgba(255,255,255,0.5);color:var(--text-mid);cursor:not-allowed; }
+.group-card-joined { border-color:rgba(125,212,168,0.45);background:rgba(240,250,245,0.25); }
+.group-card-joined .group-card-name { color:var(--green-strong); }
+.group-card-joined .group-card-meta { color:var(--green-strong);opacity:0.8; }
 
 /* ========== グループ詳細・みんなの花畑 ========== */
-.group-member-flower { text-align:center;padding:12px;border:0.5px solid var(--border);border-radius:12px;background:white;transition:all .2s; }
+.group-member-flower { text-align:center;padding:12px;border:0.5px solid rgba(255,255,255,0.5);border-radius:12px;background:white;transition:all .2s; }
 .group-member-flower-emoji { font-size:40px;margin-bottom:6px; }
 .group-member-flower-name { font-size:13px;font-weight:500;color:var(--text-dark);margin-bottom:6px; }
 .group-member-flower-stats { font-size:11px;color:var(--text-light);display:flex;justify-content:center;gap:8px; }
 .group-member-flower-stat { display:flex;align-items:center;gap:2px; }
 
 /* ========== グループ報告フィード ========== */
-.group-report-card { background:white;border:0.5px solid var(--border);border-radius:12px;padding:12px; }
+.group-report-card { background:rgba(255,255,255,0.25);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:var(--glass-pill-border);border-radius:12px;padding:12px; }
 .group-report-header { display:flex;justify-content:space-between;align-items:center;margin-bottom:8px; }
 .group-report-user { font-weight:500;font-size:13px;color:var(--text-dark); }
 .group-report-eval { font-size:11px;padding:2px 8px;border-radius:4px;background:var(--green-light);color:var(--green-strong); }
 .group-report-eval.soso { background:#FFF8E1;color:#D4A017; }
 .group-report-content { font-size:13px;color:var(--text-mid);margin:8px 0;line-height:1.5; }
 .group-report-actions { display:flex;gap:8px;margin-top:8px; }
-.group-action-btn { flex:1;padding:6px;background:white;border:0.5px solid var(--border);border-radius:6px;font-size:12px;cursor:pointer;transition:all .2s; }
-.group-action-btn:hover { background:var(--border); }
+.group-action-btn { flex:1;padding:6px;background:white;border:0.5px solid rgba(255,255,255,0.5);border-radius:6px;font-size:12px;cursor:pointer;transition:all .2s; }
+.group-action-btn:hover { background:rgba(255,255,255,0.5); }
 .group-action-btn.active { background:var(--pink-strong);color:white;border-color:var(--pink-strong); }
 
 /* ========== 花選択 ========== */
-.flower-choice-btn { padding:14px;text-align:center;font-size:24px;border:2px solid var(--border);border-radius:8px;cursor:pointer;background:white;transition:all .2s; }
+.flower-choice-btn { padding:14px;text-align:center;font-size:24px;border:2px solid rgba(255,255,255,0.5);border-radius:8px;cursor:pointer;background:white;transition:all .2s; }
 .flower-choice-btn:hover { transform:scale(1.05); }
 .flower-choice-btn.active { border-color:var(--pink-strong);background:var(--pink-light); }
-.group-report-banner { border-radius:10px;padding:10px 12px; }
+.group-report-banner { border-radius:12px;padding:10px 12px;background:rgba(255,255,255,0.28);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1.5px solid rgba(255,255,255,0.55);box-shadow:0 2px 8px rgba(200,140,160,0.06),inset 0 1px 4px rgba(255,255,255,0.6);position:relative;overflow:hidden;margin-bottom:5px; }
+.group-report-banner::after { content:'';position:absolute;top:0;left:10%;right:10%;height:6px;border-radius:0 0 50% 50%;background:linear-gradient(180deg,rgba(255,255,255,0.7),transparent);pointer-events:none; }
 .group-report-banner-top { display:flex;align-items:center;gap:8px; }
 .group-report-banner-name { font-weight:500;font-size:12px;color:var(--text-dark);flex-shrink:0; }
 .group-report-banner-eval { font-size:10px;padding:1px 7px;border-radius:4px;background:var(--green-light);color:var(--green-strong);flex-shrink:0; }
@@ -429,7 +456,8 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
 .group-report-banner-action.active { color:var(--pink-strong);font-weight:600; }
 
 /* ========== グループ報告ボタン（かわいいデザイン） ========== */
-.group-submit-btn { width:100%;padding:14px 16px;border:1.5px solid;border-radius:16px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Noto Sans JP',sans-serif;transition:all .2s;box-shadow:0 2px 8px rgba(200,100,130,0.08); }
+.group-submit-btn { width:100%;padding:14px 16px;border:var(--glass-pill-border);border-radius:18px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--font-main);transition:all .2s;box-shadow:0 4px 16px rgba(200,100,130,0.1),inset 0 2px 5px rgba(255,255,255,0.8);position:relative;overflow:hidden; }
+.group-submit-btn::after { content:'';position:absolute;top:0;left:10%;right:10%;height:40%;border-radius:0 0 50% 50%;background:linear-gradient(180deg,rgba(255,255,255,0.7),transparent);pointer-events:none; }
 .group-submit-btn:hover { transform:translateY(-2px);box-shadow:0 4px 16px rgba(200,100,130,0.15); }
 .group-submit-btn:active { transform:translateY(0); }
 
@@ -438,7 +466,8 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
 .group-submit-pink:hover { background:linear-gradient(135deg,rgba(255,200,225,0.5),rgba(255,180,210,0.5)); }
 
 /* グリーン系（できた！） */
-.group-eval-btn { width:100%;padding:14px 16px;border:1.5px solid;border-radius:16px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Noto Sans JP',sans-serif;transition:all .2s;box-shadow:0 2px 8px rgba(45,170,113,0.08); }
+.group-eval-btn { width:100%;padding:14px 16px;border:var(--glass-pill-border);border-radius:18px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--font-main);transition:all .2s;box-shadow:0 2px 10px rgba(45,170,113,0.08),inset 0 2px 5px rgba(255,255,255,0.7);background:rgba(255,255,255,0.3);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);position:relative;overflow:hidden; }
+.group-eval-btn::after { content:'';position:absolute;top:0;left:10%;right:10%;height:40%;border-radius:0 0 50% 50%;background:linear-gradient(180deg,rgba(255,255,255,0.7),transparent);pointer-events:none; }
 .group-eval-btn:hover { transform:translateY(-2px);box-shadow:0 4px 16px rgba(45,170,113,0.12); }
 .group-eval-btn:active { transform:translateY(0); }
 
@@ -500,7 +529,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
 <!-- プロフィール設定モーダル -->
 <div id="profile-modal" style="display:none;position:fixed;inset:0;background:rgba(253,250,246,0.97);z-index:300;display:none;align-items:center;justify-content:center;padding:20px;">
   <div style="background:white;border-radius:20px;padding:32px;width:100%;max-width:420px;box-shadow:0 8px 48px rgba(200,100,130,0.15);max-height:90vh;overflow-y:auto;">
-    <div style="font-family:'Noto Serif JP',serif;font-size:20px;font-weight:600;color:#c07090;margin-bottom:20px;text-align:center;">👤 プロフィール設定</div>
+    <div style="font-family:var(--font-main);font-size:20px;font-weight:600;color:#c07090;margin-bottom:20px;text-align:center;">👤 プロフィール設定</div>
     
     <div class="form-group">
       <label class="form-label">プロフィール写真（任意）</label>
@@ -508,7 +537,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
         <div id="avatar-photo-preview" style="width:64px;height:64px;background:#FFF0F3;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;overflow:hidden;flex-shrink:0;">🌸</div>
         <div style="flex:1;">
           <input type="file" id="avatar-photo-input" accept="image/*" onchange="previewAvatarPhoto(event)" style="display:none;">
-          <button type="button" onclick="document.getElementById('avatar-photo-input').click()" style="width:100%;padding:10px;background:var(--pink-light);border:1.5px solid var(--pink-mid);border-radius:8px;font-size:13px;cursor:pointer;color:var(--text-dark);font-family:'Noto Sans JP',sans-serif;">📷 写真を選ぶ</button>
+          <button type="button" onclick="document.getElementById('avatar-photo-input').click()" style="width:100%;padding:10px;background:var(--pink-light);border:1.5px solid var(--pink-mid);border-radius:8px;font-size:13px;cursor:pointer;color:var(--text-dark);font-family:var(--font-main);">📷 写真を選ぶ</button>
           <button type="button" onclick="removeAvatarPhoto()" style="width:100%;padding:6px;background:none;border:none;font-size:11px;cursor:pointer;color:var(--text-light);text-decoration:underline;margin-top:4px;">写真を削除して絵文字に戻す</button>
         </div>
       </div>
@@ -596,6 +625,16 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
 
 <!-- ========== アプリ本体 ========== -->
 <div id="app-body" class="app-body">
+  <!-- 水滴バブル装飾 -->
+  <div style="position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;">
+    <div style="position:absolute;width:35px;height:35px;top:18%;left:4%;border-radius:50%;background:radial-gradient(circle at 30% 25%,rgba(255,255,255,0.85),rgba(255,255,255,0.12) 50%,rgba(255,220,230,0.06) 100%);border:0.5px solid rgba(255,255,255,0.5);box-shadow:inset 0 -4px 8px rgba(255,200,210,0.12);"></div>
+    <div style="position:absolute;width:18px;height:18px;top:12%;right:12%;border-radius:50%;background:radial-gradient(circle at 30% 25%,rgba(255,255,255,0.9),rgba(255,255,255,0.15) 50%,transparent 100%);border:0.5px solid rgba(255,255,255,0.5);"></div>
+    <div style="position:absolute;width:25px;height:25px;top:42%;right:5%;border-radius:50%;background:radial-gradient(circle at 30% 25%,rgba(255,255,255,0.85),rgba(255,255,255,0.12) 50%,transparent 100%);border:0.5px solid rgba(255,255,255,0.5);box-shadow:inset 0 -3px 6px rgba(255,200,210,0.1);"></div>
+    <div style="position:absolute;width:14px;height:14px;top:55%;left:8%;border-radius:50%;background:radial-gradient(circle at 30% 25%,rgba(255,255,255,0.9),transparent 60%);border:0.5px solid rgba(255,255,255,0.4);"></div>
+    <div style="position:absolute;width:22px;height:22px;top:72%;left:3%;border-radius:50%;background:radial-gradient(circle at 30% 25%,rgba(255,255,255,0.85),rgba(255,255,255,0.12) 50%,transparent 100%);border:0.5px solid rgba(255,255,255,0.5);"></div>
+    <div style="position:absolute;width:28px;height:28px;top:85%;right:8%;border-radius:50%;background:radial-gradient(circle at 30% 25%,rgba(255,255,255,0.85),rgba(255,255,255,0.12) 50%,transparent 100%);border:0.5px solid rgba(255,255,255,0.5);box-shadow:inset 0 -4px 8px rgba(255,200,210,0.12);"></div>
+    <div style="position:absolute;width:12px;height:12px;top:30%;right:7%;border-radius:50%;background:radial-gradient(circle at 30% 25%,rgba(255,255,255,0.9),transparent 60%);border:0.5px solid rgba(255,255,255,0.4);"></div>
+  </div>
 
 <div class="loading-overlay" id="loading">
   <div class="loading-spinner"></div>
@@ -608,8 +647,8 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
     <span style="font-size:20px;flex-shrink:0;">🌸</span>
     <span class="nav-logo" style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Bloom Journal</span>
     <div style="margin-left:auto;display:flex;align-items:center;gap:4px;flex-shrink:0;">
-      <button id="nav-admin-btn" onclick="showPage('page-admin')" style="display:none;padding:3px 8px;border-radius:16px;border:1.5px solid var(--green-mid);background:var(--green-light);font-size:10px;cursor:pointer;color:var(--green-strong);font-weight:500;white-space:nowrap;">⚙️ 管理</button>
-      <button id="nav-auth-btn" onclick="toggleAuth()" style="padding:3px 8px;border-radius:16px;border:1.5px solid #F0D8E2;background:white;font-size:10px;cursor:pointer;color:var(--text-mid);display:flex;align-items:center;gap:3px;white-space:nowrap;max-width:120px;overflow:hidden;">
+      <button id="nav-admin-btn" onclick="showPage('page-admin')" style="display:none;padding:4px 10px;border-radius:20px;border:1.5px solid rgba(125,212,168,0.4);background:rgba(240,250,245,0.35);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);font-size:10px;cursor:pointer;color:var(--green-strong);font-weight:500;white-space:nowrap;box-shadow:inset 0 1px 3px rgba(255,255,255,0.7);font-family:var(--font-main);">⚙️ 管理</button>
+      <button id="nav-auth-btn" onclick="toggleAuth()" style="padding:4px 10px;border-radius:20px;border:1.5px solid rgba(255,255,255,0.65);background:rgba(255,255,255,0.3);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);font-size:10px;cursor:pointer;color:var(--text-mid);display:flex;align-items:center;gap:3px;white-space:nowrap;max-width:120px;overflow:hidden;box-shadow:inset 0 1px 3px rgba(255,255,255,0.7);font-family:var(--font-main);">
         <span id="nav-icon" style="flex-shrink:0;">🔑</span><span id="nav-name" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">ログイン</span>
       </button>
     </div>
@@ -767,7 +806,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
       <div class="step-card" id="step-4">
         <div class="result-hero">
           <div style="font-size:13px;opacity:.85;margin-bottom:4px;" id="res-name-greeting">こんにちは！</div>
-          <div style="font-family:'Noto Serif JP',serif;font-size:20px;font-weight:600;margin-bottom:16px;">あなた専用<br>ダイエット目標シート 🌸</div>
+          <div style="font-family:var(--font-main);font-size:20px;font-weight:600;margin-bottom:16px;">あなた専用<br>ダイエット目標シート 🌸</div>
           <div class="result-stats">
             <div style="text-align:center;"><div class="result-stat-num" id="res-current">—</div><div class="result-stat-label">現在の体重</div></div>
             <div style="font-size:20px;opacity:.6;align-self:center;">→</div>
@@ -802,7 +841,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
   <div id="goal-view" style="display:none;padding:16px;">
     <div class="result-hero">
       <div style="font-size:13px;opacity:.85;margin-bottom:4px;" id="goal-view-name"></div>
-      <div style="font-family:'Noto Serif JP',serif;font-size:20px;font-weight:600;margin-bottom:16px;">ダイエット目標シート 🌸</div>
+      <div style="font-family:var(--font-main);font-size:20px;font-weight:600;margin-bottom:16px;">ダイエット目標シート 🌸</div>
       <div class="result-stats">
         <div style="text-align:center;"><div class="result-stat-num" id="gv-current">—</div><div class="result-stat-label">現在の体重</div></div>
         <div style="font-size:20px;opacity:.6;align-self:center;">→</div>
@@ -1119,7 +1158,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
     <!-- 今日の報告フォーム -->
     <div class="card">
       <div class="card-title">今日の取り組み</div>
-      <textarea id="group-report-content" placeholder="今日の取り組みを記入..." style="width:100%;height:80px;padding:10px;border:1px solid var(--border);border-radius:8px;font-family:'Noto Sans JP',sans-serif;font-size:13px;resize:vertical;"></textarea>
+      <textarea id="group-report-content" placeholder="今日の取り組みを記入..." style="width:100%;height:80px;padding:10px;border:1px solid rgba(255,255,255,0.5);border-radius:8px;font-family:var(--font-main);font-size:13px;resize:vertical;"></textarea>
       
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;">
         <button class="group-eval-btn group-eval-done" onclick="submitGroupReport('done')">✅ できた！</button>
@@ -1172,7 +1211,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
         <span style="font-size:12px;color:var(--text-light);">ポイント</span>
         <span style="font-size:12px;font-weight:500;color:var(--text-dark);" id="my-flower-points">125</span>
       </div>
-      <div style="width:100%;height:12px;background:var(--border);border-radius:6px;overflow:hidden;margin-bottom:4px;">
+      <div style="width:100%;height:12px;background:rgba(255,255,255,0.5);border-radius:6px;overflow:hidden;margin-bottom:4px;">
         <div id="my-flower-progress" style="height:100%;background:linear-gradient(90deg,#f0a0b8,#2DAA71);width:83.3%;transition:width .3s;"></div>
       </div>
       <div style="font-size:11px;color:var(--text-light);text-align:right;">次の段階（💐満開）まであと <span id="my-flower-remaining">25</span>ポイント</div>
@@ -1253,8 +1292,8 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
     <div class="card">
       <div class="card-title">📣 お知らせを投稿</div>
       <p style="font-size:12px;color:var(--text-light);margin-bottom:8px;">習慣TODOページの上部に最新の1件が表示されます（最新コラム情報・ニュースなど）</p>
-      <textarea id="admin-announcement-text" placeholder="お知らせ内容を入力...&#10;例：新しいコラム「朝の白湯で体質改善」を公開しました！コラムタブからご覧ください🌸" style="width:100%;height:80px;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;resize:vertical;font-family:'Noto Sans JP',sans-serif;"></textarea>
-      <button type="button" onclick="postAnnouncement()" style="width:100%;padding:12px;background:var(--pink-strong);color:white;border:none;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;font-family:'Noto Sans JP',sans-serif;margin-top:8px;">📣 お知らせを投稿する</button>
+      <textarea id="admin-announcement-text" placeholder="お知らせ内容を入力...&#10;例：新しいコラム「朝の白湯で体質改善」を公開しました！コラムタブからご覧ください🌸" style="width:100%;height:80px;padding:10px;border:1px solid rgba(255,255,255,0.5);border-radius:8px;font-size:13px;resize:vertical;font-family:var(--font-main);"></textarea>
+      <button type="button" onclick="postAnnouncement()" style="width:100%;padding:12px;background:var(--pink-strong);color:white;border:none;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;font-family:var(--font-main);margin-top:8px;">📣 お知らせを投稿する</button>
     </div>
 
     <!-- グループ作成セクション -->
@@ -1263,37 +1302,37 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
       <form id="admin-group-form" style="display:grid;gap:12px;margin-top:12px;">
         <div>
           <label style="font-size:12px;font-weight:500;color:var(--text-dark);">グループ名 *</label>
-          <input type="text" id="admin-group-name" placeholder="グループ名を入力..." style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;margin-top:4px;font-family:'Noto Sans JP',sans-serif;">
+          <input type="text" id="admin-group-name" placeholder="グループ名を入力..." style="width:100%;padding:10px;border:1px solid rgba(255,255,255,0.5);border-radius:8px;font-size:13px;margin-top:4px;font-family:var(--font-main);">
         </div>
         
         <div>
           <label style="font-size:12px;font-weight:500;color:var(--text-dark);">説明 *</label>
-          <textarea id="admin-group-description" placeholder="グループの説明を入力..." style="width:100%;height:60px;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;margin-top:4px;resize:vertical;font-family:'Noto Sans JP',sans-serif;"></textarea>
+          <textarea id="admin-group-description" placeholder="グループの説明を入力..." style="width:100%;height:60px;padding:10px;border:1px solid rgba(255,255,255,0.5);border-radius:8px;font-size:13px;margin-top:4px;resize:vertical;font-family:var(--font-main);"></textarea>
         </div>
 
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
           <div>
             <label style="font-size:12px;font-weight:500;color:var(--text-dark);">習慣 *</label>
-            <input type="text" id="admin-group-habit" placeholder="習慣名" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;margin-top:4px;font-family:'Noto Sans JP',sans-serif;">
+            <input type="text" id="admin-group-habit" placeholder="習慣名" style="width:100%;padding:10px;border:1px solid rgba(255,255,255,0.5);border-radius:8px;font-size:13px;margin-top:4px;font-family:var(--font-main);">
           </div>
           <div>
             <label style="font-size:12px;font-weight:500;color:var(--text-dark);">カテゴリ *</label>
-            <input type="text" id="admin-group-category" placeholder="カテゴリ" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;margin-top:4px;font-family:'Noto Sans JP',sans-serif;">
+            <input type="text" id="admin-group-category" placeholder="カテゴリ" style="width:100%;padding:10px;border:1px solid rgba(255,255,255,0.5);border-radius:8px;font-size:13px;margin-top:4px;font-family:var(--font-main);">
           </div>
         </div>
 
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
           <div>
             <label style="font-size:12px;font-weight:500;color:var(--text-dark);">開始日 *</label>
-            <input type="date" id="admin-group-start" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;margin-top:4px;">
+            <input type="date" id="admin-group-start" style="width:100%;padding:10px;border:1px solid rgba(255,255,255,0.5);border-radius:8px;font-size:13px;margin-top:4px;">
           </div>
           <div>
             <label style="font-size:12px;font-weight:500;color:var(--text-dark);">終了日 *</label>
-            <input type="date" id="admin-group-end" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;margin-top:4px;">
+            <input type="date" id="admin-group-end" style="width:100%;padding:10px;border:1px solid rgba(255,255,255,0.5);border-radius:8px;font-size:13px;margin-top:4px;">
           </div>
         </div>
 
-        <button type="button" onclick="createGroup()" style="padding:12px;background:var(--green-strong);color:white;border:none;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;font-family:'Noto Sans JP',sans-serif;">グループを作成</button>
+        <button type="button" onclick="createGroup()" style="padding:12px;background:var(--green-strong);color:white;border:none;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;font-family:var(--font-main);">グループを作成</button>
       </form>
     </div>
 
@@ -2508,8 +2547,8 @@ async function renderGroupReports(groupId) {
               r.commentsList.map(c => '<div style="font-size:11px;color:var(--text-mid);"><strong>' + escapeHtml(c.user) + '\uFF1A</strong>' + escapeHtml(c.text) + '</div>').join('') +
             '</div>' +
             '<div style="display:flex;gap:6px;">' +
-              '<input type="text" class="comment-input" id="comment-input-' + r.id + '" placeholder="\u30B3\u30E1\u30F3\u30C8\u3092\u5165\u529B..." style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-size:12px;font-family:\'Noto Sans JP\',sans-serif;">' +
-              '<button onclick="submitComment(\'' + r.id + '\',' + globalIndex + ')" style="padding:6px 14px;background:var(--pink-strong);color:white;border:none;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;font-family:\'Noto Sans JP\',sans-serif;">\u9001\u4FE1</button>' +
+              '<input type="text" class="comment-input" id="comment-input-' + r.id + '" placeholder="\u30B3\u30E1\u30F3\u30C8\u3092\u5165\u529B..." style="flex:1;padding:6px 10px;border:1px solid rgba(255,255,255,0.5);border-radius:8px;font-size:12px;font-family:inherit;">' +
+              '<button onclick="submitComment(\'' + r.id + '\',' + globalIndex + ')" style="padding:6px 14px;background:var(--pink-strong);color:white;border:none;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;">\u9001\u4FE1</button>' +
             '</div>' +
           '</div>' +
         '</div>';
@@ -4502,7 +4541,7 @@ function saveTodoAsImage() {
   const body = document.getElementById('share-canvas-body');
   body.innerHTML = `
     <div style="text-align:center;">
-      <div style="font-family:'Noto Serif JP',serif;font-size:52px;font-weight:600;color:#3a2030;line-height:1.2;">習慣チェック</div>
+      <div style="font-family:var(--font-main);font-size:52px;font-weight:600;color:#3a2030;line-height:1.2;">習慣チェック</div>
       <div style="font-size:24px;color:#c07090;font-weight:500;margin-top:4px;">📅 ${dateStr}</div>
     </div>
 
