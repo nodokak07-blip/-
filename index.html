@@ -14,19 +14,19 @@
   --green-light: #F0FAF5; --green-mid: #7DD4A8; --green-strong: #2DAA71;
   --purple-light: #F5F0FF; --purple-mid: #C4B0E8; --purple-strong: #8B5CF6;
   --cream: #FDFAF6; --text-dark: #2C2226; --text-mid: #6B4F57; --text-light: #A8889A;
-  --shadow: 0 14px 36px rgba(200,110,140,0.18), 0 5px 12px rgba(200,110,140,0.12), 0 1px 3px rgba(200,110,140,0.1);
+  --shadow: 0 12px 32px rgba(220,160,180,0.14), 0 4px 10px rgba(220,160,180,0.08), 0 1px 3px rgba(220,160,180,0.06);
   --radius: 14px; --radius-sm: 12px;
-  --glass-bg: linear-gradient(180deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.2) 40%, rgba(255,220,230,0.14) 100%);
-  --glass-border: 1px solid rgba(255,255,255,0.6);
-  --glass-blur: blur(32px) saturate(1.9) contrast(1.08);
-  --glass-inset: inset 0 2.5px 0 rgba(255,255,255,0.95), inset 0 -2.5px 0 rgba(220,130,160,0.4), inset 2.5px 0 0 rgba(255,255,255,0.7), inset -2.5px 0 0 rgba(220,130,160,0.22), inset 0 6px 12px rgba(255,255,255,0.55), inset 0 -6px 12px rgba(220,130,160,0.18);
-  --glass-pill-border: 1px solid rgba(255,255,255,0.55);
+  --glass-bg: linear-gradient(180deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.28) 40%, rgba(255,235,240,0.16) 100%);
+  --glass-border: 1px solid rgba(255,255,255,0.7);
+  --glass-blur: blur(32px) saturate(1.5) contrast(1.02);
+  --glass-inset: inset 0 2px 0 rgba(255,255,255,0.9), inset 0 -2px 0 rgba(240,200,215,0.32), inset 2px 0 0 rgba(255,255,255,0.65), inset -2px 0 0 rgba(240,200,215,0.18), inset 0 5px 10px rgba(255,255,255,0.5), inset 0 -5px 10px rgba(240,200,215,0.12);
+  --glass-pill-border: 1px solid rgba(255,255,255,0.7);
   --font-main: "Tsukushi A Round Gothic", "\u7B51\u7D2BA\u4E38\u30B4\u30B7\u30C3\u30AF", "Hiragino Maru Gothic Pro", "Noto Sans JP", sans-serif;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
   font-family: var(--font-main);
-  background: linear-gradient(165deg, #FFB0C0 0%, #FFC0CC 15%, #FFD0D0 30%, #FFDCD2 45%, #FFE4D8 60%, #FFECDD 75%, #FFF3E3 90%, #FFF8EC 100%);
+  background: linear-gradient(165deg, #FFE4EC 0%, #FFEBEE 15%, #FFF0F0 30%, #FFF3EC 45%, #FFF6ED 60%, #FFF9F0 75%, #FFFBF3 90%, #FFFDF7 100%);
   background-attachment: fixed;
   color: var(--text-dark); min-height: 100vh;
   position: relative;
@@ -34,11 +34,11 @@ body {
 body::before {
   content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
   background:
-    radial-gradient(circle 120px at 15% 12%, rgba(255,140,170,0.5), transparent),
-    radial-gradient(circle 90px at 78% 8%, rgba(255,160,175,0.45), transparent),
-    radial-gradient(circle 140px at 88% 38%, rgba(255,150,170,0.4), transparent),
-    radial-gradient(circle 80px at 22% 55%, rgba(255,170,190,0.35), transparent),
-    radial-gradient(circle 130px at 10% 85%, rgba(255,170,195,0.34), transparent);
+    radial-gradient(circle 120px at 15% 12%, rgba(255,200,215,0.35), transparent),
+    radial-gradient(circle 90px at 78% 8%, rgba(255,210,220,0.3), transparent),
+    radial-gradient(circle 140px at 88% 38%, rgba(255,205,215,0.28), transparent),
+    radial-gradient(circle 80px at 22% 55%, rgba(255,215,225,0.25), transparent),
+    radial-gradient(circle 130px at 10% 85%, rgba(255,215,225,0.24), transparent);
 }
 
 /* ========== 認証画面 ========== */
