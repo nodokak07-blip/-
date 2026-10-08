@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bloom Journal | 美容健康ダイエット習慣サポート</title>
 <meta name="description" content="美容健康ダイエット習慣サポートアプリ。目標設定・習慣TODO管理・体調記録。">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600&family=Noto+Sans+JP:wght@300;400;500;700&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
@@ -48,32 +48,41 @@ body::before {
   z-index: 300; display: flex; align-items: center; justify-content: center;
   padding: 20px;
 }
+/* ログイン画面：背景のピンクはそのまま、カード・タブ・ボタンは透明感のある白＋水色 */
 .auth-card {
-  background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
-  border: var(--glass-border); border-radius: 24px; padding: 40px 32px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.86) 0%, rgba(255,255,255,0.62) 55%, rgba(234,244,252,0.57) 100%);
+  backdrop-filter: blur(22px) saturate(1.5); -webkit-backdrop-filter: blur(22px) saturate(1.5);
+  border: 1px solid rgba(255,255,255,0.96); border-radius: 32px; padding: 36px 28px 28px;
   width: 100%; max-width: 420px;
-  box-shadow: var(--shadow), var(--glass-inset);
+  box-shadow: 0 30px 60px -14px rgba(135,160,198,0.26), 0 8px 20px rgba(135,160,198,0.11), inset 0 2px 0 #fff, inset 8px 0 18px rgba(255,255,255,0.55), inset 0 -16px 30px rgba(198,222,244,0.34);
   text-align: center; position: relative; overflow: hidden;
 }
-.auth-card::after { content:''; position:absolute; top:0; left:5%; right:5%; height:14px; border-radius:0 0 50% 50%; background:linear-gradient(180deg,rgba(255,255,255,0.75),transparent); pointer-events:none; }
-.auth-logo { font-family:var(--font-main); font-size:28px; font-weight:600; color:#C98098; margin-bottom:6px; }
-.auth-tagline { font-size:12px; color:#c0a0b0; margin-bottom:28px; }
-.auth-title { font-size:18px; font-weight:600; color:#3a2030; margin-bottom:6px; }
-.auth-sub { font-size:13px; color:#9a7080; margin-bottom:24px; line-height:1.7; }
-.auth-tabs { display:flex; gap:0; margin-bottom:24px; border-radius:14px; overflow:hidden; border:var(--glass-pill-border); background:rgba(255,255,255,0.2); }
-.auth-tab { flex:1; padding:10px; border:none; background:rgba(255,240,243,0.3); font-size:14px; cursor:pointer; transition:all .2s; font-family:var(--font-main); }
-.auth-tab.active { background:var(--pink-strong); color:white; font-weight:500; }
+.auth-card::before { content:''; position:absolute; top:9px; left:16px; width:52%; height:46px; border-radius:50%; transform:rotate(-5deg); background:linear-gradient(180deg,rgba(255,255,255,0.95),rgba(255,255,255,0)); pointer-events:none; }
+.auth-card::after { content:''; position:absolute; right:-30px; bottom:-40px; width:210px; height:130px; background:radial-gradient(closest-side,rgba(183,214,240,0.35),transparent); pointer-events:none; }
+.auth-card > * { position:relative; z-index:1; }
+/* ロゴの字体（Bloom=ピンク / Journal=水色） */
+.wm { font-family:'Playfair Display',Georgia,'Times New Roman',serif; font-weight:600; letter-spacing:.01em; line-height:1.15; }
+.wm b { font-weight:600; color:#D97E98; }
+.wm i { font-style:normal; font-weight:500; color:#D97E98; margin-left:.28em; }
+.auth-logo { font-size:30px; margin-bottom:10px; }
+.auth-tagline { font-size:12px; letter-spacing:.1em; color:#94A2B5; margin-bottom:26px; }
+.auth-title { font-size:18px; font-weight:700; color:#3C4B5C; margin-bottom:6px; }
+.auth-sub { font-size:13px; color:#8391A5; margin-bottom:22px; line-height:1.7; }
+.auth-tabs { display:flex; gap:0; padding:4px; margin-bottom:24px; border-radius:999px; background:linear-gradient(180deg,rgba(224,237,248,0.68),rgba(255,255,255,0.58)); border:1px solid rgba(255,255,255,0.95); box-shadow:inset 0 2px 5px rgba(135,160,193,0.16); }
+.auth-tab { flex:1; padding:10px; border:none; border-radius:999px; background:none; font-size:14px; font-weight:600; color:#828FA4; cursor:pointer; transition:all .2s; font-family:var(--font-main); }
+.auth-tab.active { background:linear-gradient(180deg,#fff,#F1F7FC); color:#C4627D; font-weight:700; box-shadow:0 6px 14px rgba(138,162,198,0.22), inset 0 1px 0 #fff; }
 .auth-form { display:flex; flex-direction:column; gap:12px; }
-.auth-input { padding:14px 16px; border:var(--glass-pill-border); border-radius:14px; font-size:15px; font-family:var(--font-main); outline:none; background:rgba(255,255,255,0.3); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); transition:all .2s; box-shadow:inset 0 1px 3px rgba(255,255,255,0.6); }
-.auth-input:focus { border-color:var(--pink-strong); background:rgba(255,255,255,0.5); }
-.auth-btn { padding:16px; background:linear-gradient(135deg,rgba(240,160,184,0.7),rgba(212,184,232,0.6)); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); color:white; border:1.5px solid rgba(255,200,215,0.6); border-radius:16px; font-size:16px; font-weight:700; cursor:pointer; font-family:var(--font-main); transition:all .2s; margin-top:4px; box-shadow:0 4px 16px rgba(215,150,172,0.15), inset 0 2px 4px rgba(255,220,230,0.7); position:relative; overflow:hidden; }
-.auth-btn::after { content:''; position:absolute; top:0; left:10%; right:10%; height:40%; border-radius:0 0 50% 50%; background:linear-gradient(180deg,rgba(255,230,240,0.7),transparent); pointer-events:none; }
-.auth-btn:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(215,150,172,0.3); }
-.auth-msg { font-size:13px; margin-top:12px; padding:10px; border-radius:8px; }
-.auth-msg.error { background:#FFF0F0; color:#E74C3C; }
-.auth-msg.success { background:#F0FAF5; color:#2DAA71; }
-.auth-skip { font-size:12px; color:#c0a0b0; margin-top:16px; cursor:pointer; text-decoration:underline; }
-.auth-link { font-size:12px; color:var(--pink-strong); margin-top:2px; cursor:pointer; text-decoration:underline; text-align:center; }
+.auth-input { padding:14px 16px; border:1px solid rgba(178,209,236,0.68); border-radius:16px; font-size:15px; font-family:var(--font-main); color:#3C4B5C; outline:none; background:rgba(255,255,255,0.62); transition:all .2s; box-shadow:inset 0 2px 5px rgba(135,160,193,0.11); }
+.auth-input::placeholder { color:#A3B1C2; }
+.auth-input:focus { border-color:#A4C6E8; background:rgba(255,255,255,0.9); box-shadow:0 0 0 4px rgba(184,212,238,0.34); }
+.auth-btn { padding:15px; background:linear-gradient(135deg,#FADCE4 0%,#E8F1FA 54%,#CAE3F5 100%); color:#43556C; border:1px solid rgba(255,255,255,0.95); border-radius:999px; font-size:16px; font-weight:700; cursor:pointer; font-family:var(--font-main); transition:all .2s; margin-top:4px; box-shadow:0 14px 26px -8px rgba(148,170,208,0.46), inset 0 2px 0 rgba(255,255,255,0.95), inset 0 -7px 14px rgba(182,214,240,0.36); position:relative; overflow:hidden; }
+.auth-btn::after { content:''; position:absolute; top:0; left:10%; right:10%; height:46%; border-radius:0 0 50% 50%; background:linear-gradient(180deg,rgba(255,255,255,0.8),transparent); pointer-events:none; }
+.auth-btn:hover { transform:translateY(-2px); box-shadow:0 18px 30px -8px rgba(148,170,208,0.52), inset 0 2px 0 rgba(255,255,255,0.95), inset 0 -7px 14px rgba(182,214,240,0.36); }
+.auth-msg { font-size:13px; margin-top:12px; padding:11px 13px; border-radius:14px; line-height:1.7; }
+.auth-msg.error { background:#FFF0F3; color:#C0455F; }
+.auth-msg.success { background:rgba(214,240,235,0.72); color:#2C7A66; }
+.auth-skip { font-size:12px; color:#A3B1C2; margin-top:16px; cursor:pointer; text-decoration:underline; }
+.auth-link { font-size:12px; color:#7497B9; margin-top:2px; cursor:pointer; text-decoration:underline; text-align:center; }
 
 /* ========== LP ========== */
 .lp-wrap { background: #FDFAF4; }
@@ -94,7 +103,7 @@ body::before {
 .pk3{bottom:28%;left:18%;animation-delay:2s;font-size:15px;} .pk4{top:58%;right:8%;animation-delay:.5s;}
 @keyframes floatY{0%,100%{transform:translateY(0) scale(1);}50%{transform:translateY(-16px) scale(1.02);}}
 @keyframes twinkle{0%,100%{opacity:0.3;transform:scale(1) rotate(0);}50%{opacity:0.8;transform:scale(1.3) rotate(15deg);}}
-.lp-logo { font-family:var(--font-main);font-size:clamp(36px,9vw,64px);font-weight:600;color:#C98098;line-height:1.2;margin-bottom:10px;position:relative;z-index:2;letter-spacing:.04em; }
+.lp-logo { font-size:clamp(36px,9vw,64px);line-height:1.2;margin-bottom:10px;position:relative;z-index:2;letter-spacing:.04em; }
 .lp-flower { font-size:26px;display:block;margin-bottom:20px;position:relative;z-index:2; }
 .lp-tagline { font-size:12px;color:#c0a0b0;letter-spacing:.18em;margin-bottom:40px;position:relative;z-index:2;font-style:italic; }
 .lp-sub { font-size:15px;color:#8a6070;line-height:1.9;margin-bottom:52px;position:relative;z-index:2;max-width:400px; }
@@ -130,7 +139,7 @@ body::before {
 /* ナビゲーション */
 .app-nav { background:rgba(255,230,235,0.4); backdrop-filter:blur(28px) saturate(1.5); -webkit-backdrop-filter:blur(28px) saturate(1.5); border-bottom:1px solid rgba(255,255,255,0.5); position:sticky;top:0;z-index:100; }
 .nav-header { padding:12px 16px;display:flex;align-items:center;gap:8px;flex-wrap:nowrap; }
-.nav-logo { font-family:var(--font-main);font-size:16px;font-weight:600;color:var(--pink-dark); }
+.nav-logo { font-size:20px; }
 .nav-tabs { display:flex;overflow-x:auto;padding:6px 12px;gap:4px;scrollbar-width:none;background:rgba(255,225,230,0.25);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px); }
 .nav-tabs::-webkit-scrollbar { display:none; }
 .nav-tab { flex-shrink:0;padding:7px 14px;border:1px solid transparent;background:none;font-family:var(--font-main);font-size:13px;color:var(--text-light);cursor:pointer;border-radius:20px;transition:all .2s;white-space:nowrap; }
@@ -691,20 +700,15 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
 .flower-stage-6 { background:linear-gradient(135deg,rgba(216,96,132,0.7),rgba(205,78,115,0.7)); }
 .flower-stage-7 { background:linear-gradient(135deg,rgba(206,84,120,0.75),rgba(192,64,100,0.75)); }
 
-/* ========== 1ヶ月まとめて入力 ========== */
-.bulk-note { font-size:12px; color:var(--text-light); line-height:1.7; margin-bottom:12px; }
-.bulk-scroll { overflow:auto; max-height:62vh; border:1px solid var(--pink-light); border-radius:var(--radius-sm); background:white; margin-bottom:14px; -webkit-overflow-scrolling:touch; }
-.bulk-table { border-collapse:separate; border-spacing:0; width:max-content; min-width:100%; font-size:13px; }
-.bulk-table th, .bulk-table td { padding:6px 8px; border-bottom:1px solid var(--pink-light); text-align:center; white-space:nowrap; }
-.bulk-table thead th { position:sticky; top:0; background:var(--pink-light); color:var(--text-mid); font-weight:600; font-size:11.5px; z-index:2; }
-.bulk-table .bulk-day { position:sticky; left:0; background:white; text-align:left; font-weight:600; color:var(--text-dark); z-index:1; border-right:1px solid var(--pink-light); }
-.bulk-table thead .bulk-day { z-index:3; background:var(--pink-light); color:var(--text-mid); }
-.bulk-table .bulk-sat { color:#5C86B3; }
-.bulk-table .bulk-sun { color:#C4607A; }
-.bulk-table th.bulk-habit { max-width:88px; overflow:hidden; text-overflow:ellipsis; }
-.bulk-table input[type=number], .bulk-table select { width:68px; padding:6px 4px; border:1px solid var(--pink-mid); border-radius:8px; font-family:var(--font-main); font-size:13px; background:white; text-align:center; }
-.bulk-table select { width:58px; }
-.bulk-table input[type=checkbox] { width:20px; height:20px; accent-color:var(--pink-strong); }
+/* ========== 1ヶ月の結果をまとめて入力 ========== */
+.sum-note { font-size:12px; color:var(--text-light); line-height:1.8; margin-bottom:14px; }
+.sum-sec { font-size:13px; font-weight:700; color:var(--text-dark); margin:20px 0 4px; }
+.sum-row { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:9px 0; border-bottom:1px solid var(--pink-light); font-size:13px; color:var(--text-dark); }
+.sum-row > span:first-child { flex:1; min-width:0; }
+.sum-in { display:flex; align-items:center; gap:6px; flex-shrink:0; }
+.sum-in input { width:88px; padding:9px 8px; border:1px solid var(--pink-mid); border-radius:10px; font-family:var(--font-main); font-size:14px; text-align:right; background:white; }
+.sum-in em { font-style:normal; font-size:12px; color:var(--text-light); width:26px; }
+.sum-badge { font-size:12px; color:var(--pink-dark); background:var(--pink-light); border-radius:10px; padding:8px 12px; margin-bottom:14px; line-height:1.6; }
 
 /* ========== その他メニュー ========== */
 .more-menu-item { width:100%; display:flex; align-items:center; gap:12px; padding:14px 10px; background:none; border:none; border-bottom:1px solid var(--pink-light); font-family:var(--font-main); cursor:pointer; text-align:left; }
@@ -722,7 +726,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
 <!-- ========== 認証画面 ========== -->
 <div id="auth-overlay" class="auth-overlay" style="display:none;">
   <div class="auth-card">
-    <div class="auth-logo">🌸 Bloom Journal</div>
+    <div class="auth-logo wm"><b>Bloom</b><i>Journal</i></div>
     <div class="auth-tagline">美容健康ダイエット習慣サポート</div>
 
     <div class="auth-tabs">
@@ -817,7 +821,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
     <div class="pc pc1"></div><div class="pc pc2"></div><div class="pc pc3"></div>
     <div class="pc pc4"></div><div class="pc pc5"></div><div class="pc pc6"></div>
     <span class="pk pk1">✦</span><span class="pk pk2">✦</span><span class="pk pk3">✦</span><span class="pk pk4">✦</span>
-    <div class="lp-logo">Bloom Journal</div>
+    <div class="lp-logo wm"><b>Bloom</b><i>Journal</i></div>
     <span class="lp-flower">🌸</span>
     <div class="lp-tagline">美容健康ダイエット習慣サポート</div>
     <p class="lp-sub">頑張りたくても続けられないあなたへ。<br>体質改善×習慣の見直しで、内側からキレイになるダイエットを。</p>
@@ -893,7 +897,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
 <nav class="app-nav">
   <div class="nav-header">
     <span style="font-size:20px;flex-shrink:0;">🌸</span>
-    <span class="nav-logo" style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Bloom Journal</span>
+    <span class="nav-logo wm" style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><b>Bloom</b><i>Journal</i></span>
     <div style="margin-left:auto;display:flex;align-items:center;gap:4px;flex-shrink:0;">
       <button id="nav-admin-btn" onclick="showPage('page-admin')" style="display:none;padding:4px 10px;border-radius:20px;border:1.5px solid rgba(125,212,168,0.4);background:rgba(240,250,245,0.35);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);font-size:10px;cursor:pointer;color:var(--green-strong);font-weight:500;white-space:nowrap;box-shadow:inset 0 1px 3px rgba(255,255,255,0.7);font-family:var(--font-main);">⚙️ 管理</button>
       <button id="nav-auth-btn" onclick="toggleAuth()" style="padding:4px 10px;border-radius:20px;border:1.5px solid rgba(255,255,255,0.65);background:rgba(255,255,255,0.3);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);font-size:10px;cursor:pointer;color:var(--text-mid);display:flex;align-items:center;gap:3px;white-space:nowrap;max-width:120px;overflow:hidden;box-shadow:inset 0 1px 3px rgba(255,255,255,0.7);font-family:var(--font-main);">
@@ -1257,7 +1261,8 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
         <div class="date-label" id="report-period"></div>
         <button class="date-nav" id="report-next-btn" onclick="changeReportMonth(1)">▶</button>
       </div>
-      <button class="btn-secondary" onclick="openBulkInput()" style="margin-bottom:16px;">📝 1ヶ月分をまとめて入力</button>
+      <button class="btn-secondary" onclick="openMonthlySummary()" style="margin-bottom:12px;">📝 1ヶ月の結果をまとめて入力</button>
+      <div id="report-summary-badge" class="sum-badge" style="display:none;">✍️ この月は、手入力した結果を表示しています（空欄にした項目は、記録から自動計算されます）</div>
 
       <div class="stats-row">
         <div class="stat-card"><div class="stat-num" id="report-avg-todo">—</div><div class="stat-label">平均達成率</div></div>
@@ -1655,24 +1660,37 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
 
 </div>
 
-<!-- ========== 1ヶ月まとめて入力ページ（新規追加） ========== -->
-<div id="page-bulk" class="page">
+<!-- ========== 1ヶ月の結果をまとめて入力ページ（新規追加） ========== -->
+<div id="page-summary" class="page">
   <div style="padding:16px;">
     <div class="card">
-      <div class="card-title">📝 1ヶ月分をまとめて入力</div>
-      <p class="bulk-note">記録できなかった日の体重・気分・ストレス・習慣チェックを、まとめて入力できます。<br>空欄の項目は変更されません（すでにある記録は消えません）。保存すると月次レポートにも反映されます。</p>
-      <div class="date-header" style="margin-bottom:12px;">
-        <button class="date-nav" onclick="changeBulkMonth(-1)">◀</button>
-        <div class="date-label" id="bulk-period"></div>
-        <button class="date-nav" id="bulk-next-btn" onclick="changeBulkMonth(1)">▶</button>
+      <div class="card-title">📝 1ヶ月の結果をまとめて入力</div>
+      <p class="sum-note">他のアプリやノートで記録している方向けです。1ヶ月の結果（％など）だけを入れると、月次レポートに反映されます。日々の習慣チェックや体調記録は、これまで通りお使いいただけます。<br>空欄の項目は、これまでの記録から自動で計算されます。</p>
+      <div class="date-header" style="margin-bottom:6px;">
+        <button class="date-nav" onclick="changeSummaryMonth(-1)">◀</button>
+        <div class="date-label" id="sum-period"></div>
+        <button class="date-nav" id="sum-next-btn" onclick="changeSummaryMonth(1)">▶</button>
       </div>
-      <div id="bulk-habit-hint" class="bulk-note" style="display:none;">※ 習慣のチェック欄は、目標シートで習慣を設定すると表示されます。</div>
-      <div class="bulk-scroll">
-        <table class="bulk-table" id="bulk-table" oninput="bulkDirty=true" onchange="bulkDirty=true"></table>
+      <div id="sum-form" oninput="summaryDirty=true">
+        <div class="sum-sec">✅ 習慣</div>
+        <label class="sum-row"><span>習慣の平均達成率</span><span class="sum-in"><input type="number" id="sum-avgTodo" min="0" max="100" step="1" inputmode="numeric"><em>%</em></span></label>
+        <div id="sum-habits"></div>
+        <div id="sum-habit-hint" class="sum-note" style="display:none;margin-top:8px;">※ 習慣別の達成率は、目標シートで習慣を設定すると入力できます。平均達成率だけでも入力できます。</div>
+        <label class="sum-row"><span>最長継続日数</span><span class="sum-in"><input type="number" id="sum-streak" min="0" max="31" step="1" inputmode="numeric"><em>日</em></span></label>
+
+        <div class="sum-sec">⚖️ 体重</div>
+        <label class="sum-row"><span>月初の体重</span><span class="sum-in"><input type="number" id="sum-wStart" min="30" max="150" step="0.1" inputmode="decimal"><em>kg</em></span></label>
+        <label class="sum-row"><span>月末の体重</span><span class="sum-in"><input type="number" id="sum-wEnd" min="30" max="150" step="0.1" inputmode="decimal"><em>kg</em></span></label>
+
+        <div class="sum-sec">📊 体調・記録</div>
+        <label class="sum-row"><span>記録した日数</span><span class="sum-in"><input type="number" id="sum-recordDays" min="0" max="31" step="1" inputmode="numeric"><em>日</em></span></label>
+        <label class="sum-row"><span>平均ストレス（1〜10）</span><span class="sum-in"><input type="number" id="sum-avgStress" min="1" max="10" step="0.1" inputmode="decimal"><em></em></span></label>
+        <label class="sum-row"><span>ジャーナルの件数</span><span class="sum-in"><input type="number" id="sum-journalDays" min="0" max="31" step="1" inputmode="numeric"><em>件</em></span></label>
       </div>
-      <button class="btn-primary" id="bulk-save-btn" onclick="saveBulkInput()">💾 まとめて保存する</button>
+      <button class="btn-primary" id="sum-save-btn" onclick="saveMonthlySummary()" style="margin-top:18px;">💾 保存する</button>
+      <button class="btn-secondary" onclick="clearMonthlySummary()" style="margin-top:10px;">この月の入力内容を消す</button>
       <button class="btn-secondary" onclick="showPage('page-report')" style="margin-top:10px;">← レポートに戻る</button>
-      <div id="bulk-msg" style="font-size:13px;margin-top:10px;text-align:center;display:none;"></div>
+      <div id="sum-msg" style="font-size:13px;margin-top:10px;text-align:center;line-height:1.7;display:none;"></div>
     </div>
   </div>
 </div>
@@ -3541,7 +3559,7 @@ function showPage(id) {
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   const tabs = document.querySelectorAll('.nav-tab');
-  const map = {'page-todo':0,'page-goal':1,'page-record':2,'page-group':3,'page-more':4,'page-report':4,'page-column':4,'page-sns':4,'page-bulk':4};
+  const map = {'page-todo':0,'page-goal':1,'page-record':2,'page-group':3,'page-more':4,'page-report':4,'page-column':4,'page-sns':4,'page-summary':4};
   if (map[id] !== undefined) tabs[map[id]].classList.add('active');
   if (id === 'page-todo') { renderTodo(); loadAnnouncement(); }
   if (id === 'page-record') { 
@@ -3551,7 +3569,7 @@ function showPage(id) {
     if (jl) jl.textContent = formatDateLabel(journalDate);
   }
   if (id === 'page-report') updateReportPage();
-  if (id === 'page-bulk') renderBulkInput();
+  if (id === 'page-summary') renderMonthlySummary();
   if (id === 'page-column') { renderColumnArticles(); }
   if (id === 'page-group') { loadGroupsUI(); }
   if (id === 'page-admin') { loadAdminDashboard(); }
@@ -4247,8 +4265,7 @@ function updateReportPage() {
   const habitDetails = document.getElementById('report-habit-details');
   if (habitDetails && habits.length > 0) {
     habitDetails.innerHTML = habits.map(h => {
-      const doneDays = days.filter(k => todoData[k] && todoData[k][h]).length;
-      const pct = days.length > 0 ? Math.round(doneDays / days.length * 100) : 0;
+      const pct = getHabitPct(h, days);
       const freq = state.habitFreq[h] || '毎日';
       return '<div style="margin-bottom:8px;">' +
         '<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;">' +
@@ -4276,170 +4293,195 @@ function updateReportPage() {
         '</div>';
     }).join('');
   }
+  applyMonthlySummaryToReport();
 }
 
-// ========== 1ヶ月まとめて入力（新規追加） ==========
-// 体重・気分・ストレス・習慣チェックを1ヶ月分まとめて入力する。
-// ・保存先は日々の入力と同じ（記録=端末保存 / 習慣チェック=端末＋Supabase）
-// ・空欄は「変更なし」。すでにある記録は消さない。変更があった項目だけ保存する。
-let bulkMonth = new Date();
-let bulkDirty = false;
-let bulkSaving = false;
+// ========== 1ヶ月の結果をまとめて入力（新規追加） ==========
+// 他で記録している人が「1ヶ月の結果」だけを写せるようにする機能。
+// ・日々の習慣チェック／体調記録のデータには一切手を加えない（別のキーに保存）
+// ・入力した項目だけがレポートに反映され、空欄の項目は従来どおり記録から自動計算
+// ・保存先は端末（localStorage）。体重・気分などの日々の記録と同じ扱い
+const SUMMARY_KEY = 'bloom-monthly-summary';
+let monthlySummaryCache = null;
+let summaryMonth = new Date();
+let summaryDirty = false;
 
-function bulkEsc(s) {
+function loadMonthlySummaries() {
+  if (monthlySummaryCache) return monthlySummaryCache;
+  try { monthlySummaryCache = JSON.parse(localStorage.getItem(SUMMARY_KEY) || '{}') || {}; }
+  catch (e) { monthlySummaryCache = {}; }
+  return monthlySummaryCache;
+}
+
+function persistMonthlySummaries() {
+  try { localStorage.setItem(SUMMARY_KEY, JSON.stringify(monthlySummaryCache || {})); } catch (e) {}
+}
+
+function summaryKeyOf(d) {
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+}
+
+// レポートで表示中の月の手入力結果（なければnull）
+function getReportSummary() {
+  return loadMonthlySummaries()[summaryKeyOf(reportMonth)] || null;
+}
+
+// 習慣別達成率：手入力があればそれを、なければ日々のチェックから計算
+function getHabitPct(h, days) {
+  const s = getReportSummary();
+  if (s && s.habits && typeof s.habits[h] === 'number') return s.habits[h];
+  const doneDays = days.filter(k => todoData[k] && todoData[k][h]).length;
+  return days.length > 0 ? Math.round(doneDays / days.length * 100) : 0;
+}
+
+// レポート画面の数字を、手入力した項目だけ上書きする
+function applyMonthlySummaryToReport() {
+  const s = getReportSummary();
+  const badge = document.getElementById('report-summary-badge');
+  if (badge) badge.style.display = s ? 'block' : 'none';
+  if (!s) return;
+  const set = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
+  let avg = s.avgTodo;
+  if (typeof avg !== 'number' && s.habits) {
+    const v = Object.keys(s.habits).map(k => s.habits[k]).filter(x => typeof x === 'number');
+    if (v.length > 0) avg = Math.round(v.reduce((a, b) => a + b, 0) / v.length);
+  }
+  if (typeof avg === 'number') set('report-avg-todo', avg + '%');
+  if (typeof s.streak === 'number') set('report-streak', s.streak + '日');
+  if (typeof s.wStart === 'number' && typeof s.wEnd === 'number') {
+    const diff = Math.round((s.wEnd - s.wStart) * 10) / 10;
+    set('report-weight-diff', (diff > 0 ? '+' : '') + diff.toFixed(1) + 'kg');
+  }
+  if (typeof s.recordDays === 'number') set('report-record-days', s.recordDays + '日');
+  if (typeof s.avgStress === 'number') set('report-avg-stress', String(s.avgStress));
+  if (typeof s.journalDays === 'number') set('report-journal-days', s.journalDays + '件');
+}
+
+function openMonthlySummary() {
+  summaryMonth = new Date(reportMonth.getFullYear(), reportMonth.getMonth(), 1);
+  summaryDirty = false;
+  showPage('page-summary');
+}
+
+function changeSummaryMonth(delta) {
+  const now = new Date();
+  const target = new Date(summaryMonth.getFullYear(), summaryMonth.getMonth() + delta, 1);
+  if (target.getFullYear() > now.getFullYear() || (target.getFullYear() === now.getFullYear() && target.getMonth() > now.getMonth())) return;
+  if (summaryDirty && !confirm('保存していない入力があります。破棄して月を切り替えますか？')) return;
+  summaryMonth = target;
+  summaryDirty = false;
+  renderMonthlySummary();
+}
+
+function summaryEsc(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-function openBulkInput() {
-  bulkMonth = new Date(reportMonth.getFullYear(), reportMonth.getMonth(), 1);
-  bulkDirty = false;
-  showPage('page-bulk');
-}
-
-function changeBulkMonth(delta) {
+function renderMonthlySummary() {
   const now = new Date();
-  const target = new Date(bulkMonth.getFullYear(), bulkMonth.getMonth() + delta, 1);
-  if (target.getFullYear() > now.getFullYear() || (target.getFullYear() === now.getFullYear() && target.getMonth() > now.getMonth())) return;
-  if (bulkDirty && !confirm('保存していない入力があります。破棄して月を切り替えますか？')) return;
-  bulkMonth = target;
-  bulkDirty = false;
-  renderBulkInput();
-}
-
-// 対象月の日付リスト（今月は今日まで。未来の日は入力できない）
-function getBulkDays() {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const y = bulkMonth.getFullYear(), m = bulkMonth.getMonth();
-  const last = new Date(y, m + 1, 0);
-  const end = last > today ? today : last;
-  const days = [];
-  for (let d = new Date(y, m, 1); d <= end; d.setDate(d.getDate() + 1)) days.push(new Date(d));
-  return days;
-}
-
-function renderBulkInput() {
-  const habits = state.selectedHabits || [];
-  const now = new Date();
-  document.getElementById('bulk-period').textContent = bulkMonth.getFullYear() + '年' + (bulkMonth.getMonth() + 1) + '月';
-  const isCurrent = bulkMonth.getFullYear() === now.getFullYear() && bulkMonth.getMonth() === now.getMonth();
-  const nextBtn = document.getElementById('bulk-next-btn');
+  const s = loadMonthlySummaries()[summaryKeyOf(summaryMonth)] || {};
+  document.getElementById('sum-period').textContent = summaryMonth.getFullYear() + '年' + (summaryMonth.getMonth() + 1) + '月';
+  const isCurrent = summaryMonth.getFullYear() === now.getFullYear() && summaryMonth.getMonth() === now.getMonth();
+  const nextBtn = document.getElementById('sum-next-btn');
   if (nextBtn) { nextBtn.disabled = isCurrent; nextBtn.style.opacity = isCurrent ? '0.35' : '1'; }
-  document.getElementById('bulk-habit-hint').style.display = habits.length === 0 ? 'block' : 'none';
 
-  const wk = ['日', '月', '火', '水', '木', '金', '土'];
-  const moodLabels = { 5: '😄', 4: '🙂', 3: '😐', 2: '😔', 1: '😢' };
-  const moodOpts = (cur) => '<option value="">—</option>' + [5, 4, 3, 2, 1].map(v =>
-    '<option value="' + v + '"' + (cur === v ? ' selected' : '') + '>' + moodLabels[v] + '</option>').join('');
-  const stressOpts = (cur) => '<option value="">—</option>' + [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(v =>
-    '<option value="' + v + '"' + (cur === v ? ' selected' : '') + '>' + v + '</option>').join('');
+  const setV = (id, v) => { document.getElementById(id).value = (typeof v === 'number') ? v : ''; };
+  setV('sum-avgTodo', s.avgTodo);
+  setV('sum-streak', s.streak);
+  setV('sum-wStart', s.wStart);
+  setV('sum-wEnd', s.wEnd);
+  setV('sum-recordDays', s.recordDays);
+  setV('sum-avgStress', s.avgStress);
+  setV('sum-journalDays', s.journalDays);
 
-  let html = '<thead><tr><th class="bulk-day">日付</th><th>体重(kg)</th><th>気分</th><th>ストレス</th>' +
-    habits.map(h => '<th class="bulk-habit" title="' + bulkEsc(h) + '">' + bulkEsc(h) + '</th>').join('') + '</tr></thead><tbody>';
-  getBulkDays().forEach(d => {
-    const key = formatDate(d);
-    const rec = recordData[key] || {};
-    const dow = d.getDay();
-    const cls = dow === 0 ? ' bulk-sun' : dow === 6 ? ' bulk-sat' : '';
-    html += '<tr data-k="' + key + '">' +
-      '<td class="bulk-day' + cls + '">' + (d.getMonth() + 1) + '/' + d.getDate() + '(' + wk[dow] + ')</td>' +
-      '<td><input type="number" data-f="weight" min="30" max="150" step="0.1" inputmode="decimal" value="' + (rec.weight ? rec.weight : '') + '"></td>' +
-      '<td><select data-f="mood">' + moodOpts(rec.mood) + '</select></td>' +
-      '<td><select data-f="stress">' + stressOpts(rec.stress) + '</select></td>' +
-      habits.map((h, i) => '<td><input type="checkbox" data-hi="' + i + '"' + ((todoData[key] && todoData[key][h]) ? ' checked' : '') + '></td>').join('') +
-      '</tr>';
-  });
-  html += '</tbody>';
-  document.getElementById('bulk-table').innerHTML = html;
-  const msg = document.getElementById('bulk-msg');
+  const habits = state.selectedHabits || [];
+  document.getElementById('sum-habit-hint').style.display = habits.length === 0 ? 'block' : 'none';
+  document.getElementById('sum-habits').innerHTML = habits.map((h, i) => {
+    const v = s.habits && typeof s.habits[h] === 'number' ? s.habits[h] : '';
+    return '<label class="sum-row"><span>・' + summaryEsc(h) + '</span><span class="sum-in">' +
+      '<input type="number" data-hi="' + i + '" min="0" max="100" step="1" inputmode="numeric" value="' + v + '"><em>%</em></span></label>';
+  }).join('');
+  const msg = document.getElementById('sum-msg');
   if (msg) msg.style.display = 'none';
 }
 
-function showBulkMsg(text, isError) {
-  const msg = document.getElementById('bulk-msg');
+function showSummaryMsg(text, isError) {
+  const msg = document.getElementById('sum-msg');
   msg.textContent = text;
   msg.style.color = isError ? '#E74C3C' : 'var(--green-strong)';
   msg.style.display = 'block';
 }
 
-async function saveBulkInput() {
-  if (bulkSaving) return;
+function saveMonthlySummary() {
+  const errors = [];
+  // 空欄はundefined、範囲外・小数などはエラーとして記録
+  const num = (raw, label, min, max, integer) => {
+    raw = String(raw).trim();
+    if (raw === '') return undefined;
+    const n = Number(raw);
+    if (isNaN(n) || n < min || n > max || (integer && !Number.isInteger(n))) { errors.push(label); return undefined; }
+    return n;
+  };
+  const val = (id) => document.getElementById(id).value;
+
+  const out = {
+    avgTodo: num(val('sum-avgTodo'), '習慣の平均達成率(0〜100の整数)', 0, 100, true),
+    streak: num(val('sum-streak'), '最長継続日数(0〜31の整数)', 0, 31, true),
+    wStart: num(val('sum-wStart'), '月初の体重(30〜150kg)', 30, 150, false),
+    wEnd: num(val('sum-wEnd'), '月末の体重(30〜150kg)', 30, 150, false),
+    recordDays: num(val('sum-recordDays'), '記録した日数(0〜31の整数)', 0, 31, true),
+    avgStress: num(val('sum-avgStress'), '平均ストレス(1〜10)', 1, 10, false),
+    journalDays: num(val('sum-journalDays'), 'ジャーナルの件数(0〜31の整数)', 0, 31, true)
+  };
   const habits = state.selectedHabits || [];
-  const table = document.getElementById('bulk-table');
-  const plannedRec = {};
-  const plannedTodo = [];
-  const invalid = [];
-
-  // 1) 入力チェックと、変更があるものだけの抽出（問題があれば何も保存しない）
-  getBulkDays().forEach(d => {
-    const key = formatDate(d);
-    const row = table.querySelector('tr[data-k="' + key + '"]');
-    if (!row) return;
-    const rec = recordData[key] || {};
-    const label = (d.getMonth() + 1) + '/' + d.getDate();
-    const upd = {};
-
-    const wRaw = row.querySelector('[data-f="weight"]').value.trim();
-    if (wRaw !== '') {
-      const w = parseFloat(wRaw);
-      if (isNaN(w) || w < 30 || w > 150) invalid.push(label + ' の体重');
-      else if (Math.abs(w - (rec.weight || 0)) > 0.0001) upd.weight = Math.round(w * 10) / 10;
-    }
-    const moodRaw = row.querySelector('[data-f="mood"]').value;
-    if (moodRaw !== '' && parseInt(moodRaw, 10) !== rec.mood) upd.mood = parseInt(moodRaw, 10);
-    const stressRaw = row.querySelector('[data-f="stress"]').value;
-    if (stressRaw !== '' && parseInt(stressRaw, 10) !== rec.stress) upd.stress = parseInt(stressRaw, 10);
-    if (Object.keys(upd).length > 0) plannedRec[key] = upd;
-
-    habits.forEach((h, i) => {
-      const cb = row.querySelector('input[data-hi="' + i + '"]');
-      if (!cb) return;
-      const before = !!(todoData[key] && todoData[key][h]);
-      if (cb.checked !== before) plannedTodo.push({ key: key, habit: h, done: cb.checked });
-    });
+  const habitPct = {};
+  habits.forEach((h, i) => {
+    const el = document.querySelector('#sum-habits input[data-hi="' + i + '"]');
+    if (!el) return;
+    const v = num(el.value, h + ' の達成率(0〜100の整数)', 0, 100, true);
+    if (v !== undefined) habitPct[h] = v;
   });
+  if ((out.wStart === undefined) !== (out.wEnd === undefined)) errors.push('体重は月初と月末の両方');
 
-  if (invalid.length > 0) {
-    showBulkMsg('入力を確認してください（体重は30〜150kg）：' + invalid.slice(0, 5).join('、') + (invalid.length > 5 ? ' ほか' : ''), true);
+  if (errors.length > 0) {
+    showSummaryMsg('入力を確認してください：' + errors.slice(0, 4).join('、') + (errors.length > 4 ? ' ほか' : ''), true);
     return;
   }
-  const recDays = Object.keys(plannedRec).length;
-  if (recDays === 0 && plannedTodo.length === 0) {
-    showBulkMsg('変更はありません', true);
-    return;
-  }
-  if (!confirm('次の内容を保存します。\n・体重/気分/ストレスの記録：' + recDays + '日分\n・習慣チェックの変更：' + plannedTodo.length + '件\n\nよろしいですか？')) return;
 
-  // 2) 反映（端末への保存 → ログイン中は習慣チェックだけ日々の入力と同じ方法でSupabaseにも保存）
-  bulkSaving = true;
-  const btn = document.getElementById('bulk-save-btn');
-  if (btn) { btn.disabled = true; btn.textContent = '保存中...'; }
-  try {
-    Object.keys(plannedRec).forEach(key => { recordData[key] = Object.assign({}, recordData[key], plannedRec[key]); });
-    plannedTodo.forEach(t => {
-      if (!todoData[t.key]) todoData[t.key] = {};
-      todoData[t.key][t.habit] = t.done;
-    });
-    saveToStorage();
-    if (plannedTodo.length > 0 && supabaseClient && currentUser) {
-      for (let i = 0; i < plannedTodo.length; i += 5) {
-        await Promise.all(plannedTodo.slice(i, i + 5).map(t => saveTodoToSupabase(t.key, t.habit, t.done)));
-      }
-    }
-    bulkDirty = false;
-    calcStreak();
-    renderTodo();
-    renderRecordHistory();
+  const clean = {};
+  Object.keys(out).forEach(k => {
+    if (out[k] !== undefined) clean[k] = (k === 'wStart' || k === 'wEnd' || k === 'avgStress') ? Math.round(out[k] * 10) / 10 : out[k];
+  });
+  if (Object.keys(habitPct).length > 0) clean.habits = habitPct;
+
+  const all = loadMonthlySummaries();
+  const key = summaryKeyOf(summaryMonth);
+  if (Object.keys(clean).length === 0) {
+    delete all[key];
+    persistMonthlySummaries();
+    summaryDirty = false;
     updateReportPage();
-    renderBulkInput();
-    showBulkMsg('✅ 保存しました（記録 ' + recDays + '日分／習慣チェック ' + plannedTodo.length + '件）。月次レポートにも反映されています。', false);
-  } catch (e) {
-    console.error('まとめて入力の保存失敗:', e);
-    showBulkMsg('保存に失敗しました。もう一度お試しください', true);
-  } finally {
-    bulkSaving = false;
-    if (btn) { btn.disabled = false; btn.textContent = '💾 まとめて保存する'; }
+    showSummaryMsg('入力された項目がないため、この月の手入力はありません（レポートは記録から自動計算されます）', false);
+    return;
   }
+  all[key] = clean;
+  persistMonthlySummaries();
+  summaryDirty = false;
+  updateReportPage();
+  showSummaryMsg('✅ 保存しました。月次レポートに反映されています。', false);
+}
+
+function clearMonthlySummary() {
+  const all = loadMonthlySummaries();
+  const key = summaryKeyOf(summaryMonth);
+  if (!all[key]) { showSummaryMsg('この月に手入力した内容はありません', true); return; }
+  if (!confirm('この月に手入力した内容を消します。日々の記録は消えません。よろしいですか？')) return;
+  delete all[key];
+  persistMonthlySummaries();
+  summaryDirty = false;
+  updateReportPage();
+  renderMonthlySummary();
+  showSummaryMsg('消しました。レポートは記録から自動計算されます。', false);
 }
 
 // 月ごとのバッジデザイン（1月〜12月）
@@ -4491,8 +4533,7 @@ function sendMonthlyReportToLINE() {
     msg += '\n🌿 習慣別達成率：\n';
     const days = range.days;
     habits.forEach(h => {
-      const doneDays = days.filter(k => todoData[k] && todoData[k][h]).length;
-      const pct = days.length > 0 ? Math.round(doneDays / days.length * 100) : 0;
+      const pct = getHabitPct(h, days);
       msg += '  ・' + h + '：' + pct + '%\n';
     });
   }
@@ -4827,11 +4868,17 @@ function generateReport() {
 
     const days = range.days;
     const habits = state.selectedHabits;
-    const barW = Math.min(5, 170 / days.length);
-    days.forEach((k, i) => {
+    // 手入力の結果だけがある月は、習慣別の達成率を棒グラフにする
+    const sumS = getReportSummary();
+    const hasDaily = days.some(k => todoData[k] && Object.values(todoData[k]).some(Boolean));
+    const habitBars = (sumS && sumS.habits && !hasDaily) ? habits.filter(h => typeof sumS.habits[h] === 'number').map(h => sumS.habits[h] / 100) : null;
+    const barItems = habitBars || days.map(k => {
       const dayData = todoData[k] || {};
       const done = habits.filter(h => dayData[h]).length;
-      const pct = habits.length > 0 ? done / habits.length : 0;
+      return habits.length > 0 ? done / habits.length : 0;
+    });
+    const barW = Math.min(habitBars ? 12 : 5, 170 / Math.max(1, barItems.length));
+    barItems.forEach((pct, i) => {
       const barH = pct * 30;
       doc.setFillColor(
         pct >= 0.8 ? 125 : pct >= 0.5 ? 251 : 231,
@@ -5190,8 +5237,7 @@ function saveReportAsImage() {
 
   // 習慣達成率を計算
   const habitStats = habits.slice(0, 5).map(h => {
-    const doneDays = days.filter(k => todoData[k] && todoData[k][h]).length;
-    const pct = days.length > 0 ? Math.round(doneDays / days.length * 100) : 0;
+    const pct = getHabitPct(h, days);
     return { name: h, pct };
   });
 
