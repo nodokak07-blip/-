@@ -984,6 +984,7 @@ body { color: var(--text-dark); font-weight: 400; line-height: 1.8; }
     <button class="nav-tab active" onclick="showPage('page-goal')"><svg class="ico" aria-hidden="true"><use href="#ic-target"/></svg> 目標設定</button>
     <button class="nav-tab" onclick="showPage('page-record')"><svg class="ico" aria-hidden="true"><use href="#ic-chart"/></svg> 体調記録</button>
     <button class="nav-tab" onclick="showPage('page-group')"><svg class="ico" aria-hidden="true"><use href="#ic-flower"/></svg> グループ</button>
+    <button class="nav-tab" onclick="showPage('page-column')"><svg class="ico" aria-hidden="true"><use href="#ic-news"/></svg> コラム</button>
     <button class="nav-tab" onclick="showPage('page-more')"><svg class="ico" aria-hidden="true"><use href="#ic-menu"/></svg> その他</button>
   </div>
 </nav>
@@ -1770,11 +1771,6 @@ body { color: var(--text-dark); font-weight: 400; line-height: 1.8; }
       <button class="more-menu-item" onclick="showPage('page-report')">
         <span class="more-menu-ic"><svg class="ico" aria-hidden="true"><use href="#ic-doc"/></svg></span>
         <span class="more-menu-body"><span class="more-menu-title">個人レポート</span><span class="more-menu-sub">月次の達成率・体重推移をPDF出力</span></span>
-        <span class="more-menu-chev">›</span>
-      </button>
-      <button class="more-menu-item" onclick="showPage('page-column')">
-        <span class="more-menu-ic"><svg class="ico" aria-hidden="true"><use href="#ic-news"/></svg></span>
-        <span class="more-menu-body"><span class="more-menu-title">コラム</span><span class="more-menu-sub">ブログ「BEAUTY JOURNAL」の最新記事</span></span>
         <span class="more-menu-chev">›</span>
       </button>
       <button class="more-menu-item" onclick="showPage('page-sns')">
@@ -3718,7 +3714,7 @@ function showPage(id) {
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   const tabs = document.querySelectorAll('.nav-tab');
-  const map = {'page-todo':0,'page-goal':1,'page-record':2,'page-group':3,'page-more':4,'page-report':4,'page-column':4,'page-sns':4,'page-summary':4};
+  const map = {'page-todo':0,'page-goal':1,'page-record':2,'page-group':3,'page-column':4,'page-more':5,'page-report':5,'page-sns':5,'page-summary':5};
   if (map[id] !== undefined) tabs[map[id]].classList.add('active');
   if (id === 'page-todo') { renderTodo(); loadAnnouncement(); }
   if (id === 'page-record') { 
