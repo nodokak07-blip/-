@@ -748,8 +748,8 @@ body { color: var(--text-dark); font-weight: 400; line-height: 1.8; }
 .card::before { opacity: .55; }
 .nav-tab.active { color: var(--pink-strong); }
 /* ===== コラム（ブログ記事の一覧：ブログの記事一覧と同じ雰囲気） ===== */
-.column-article-thumb { aspect-ratio: 5 / 2; border-radius: 12px; margin-bottom: 4px;
-  background: linear-gradient(135deg, rgba(237,223,199,.75), rgba(244,207,214,.75)) center / cover no-repeat; }
+.column-article-thumb { display: block; width: 100%; height: auto; border-radius: 12px; margin-bottom: 4px; }
+.column-article-thumb--empty { aspect-ratio: 16 / 9; background: linear-gradient(135deg, rgba(237,223,199,.75), rgba(244,207,214,.75)); }
 .column-article-title { font-family: var(--font-serif-jp); font-weight: 400; font-size: 15px; letter-spacing: .05em; line-height: 1.8; color: var(--text-mid); }
 .column-article-date { font-family: var(--font-serif-en); font-size: 14px; letter-spacing: .08em; color: var(--text-light); }
 .column-article-cat.cat-inner-care { background: #F9E6EA; color: #9E586C; }
@@ -2287,8 +2287,10 @@ function renderColumnFilter() {
 function columnCardHtml(a, i) {
   let thumb = '';
   if (a.source === 'blog') {
-    const bg = a.img ? ' style="background-image:url(\'' + encodeURI(a.img).replace(/'/g, '%27') + '\')"' : '';
-    thumb = '<div class="column-article-thumb"' + bg + '></div>';
+    // 画像は切り取らず、元の形のまま全体を表示する（画像がない記事は、ベージュ→ピンクの面）
+    thumb = a.img
+      ? '<img class="column-article-thumb" src="' + escapeHtml(encodeURI(a.img)) + '" alt="" loading="lazy">'
+      : '<div class="column-article-thumb column-article-thumb--empty"></div>';
   }
   return '<div class="column-article-card" onclick="openColumnItem(' + i + ')">' + thumb +
     '<div class="column-article-top">' +
