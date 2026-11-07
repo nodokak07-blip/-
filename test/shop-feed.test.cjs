@@ -36,5 +36,16 @@ test('cache and retain last good source on upstream error; recover', async () =>
 });
 test('all failures return 503; simultaneous callers share refresh', async () => {
   let calls = 0; const service = createService(async () => { calls++; throw new Error('offline'); }, () => now);
-  const results = await Promise.all([service(), service()]); assert.equal(results[0].statusCode, 503); assert.equal(calls, 3);
+  const results = await Promise.all([service(), service()]); assert.equal(results[0].statusCode, 503); assert.equal(calls, 4);
+});
+test('WordPress public RSS fallback obtains OG images without using article body images', async () => {
+  const rss = '<rss version="2.0"><channel><item><title>Visible article</title><link>https://blog.fastina.net/visible/</link><pubDate>Fri, 06 Nov 2026 00:00:00 +0900</pubDate></item></channel></rss>';
+  const service = createService(async url => {
+    if (url === SOURCES.blog) return new Response('blocked', { status: 403 });
+    if (url === 'https://blog.fastina.net/feed/') return new Response(rss);
+    if (url === 'https://blog.fastina.net/visible/') return new Response('<meta property="og:image" content="https://blog.fastina.net/thumbnail.png"><img src="https://example.org/unrelated.png">');
+    if (url === SOURCES.note) return new Response(fixture('automation-note.xml'));
+    return new Response(fixture('automation-base.xml'));
+  }, () => now);
+  const result = await service(); assert.equal(result.statusCode, 200); assert.equal(result.payload.blog[0].image, 'https://blog.fastina.net/thumbnail.png');
 });

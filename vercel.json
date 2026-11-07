@@ -1,0 +1,3 @@
+{
+  "functions": { "api/shop-feed.js": { "maxDuration": 30 } }
+}
