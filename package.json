@@ -1,0 +1,8 @@
+{
+  "name": "bloom-journal-fastina",
+  "private": true,
+  "version": "1.0.0",
+  "engines": { "node": ">=22" },
+  "scripts": { "test": "node --test test/*.test.cjs" },
+  "dependencies": { "fast-xml-parser": "5.12.0" }
+}
