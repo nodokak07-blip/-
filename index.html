@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bloom Journal | 美容健康ダイエット習慣サポート</title>
 <meta name="description" content="美容健康ダイエット習慣サポートアプリ。目標設定・習慣TODO管理・体調記録。">
+<link rel="stylesheet" href="/assets/journal-v2.css">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600&family=Noto+Sans+JP:wght@300;400;500;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -767,7 +768,7 @@ body { color: var(--text-dark); font-weight: 400; line-height: 1.8; }
 .btn-start { color: var(--text-mid); font-weight: 500; letter-spacing: .1em; }
 .lp-step-num { color: var(--text-mid); }
 
-/* ===== アイコン（絵文字のかわりの線画） ===== */
+/* ===== アイコン（アイコンのかわりの線画） ===== */
 .ico { width: 1.12em; height: 1.12em; vertical-align: -.2em; color: var(--pink-strong); flex-shrink: 0; }
 .nav-tab .ico, .sns-tab .ico, .btn-primary .ico, .btn-secondary .ico, .btn-pdf .ico, .btn-share .ico, .auth-btn .ico, .btn-sm .ico, .btn-discord .ico { color: currentColor; }
 .card-title .ico { width: 1.05em; height: 1.05em; }
@@ -818,8 +819,8 @@ body { color: var(--text-dark); font-weight: 400; line-height: 1.8; }
 
     <div id="auth-login-form" class="auth-form">
       <div class="auth-title">おかえりなさい！</div>
-      <div class="auth-sub">メールアドレスとパスワードでログイン</div>
-      <input type="email" class="auth-input" id="login-email" placeholder="メールアドレス">
+      <div class="auth-sub">会員番号とパスワードでログイン</div>
+      <input type="text" inputmode="numeric" autocomplete="username" class="auth-input" id="login-email" placeholder="会員番号（10桁）">
       <input type="password" class="auth-input" id="login-password" placeholder="パスワード">
       <button class="auth-btn" onclick="handleLogin()">ログイン</button>
       <div class="auth-link" onclick="showResetForm()">パスワードをお忘れの方はこちら</div>
@@ -829,8 +830,8 @@ body { color: var(--text-dark); font-weight: 400; line-height: 1.8; }
     <!-- パスワード再設定：メール送信フォーム（新規追加） -->
     <div id="auth-reset-form" class="auth-form" style="display:none;">
       <div class="auth-title">パスワードの再設定</div>
-      <div class="auth-sub">ご登録のメールアドレスに、再設定用のリンクをお送りします</div>
-      <input type="email" class="auth-input" id="reset-email" placeholder="登録したメールアドレス">
+      <div class="auth-sub">会員番号と、登録時に控えた復旧コードを使います</div>
+      <input type="text" inputmode="numeric" class="auth-input" id="reset-email" placeholder="会員番号（10桁）">
       <button class="auth-btn" onclick="handlePasswordResetRequest()">再設定メールを送る</button>
       <div class="auth-link" onclick="backToLogin()">← ログインに戻る</div>
       <div id="reset-msg" class="auth-msg" style="display:none;"></div>
@@ -848,8 +849,8 @@ body { color: var(--text-dark); font-weight: 400; line-height: 1.8; }
 
     <div id="auth-signup-form" class="auth-form" style="display:none;">
       <div class="auth-title">はじめましょう！</div>
-      <div class="auth-sub">メールアドレスで無料登録</div>
-      <input type="email" class="auth-input" id="signup-email" placeholder="メールアドレス">
+      <div class="auth-sub">本名・メールアドレスは登録しません</div>
+      <input type="text" class="auth-input" id="signup-email" placeholder="ニックネーム（本名は使わないでください）">
       <input type="password" class="auth-input" id="signup-password" placeholder="パスワード（8文字以上）">
       <input type="password" class="auth-input" id="signup-password2" placeholder="パスワード（確認）">
       <button class="auth-btn" onclick="handleSignup()">無料登録</button>
@@ -868,24 +869,24 @@ body { color: var(--text-dark); font-weight: 400; line-height: 1.8; }
     <div class="form-group">
       <label class="form-label">プロフィール写真（任意）</label>
       <div style="display:flex;gap:12px;align-items:center;margin-bottom:8px;">
-        <div id="avatar-photo-preview" style="width:64px;height:64px;background:#FBF5EC;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;overflow:hidden;flex-shrink:0;">🌸</div>
+        <div id="avatar-photo-preview" style="width:64px;height:64px;background:#FBF5EC;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;overflow:hidden;flex-shrink:0;"></div>
         <div style="flex:1;">
           <input type="file" id="avatar-photo-input" accept="image/*" onchange="previewAvatarPhoto(event)" style="display:none;">
           <button type="button" onclick="document.getElementById('avatar-photo-input').click()" style="width:100%;padding:10px;background:var(--pink-light);border:1.5px solid var(--pink-mid);border-radius:8px;font-size:13px;cursor:pointer;color:var(--text-dark);font-family:var(--font-main);"><svg class="ico" aria-hidden="true"><use href="#ic-camera"/></svg> 写真を選ぶ</button>
-          <button type="button" onclick="removeAvatarPhoto()" style="width:100%;padding:6px;background:none;border:none;font-size:11px;cursor:pointer;color:var(--text-light);text-decoration:underline;margin-top:4px;">写真を削除して絵文字に戻す</button>
+          <button type="button" onclick="removeAvatarPhoto()" style="width:100%;padding:6px;background:none;border:none;font-size:11px;cursor:pointer;color:var(--text-light);text-decoration:underline;margin-top:4px;">写真を削除してアイコンに戻す</button>
         </div>
       </div>
-      <p id="avatar-photo-hint" style="font-size:11px;color:var(--text-light);">写真を設定すると絵文字より優先して表示されます（JPG/PNG/WebP、10MBまで）</p>
+      <p id="avatar-photo-hint" style="font-size:11px;color:var(--text-light);">写真を設定するとアイコンより優先して表示されます（JPG/PNG/WebP、10MBまで）</p>
     </div>
     
     <div class="form-group">
-      <label class="form-label">アイコン（絵文字）</label>
+      <label class="form-label">プロフィールアイコン</label>
       <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;" id="icon-picker">
-        <span onclick="selectIcon('🌸')">🌸</span> <span onclick="selectIcon('🌺')">🌺</span> <span onclick="selectIcon('🌻')">🌻</span> <span onclick="selectIcon('🌹')">🌹</span> <span onclick="selectIcon('💐')">💐</span> <span onclick="selectIcon('🌷')">🌷</span> <span onclick="selectIcon('🌼')">🌼</span> <span onclick="selectIcon('🦋')">🦋</span> <span onclick="selectIcon('🍀')">🍀</span> <span onclick="selectIcon('⭐')">⭐</span> <span onclick="selectIcon('🌙')">🌙</span> <span onclick="selectIcon('☀️')">☀️</span> <span onclick="selectIcon('🎀')">🎀</span> <span onclick="selectIcon('💝')">💝</span> <span onclick="selectIcon('🌈')">🌈</span> <span onclick="selectIcon('🍓')">🍓</span> <span onclick="selectIcon('🍑')">🍑</span> <span onclick="selectIcon('🌊')">🌊</span> <span onclick="selectIcon('🦄')">🦄</span> <span onclick="selectIcon('🐱')">🐱</span>
+        <span onclick="selectIcon('')"></span> <span onclick="selectIcon('')"></span> <span onclick="selectIcon('')"></span> <span onclick="selectIcon('')"></span> <span onclick="selectIcon('')"></span> <span onclick="selectIcon('')"></span> <span onclick="selectIcon('')"></span> <span onclick="selectIcon('')"></span> <span onclick="selectIcon('')"></span> <span onclick="selectIcon('')"></span> <span onclick="selectIcon('')"></span> <span onclick="selectIcon('')"></span> <span onclick="selectIcon('')"></span> <span onclick="selectIcon('')"></span> <span onclick="selectIcon('')"></span> <span onclick="selectIcon('')"></span> <span onclick="selectIcon('')"></span> <span onclick="selectIcon('')"></span> <span onclick="selectIcon('')"></span> <span onclick="selectIcon('')"></span>
       </div>
       <div style="display:flex;gap:8px;align-items:center;">
-        <div id="selected-icon-preview" style="font-size:36px;width:48px;height:48px;background:#FBF5EC;border-radius:50%;display:flex;align-items:center;justify-content:center;">🌸</div>
-        <input type="text" id="profile-icon" placeholder="絵文字を入力" maxlength="2" style="width:80px;">
+        <div id="selected-icon-preview" style="font-size:36px;width:48px;height:48px;background:#FBF5EC;border-radius:50%;display:flex;align-items:center;justify-content:center;"></div>
+        <input type="text" id="profile-icon" placeholder="アイコンを入力" maxlength="2" style="width:80px;">
       </div>
     </div>
     <div class="form-group">
@@ -983,7 +984,7 @@ body { color: var(--text-dark); font-weight: 400; line-height: 1.8; }
     <div style="margin-left:auto;display:flex;align-items:center;gap:4px;flex-shrink:0;">
       <button id="nav-admin-btn" onclick="showPage('page-admin')" style="display:none;padding:4px 10px;border-radius:20px;border:1.5px solid rgba(125,212,168,0.4);background:rgba(240,250,245,0.35);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);font-size:10px;cursor:pointer;color:var(--green-strong);font-weight:500;white-space:nowrap;box-shadow:inset 0 1px 3px rgba(255,255,255,0.7);font-family:var(--font-main);"><svg class="ico" aria-hidden="true"><use href="#ic-sliders"/></svg> 管理</button>
       <button id="nav-auth-btn" onclick="toggleAuth()" style="padding:4px 10px;border-radius:20px;border:1.5px solid rgba(255,255,255,0.65);background:rgba(255,255,255,0.3);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);font-size:10px;cursor:pointer;color:var(--text-mid);display:flex;align-items:center;gap:3px;white-space:nowrap;max-width:120px;overflow:hidden;box-shadow:inset 0 1px 3px rgba(255,255,255,0.7);font-family:var(--font-main);">
-        <span id="nav-icon" style="flex-shrink:0;">🔑</span><span id="nav-name" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">ログイン</span>
+        <span id="nav-icon" style="flex-shrink:0;"></span><span id="nav-name" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">ログイン</span>
       </button>
     </div>
   </div>
@@ -1309,7 +1310,7 @@ body { color: var(--text-dark); font-weight: 400; line-height: 1.8; }
       <div class="card-title"><svg class="ico" aria-hidden="true"><use href="#ic-notebook"/></svg> 今日のジャーナル</div>
       <div class="form-group">
         <label class="form-label">今日の気づき・振り返り・感情を自由に書こう</label>
-        <textarea id="journal-text" placeholder="今日はどんな一日でしたか？&#10;食事・運動・気持ち・できたこと・できなかったこと...&#10;なんでも自由に書いてください🌸" rows="8" style="font-size:15px;line-height:1.8;"></textarea>
+        <textarea id="journal-text" placeholder="今日はどんな一日でしたか？&#10;食事・運動・気持ち・できたこと・できなかったこと...&#10;なんでも自由に書いてください" rows="8" style="font-size:15px;line-height:1.8;"></textarea>
       </div>
       <div style="display:flex;gap:10px;">
         <button class="btn-primary" onclick="saveJournal()" style="flex:1;"><svg class="ico" aria-hidden="true"><use href="#ic-save"/></svg> 保存する</button>
@@ -1410,7 +1411,7 @@ body { color: var(--text-dark); font-weight: 400; line-height: 1.8; }
     <div class="card" onclick="openMyFlower()" style="cursor:pointer;transition:all .2s;">
       <div class="card-title"><svg class="ico" aria-hidden="true"><use href="#ic-flower"/></svg> わたしの花畑</div>
       <div style="text-align:center;padding:16px;">
-        <div style="font-size:48px;margin-bottom:8px;">🌹</div>
+        <div style="font-size:48px;margin-bottom:8px;"></div>
         <div style="font-size:14px;font-weight:500;color:var(--text-dark);margin-bottom:4px;">あなたの花</div>
         <div style="font-size:12px;color:var(--text-light);margin-bottom:12px;" id="group-flower-label">参加中のグループで花を育成中</div>
       </div>
@@ -1529,7 +1530,7 @@ body { color: var(--text-dark); font-weight: 400; line-height: 1.8; }
       <div id="my-flower-garden" style="text-align:center;padding:2rem 1rem;border-radius:12px;min-height:300px;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:all .3s;background:linear-gradient(135deg,rgba(250,220,220,0.3),rgba(240,208,208,0.3));">
         <div style="position:absolute;font-size:24px;opacity:0.4;" id="deco-1"></div>
         <div style="position:relative;z-index:2;text-align:center;">
-          <div id="my-flower-emoji" style="font-size:72px;margin-bottom:12px;transition:all .3s;">🌹</div>
+          <div id="my-flower-emoji" style="font-size:72px;margin-bottom:12px;transition:all .3s;"></div>
           <div style="font-size:14px;font-weight:500;color:var(--text-dark);margin-bottom:4px;" id="my-flower-stage">豪華な花</div>
           <div style="font-size:12px;color:var(--text-light);">段階 <span id="my-flower-stage-num">6</span>/7</div>
         </div>
@@ -1546,17 +1547,17 @@ body { color: var(--text-dark); font-weight: 400; line-height: 1.8; }
       <div style="width:100%;height:12px;background:rgba(255,255,255,0.5);border-radius:6px;overflow:hidden;margin-bottom:4px;">
         <div id="my-flower-progress" style="height:100%;background:linear-gradient(90deg,#F4CFD6,#2DAA71);width:83.3%;transition:width .3s;"></div>
       </div>
-      <div style="font-size:11px;color:var(--text-light);text-align:right;">次の段階（💐満開）まであと <span id="my-flower-remaining">25</span>ポイント</div>
+      <div style="font-size:11px;color:var(--text-light);text-align:right;">次の段階（満開）まであと <span id="my-flower-remaining">25</span>ポイント</div>
     </div>
 
     <!-- あなたのお花を選ぶ -->
     <div class="card">
       <div class="card-title">あなたのお花を選ぶ</div>
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px;">
-        <div class="flower-choice-btn" onclick="changeMyFlower('🌼',this)">🌼</div>
-        <div class="flower-choice-btn active" onclick="changeMyFlower('🌹',this)">🌹</div>
-        <div class="flower-choice-btn" onclick="changeMyFlower('🌷',this)">🌷</div>
-        <div class="flower-choice-btn" onclick="changeMyFlower('🌺',this)">🌺</div>
+        <div class="flower-choice-btn" onclick="changeMyFlower('',this)"></div>
+        <div class="flower-choice-btn active" onclick="changeMyFlower('',this)"></div>
+        <div class="flower-choice-btn" onclick="changeMyFlower('',this)"></div>
+        <div class="flower-choice-btn" onclick="changeMyFlower('',this)"></div>
       </div>
     </div>
 
@@ -1624,7 +1625,7 @@ body { color: var(--text-dark); font-weight: 400; line-height: 1.8; }
     <div class="card">
       <div class="card-title"><svg class="ico" aria-hidden="true"><use href="#ic-megaphone"/></svg> お知らせを投稿</div>
       <p style="font-size:12px;color:var(--text-light);margin-bottom:8px;position:relative;z-index:3;">習慣TODOページの日付上部に最新5件まで表示されます。TODOページの各お知らせに × ボタンが出るのでいつでも削除できます。</p>
-      <textarea id="admin-announcement-text" placeholder="お知らせ内容を入力...&#10;例：新しいコラム「朝の白湯で体質改善」を公開しました！コラムタブからご覧ください🌸" style="width:100%;height:80px;padding:10px;border:1px solid rgba(255,255,255,0.5);border-radius:8px;font-size:13px;resize:vertical;font-family:var(--font-main);position:relative;z-index:3;"></textarea>
+      <textarea id="admin-announcement-text" placeholder="お知らせ内容を入力...&#10;例：新しいコラム「朝の白湯で体質改善」を公開しました！コラムタブからご覧ください" style="width:100%;height:80px;padding:10px;border:1px solid rgba(255,255,255,0.5);border-radius:8px;font-size:13px;resize:vertical;font-family:var(--font-main);position:relative;z-index:3;"></textarea>
       <button type="button" onclick="postAnnouncement()" style="width:100%;padding:12px;background:var(--pink-strong);color:white;border:none;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;font-family:var(--font-main);margin-top:8px;position:relative;z-index:3;"><svg class="ico" aria-hidden="true"><use href="#ic-megaphone"/></svg> お知らせを投稿する</button>
     </div>
 
@@ -1727,7 +1728,7 @@ body { color: var(--text-dark); font-weight: 400; line-height: 1.8; }
       <input type="file" id="post-image-input" accept="image/*" style="display:none;" onchange="previewImage(this)">
 
       <div class="form-group" style="margin-top:12px;">
-        <textarea id="post-caption" placeholder="今日の取り組みを書こう🌸&#10;例：ウォーキング30分達成！" rows="3" style="font-size:14px;"></textarea>
+        <textarea id="post-caption" placeholder="今日の取り組みを書こう&#10;例：ウォーキング30分達成！" rows="3" style="font-size:14px;"></textarea>
       </div>
 
       <button class="btn-primary" onclick="submitPost()">投稿する</button>
@@ -1796,7 +1797,7 @@ body { color: var(--text-dark); font-weight: 400; line-height: 1.8; }
 </div>
 
 <footer class="footer">
-  <p>© 2025 Bloom Journal | 美容健康ダイエット習慣サポート</p>
+  <p> 2025 Bloom Journal | 美容健康ダイエット習慣サポート</p>
   <p style="margin-top:4px;">このアプリは医療的アドバイスではありません。</p>
 </footer>
 
@@ -1804,7 +1805,7 @@ body { color: var(--text-dark); font-weight: 400; line-height: 1.8; }
 <div class="share-img-wrap" id="share-canvas-wrap">
   <div class="share-canvas" id="share-canvas">
     <div class="share-canvas-header">
-      <span class="share-deco" style="right:40px;top:20px;">🌸</span>
+      <span class="share-deco" style="right:40px;top:20px;"></span>
       <div class="share-canvas-logo">Bloom Journal</div>
       <div class="share-canvas-tagline">美容健康ダイエット習慣サポート</div>
     </div>
@@ -1813,7 +1814,7 @@ body { color: var(--text-dark); font-weight: 400; line-height: 1.8; }
     </div>
     <div class="share-canvas-footer">
       <div class="share-footer-tag" id="share-footer-tag">#BloomJournal</div>
-      <div class="share-footer-logo">🌸 Bloom Journal</div>
+      <div class="share-footer-logo"> Bloom Journal</div>
     </div>
   </div>
 </div>
@@ -1821,7 +1822,7 @@ body { color: var(--text-dark); font-weight: 400; line-height: 1.8; }
 <!-- ========== ストーリー共有用キャンバス（非表示・新規追加） ========== -->
 <div class="share-img-wrap" id="story-canvas-wrap">
   <div class="story-canvas" id="story-canvas">
-    <div class="story-canvas-logo">🌸 Bloom Journal</div>
+    <div class="story-canvas-logo"> Bloom Journal</div>
     <div class="story-canvas-body" id="story-canvas-body">
       <!-- JSで動的に生成 -->
     </div>
@@ -1837,6 +1838,11 @@ const SUPABASE_URL = 'https://myxzlfoguczihvjkvccf.supabase.co';
 let supabaseClient = null;
 const SUPABASE_ANON_KEY = 'sb_publishable_kT1EbqgWCGwmxNEDWF1HpA_xthbUAKW';
 let currentUser = null;
+const bloomStorage = {
+  getItem(key) { return window.localStorage.getItem('bloom-account:' + (currentUser ? currentUser.id : 'guest') + ':' + key); },
+  setItem(key, value) { window.localStorage.setItem('bloom-account:' + (currentUser ? currentUser.id : 'guest') + ':' + key, value); },
+  removeItem(key) { window.localStorage.removeItem('bloom-account:' + (currentUser ? currentUser.id : 'guest') + ':' + key); }
+};
 
 // ========== コミュニティ・ブログ設定 ==========
 const BLOG_URL = 'https://blog.fastina.net';
@@ -1938,7 +1944,7 @@ async function handleSignup() {
   try {
     const { error } = await supabaseClient.auth.signUp({ email, password });
     if (error) { showAuthMsg('signup-msg', '登録に失敗しました: ' + error.message, 'error'); return; }
-    showAuthMsg('signup-msg', '確認メールを送信しました！メールを確認してください📧', 'success');
+    showAuthMsg('signup-msg', '確認メールを送信しました！メールを確認してください', 'success');
   } catch(e) { showAuthMsg('signup-msg', 'エラーが発生しました', 'error'); }
 }
 
@@ -2008,7 +2014,7 @@ async function handlePasswordResetRequest() {
       return;
     }
     // 登録の有無は知らせない（第三者による存在確認を防ぐため）
-    showAuthMsg('reset-msg', '登録されているメールアドレスの場合、再設定用のメールを送りました📧 メール内のリンクを開いてください。届かないときは迷惑メールフォルダもご確認ください。', 'success');
+    showAuthMsg('reset-msg', '登録されているメールアドレスの場合、再設定用のメールを送りました メール内のリンクを開いてください。届かないときは迷惑メールフォルダもご確認ください。', 'success');
   } catch (e) {
     showAuthMsg('reset-msg', 'エラーが発生しました。もう一度お試しください', 'error');
   } finally {
@@ -2043,7 +2049,7 @@ async function handleSetNewPassword() {
     resetAuthForms();
     document.getElementById('auth-overlay').style.display = 'none';
     if (typeof startApp === 'function') startApp();
-    alert('パスワードを変更しました🌸 次回からは新しいパスワードでログインしてください。');
+    alert('パスワードを変更しました 次回からは新しいパスワードでログインしてください。');
   } catch (e) {
     showAuthMsg('newpass-msg', 'エラーが発生しました。もう一度お試しください', 'error');
   }
@@ -2062,9 +2068,9 @@ function updateAuthUI() {
   const adminBtn = document.getElementById('nav-admin-btn');
   
   if (currentUser) {
-    const icon = localStorage.getItem('bloom-profile-icon') || '\u{1F338}';
-    const photo = localStorage.getItem('bloom-profile-photo') || '';
-    const username = localStorage.getItem('bloom-profile-username') || (currentUser.email || '').split('@')[0];
+    const icon = bloomStorage.getItem('bloom-profile-icon') || '';
+    const photo = bloomStorage.getItem('bloom-profile-photo') || '';
+    const username = bloomStorage.getItem('bloom-profile-username') || (currentUser.email || '').split('@')[0];
     if (navIcon) {
       if (photo) {
         navIcon.innerHTML = '<img src="' + photo + '" style="width:18px;height:18px;border-radius:50%;object-fit:cover;vertical-align:middle;">';
@@ -2075,7 +2081,7 @@ function updateAuthUI() {
     if (navName) navName.textContent = username;
     checkAdminStatus();
   } else {
-    if (navIcon) navIcon.textContent = '\u{1F511}';
+    if (navIcon) navIcon.textContent = '';
     if (navName) navName.textContent = '\u30ED\u30B0\u30A4\u30F3';
     isAdmin = false;
     if (adminBtn) adminBtn.style.display = 'none';
@@ -2094,9 +2100,9 @@ async function saveToSupabase() {
       exercise: state.exercise, food_worries: state.foodWorries,
       selected_habits: state.selectedHabits, custom_habits: state.customHabits,
       goal_created: state.goalCreated, updated_at: new Date().toISOString(),
-      username: localStorage.getItem('bloom-profile-username') || null,
-      avatar_icon: localStorage.getItem('bloom-profile-icon') || null,
-      avatar_url: localStorage.getItem('bloom-profile-photo') || null
+      username: bloomStorage.getItem('bloom-profile-username') || null,
+      avatar_icon: bloomStorage.getItem('bloom-profile-icon') || null,
+      avatar_url: bloomStorage.getItem('bloom-profile-photo') || null
     });
     saveToStorage();
   } catch(e) { saveToStorage(); }
@@ -2143,8 +2149,10 @@ async function saveJournalToSupabase(date, content) {
 
 async function loadUserDataFromSupabase() {
   if (!supabaseClient || !currentUser) return;
+  const loadingUserId = currentUser.id;
   try {
-    const { data: profile } = await supabaseClient.from('profiles').select('*').eq('id', currentUser.id).single();
+    const { data: profile } = await supabaseClient.from('profiles').select('*').eq('id', loadingUserId).single();
+    if (currentUser?.id !== loadingUserId) return;
     if (profile) {
       state = { ...state,
         name: profile.name || '', age: profile.age || '',
@@ -2154,31 +2162,34 @@ async function loadUserDataFromSupabase() {
         selectedHabits: profile.selected_habits || [], customHabits: profile.custom_habits || [],
         goalCreated: profile.goal_created || false
       };
-      if (profile.username) localStorage.setItem('bloom-profile-username', profile.username);
-      if (profile.avatar_icon) localStorage.setItem('bloom-profile-icon', profile.avatar_icon);
-      if (profile.avatar_url) localStorage.setItem('bloom-profile-photo', profile.avatar_url);
+      if (profile.username) bloomStorage.setItem('bloom-profile-username', profile.username);
+      if (profile.avatar_icon) bloomStorage.setItem('bloom-profile-icon', profile.avatar_icon);
+      if (profile.avatar_url) bloomStorage.setItem('bloom-profile-photo', profile.avatar_url);
       // Supabaseにusernameが未設定の場合、localStorageの値があればプッシュ
       if (!profile.username) {
-        var localName = localStorage.getItem('bloom-profile-username');
+        var localName = bloomStorage.getItem('bloom-profile-username');
         if (localName) {
-          supabaseClient.from('profiles').update({ username: localName, avatar_icon: localStorage.getItem('bloom-profile-icon') || null }).eq('id', currentUser.id).then(function(){});
+          supabaseClient.from('profiles').update({ username: localName, avatar_icon: bloomStorage.getItem('bloom-profile-icon') || null }).eq('id', currentUser.id).then(function(){});
         }
       }
     }
-    const { data: todos } = await supabaseClient.from('todos').select('*').eq('user_id', currentUser.id);
+    const { data: todos } = await supabaseClient.from('todos').select('*').eq('user_id', loadingUserId);
+    if (currentUser?.id !== loadingUserId) return;
     if (todos) {
       todos.forEach(t => {
         if (!todoData[t.date]) todoData[t.date] = {};
         todoData[t.date][t.habit] = t.done;
       });
     }
-    const { data: records } = await supabaseClient.from('records').select('*').eq('user_id', currentUser.id);
+    const { data: records } = await supabaseClient.from('records').select('*').eq('user_id', loadingUserId);
+    if (currentUser?.id !== loadingUserId) return;
     if (records) {
       records.forEach(r => {
         recordData[r.date] = { weight: r.weight, mood: r.mood, stress: r.stress, memo: r.memo };
       });
     }
-    const { data: journals } = await supabaseClient.from('journals').select('*').eq('user_id', currentUser.id);
+    const { data: journals } = await supabaseClient.from('journals').select('*').eq('user_id', loadingUserId);
+    if (currentUser?.id !== loadingUserId) return;
     if (journals) {
       journals.forEach(j => { journalData[j.date] = j.content; });
     }
@@ -2266,7 +2277,7 @@ function normalizeBlogPost(p) {
 
 async function loadBlogPosts() {
   try {
-    const c = JSON.parse(localStorage.getItem(BLOG_CACHE_KEY) || 'null');
+    const c = JSON.parse(bloomStorage.getItem(BLOG_CACHE_KEY) || 'null');
     if (c && Array.isArray(c.posts) && c.posts.length > 0) {
       blogPosts = c.posts; blogState = 'ok'; renderColumnArticles();
       if (Date.now() - c.t < BLOG_CACHE_MS) return;
@@ -2279,7 +2290,7 @@ async function loadBlogPosts() {
     const data = await res.json();
     blogPosts = (Array.isArray(data) ? data : []).map(normalizeBlogPost).filter(Boolean);
     blogState = 'ok';
-    try { localStorage.setItem(BLOG_CACHE_KEY, JSON.stringify({ t: Date.now(), posts: blogPosts })); } catch (e) {}
+    try { bloomStorage.setItem(BLOG_CACHE_KEY, JSON.stringify({ t: Date.now(), posts: blogPosts })); } catch (e) {}
   } catch (e) {
     console.log('ブログ記事の取得スキップ:', e);
     if (blogPosts.length === 0) blogState = 'error';
@@ -2428,7 +2439,7 @@ async function postAnnouncement() {
       return;
     }
 
-    alert('\u304A\u77E5\u3089\u305B\u3092\u6295\u7A3F\u3057\u307E\u3057\u305F\uFF01\u{1F4E3}\n\u7FD2\u6163TODO\u30DA\u30FC\u30B8\u306E\u4E0A\u90E8\u306B\u8868\u793A\u3055\u308C\u307E\u3059\u3002');
+    alert('\u304A\u77E5\u3089\u305B\u3092\u6295\u7A3F\u3057\u307E\u3057\u305F\uFF01\n\u7FD2\u6163TODO\u30DA\u30FC\u30B8\u306E\u4E0A\u90E8\u306B\u8868\u793A\u3055\u308C\u307E\u3059\u3002');
     document.getElementById('admin-announcement-text').value = '';
     loadAnnouncement();
   } catch (e) {
@@ -2477,7 +2488,7 @@ async function uploadStoryTemplate() {
       return;
     }
 
-    if (msg) { msg.style.display = 'block'; msg.style.color = 'var(--green-strong)'; msg.textContent = '✅ テンプレートを設定しました(次回のストーリー共有から反映されます)'; }
+    if (msg) { msg.style.display = 'block'; msg.style.color = 'var(--green-strong)'; msg.textContent = ' テンプレートを設定しました(次回のストーリー共有から反映されます)'; }
     input.value = '';
   } catch (e) {
     console.error('テンプレートアップロード失敗:', e);
@@ -2587,7 +2598,7 @@ async function loadAdminDashboard() {
         startDate: g.start_date,
         endDate: g.end_date,
         memberCount: g.member_count || 0,
-        status: g.status
+        kind: g.kind || 'group', status: g.status
       }));
     }
     
@@ -2683,6 +2694,7 @@ async function createGroup() {
     // Supabaseにグループを保存
     const { error } = await supabaseClient.from('groups').insert({
       name: name,
+      kind: document.getElementById('v2-group-kind')?.value || 'group',
       description: description,
       habit: habit,
       category: category,
@@ -2735,7 +2747,7 @@ function updateAdminGroupsList() {
     return '<div style="background:var(--pink-light);border-radius:8px;padding:12px;border-left:4px solid var(--pink-strong);">' +
       '<div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px;">' +
         '<div>' +
-          '<div style="font-weight:500;color:var(--text-dark);font-size:14px;">' + escapeHtml(g.name) + '</div>' +
+          '<div style="font-weight:500;color:var(--text-dark);font-size:14px;">' + (g.kind === 'event' ? 'イベント · ' : '') + escapeHtml(g.name) + '</div>' +
           '<div style="font-size:11px;color:var(--text-light);margin-top:2px;">' + escapeHtml(g.habit) + ' • ' + escapeHtml(g.category) + '</div>' +
         '</div>' +
         '<div style="display:flex;gap:6px;">' +
@@ -2918,7 +2930,7 @@ async function loadGroupsUI() {
       startDate: g.start_date,
       endDate: g.end_date,
       memberCount: g.member_count || 0,
-      status: g.status
+      kind: g.kind || 'group', status: g.status
     }));
     
     // ユーザーの参加中グループを取得
@@ -3032,7 +3044,7 @@ async function requestGroupJoin(groupId, groupName) {
       return;
     }
     
-    alert(groupName + ' に参加申請しました！\n運営の承認をお待ちください 🌸');
+    alert(groupName + ' に参加申請しました！\n運営の承認をお待ちください ');
     loadGroupsUI(); // グループリスト再読み込み
   } catch (e) {
     console.error('参加申請失敗:', e);
@@ -3111,7 +3123,7 @@ async function renderGroupFlowers(groupId) {
         const profile = profileMap[uid];
         return {
           name: profile ? (profile.username || 'ユーザー') : 'ユーザー',
-          flower: profile ? (profile.avatar_icon || '🌼') : '🌼',
+          flower: profile ? (profile.avatar_icon || '') : '',
           reports: reportCounts[uid] || 0
         };
       });
@@ -3132,7 +3144,7 @@ async function renderGroupFlowers(groupId) {
   
   container.innerHTML = memberFlowers.map(m =>
     '<div class="group-member-flower">' +
-      '<div class="group-member-flower-emoji">' + (m.flower || '🌼') + '</div>' +
+      '<div class="group-member-flower-emoji"><svg class="ico" aria-hidden="true"><use href="#ic-flower"/></svg></div>' +
       '<div class="group-member-flower-name">' + escapeHtml(m.name || 'ユーザー') + '</div>' +
       '<div class="group-member-flower-stats">' +
         '<div class="group-member-flower-stat"><svg class="ico" aria-hidden="true"><use href="#ic-edit"/></svg> ' + (m.reports || 0) + '</div>' +
@@ -3205,7 +3217,7 @@ async function renderGroupReports(groupId) {
       reports = reportRows.map(r => {
         const profile = profileMap[r.user_id];
         const userName = profile ? (profile.username || 'ユーザー') : 'ユーザー';
-        const userIcon = profile ? (profile.avatar_icon || '🌸') : '🌸';
+        const userIcon = profile ? (profile.avatar_icon || '') : '';
         const userPhoto = profile ? (profile.avatar_url || null) : null;
         const created = new Date(r.created_at);
         const dateOnly = (created.getMonth() + 1) + '月' + created.getDate() + '日';
@@ -3270,7 +3282,7 @@ async function renderGroupReports(groupId) {
         const globalIndex = reports.indexOf(r);
         const avatarHtml = r.userPhoto
           ? '<div style="width:26px;height:26px;border-radius:50%;overflow:hidden;flex-shrink:0;background:#FBF5EC;"><img src="' + r.userPhoto + '" style="width:100%;height:100%;object-fit:cover;"></div>'
-          : '<div style="width:26px;height:26px;border-radius:50%;background:#FBF5EC;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">' + (r.userIcon || '\u{1F338}') + '</div>';
+          : '<div style="width:26px;height:26px;border-radius:50%;background:#FBF5EC;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">' + (r.userIcon || '') + '</div>';
 
         return '<div class="group-report-banner" id="report-' + r.id + '" style="background:white;">' +
           '<div class="group-report-banner-top">' +
@@ -3361,7 +3373,7 @@ async function submitGroupReport(evaluation) {
       return;
     }
     
-    alert('報告を送信しました！🌸');
+    alert('報告を送信しました！');
     document.getElementById('group-report-content').value = '';
     
     // フィードを再読み込みして自分の報告を表示
@@ -3382,7 +3394,7 @@ async function likeGroupReport(reportId, index) {
   const report = window.groupReportsData[index];
   
   if (report.likedByUser) {
-    alert('既にいいね済みです 🌸');
+    alert('既にいいね済みです ');
     return;
   }
   
@@ -3454,7 +3466,7 @@ async function submitComment(reportId, index) {
     if (error) throw error;
     
     // 画面更新
-    const myName = localStorage.getItem('bloom-profile-username') || 'あなた';
+    const myName = bloomStorage.getItem('bloom-profile-username') || 'あなた';
     report.commentsList.push({ user: myName, text: commentText });
     
     const commentList = document.getElementById('comment-list-' + reportId);
@@ -3512,7 +3524,7 @@ function updateMyFlowerStats() {
 
 // ========== わたしの花畑 ==========
 let myFlowerData = {
-  currentFlower: '🌼',
+  currentFlower: '',
   points: 0,
   stage: 0,
   likesSent: 0,
@@ -3523,13 +3535,13 @@ let myFlowerData = {
 };
 
 const flowerStages = [
-  { emoji: '🌱', name: '種', minPoints: 0, maxPoints: 10 },
-  { emoji: '🌿', name: '芽吹き', minPoints: 11, maxPoints: 25 },
-  { emoji: '🌸', name: '小さな花', minPoints: 26, maxPoints: 50 },
-  { emoji: '🌺', name: '中くらいの花', minPoints: 51, maxPoints: 75 },
-  { emoji: '🌻', name: '大きな花', minPoints: 76, maxPoints: 100 },
-  { emoji: '🌹', name: '豪華な花', minPoints: 101, maxPoints: 150 },
-  { emoji: '💐', name: '満開', minPoints: 151, maxPoints: 999 }
+  { emoji: '', name: '種', minPoints: 0, maxPoints: 10 },
+  { emoji: '', name: '芽吹き', minPoints: 11, maxPoints: 25 },
+  { emoji: '', name: '小さな花', minPoints: 26, maxPoints: 50 },
+  { emoji: '', name: '中くらいの花', minPoints: 51, maxPoints: 75 },
+  { emoji: '', name: '大きな花', minPoints: 76, maxPoints: 100 },
+  { emoji: '', name: '豪華な花', minPoints: 101, maxPoints: 150 },
+  { emoji: '', name: '満開', minPoints: 151, maxPoints: 999 }
 ];
 
 function openMyFlower() {
@@ -3608,7 +3620,7 @@ async function loadMyFlowerPage() {
         myFlowerData.commentsReceived * 1;
       
       // 保存済みの花の種類を取得
-      const savedFlower = localStorage.getItem('bloom-my-flower');
+      const savedFlower = bloomStorage.getItem('bloom-my-flower');
       if (savedFlower) myFlowerData.currentFlower = savedFlower;
     }
   } catch (e) {
@@ -3666,7 +3678,7 @@ function changeMyFlower(flower, element) {
   document.getElementById('my-flower-emoji').textContent = flower;
   
   // 選択した花を保存
-  localStorage.setItem('bloom-my-flower', flower);
+  bloomStorage.setItem('bloom-my-flower', flower);
   
   // プロフィールのアイコンとしても保存（みんなの花畑に反映）
   if (supabaseClient && currentUser) {
@@ -3708,13 +3720,13 @@ window.addEventListener('load', () => {
 function loadFromStorage() {
   loadJournalData();
   try {
-    const s = localStorage.getItem('bloom-state');
+    const s = bloomStorage.getItem('bloom-state');
     if (s) state = {...state, ...JSON.parse(s)};
-    const t = localStorage.getItem('bloom-todo');
+    const t = bloomStorage.getItem('bloom-todo');
     if (t) todoData = JSON.parse(t);
-    const r = localStorage.getItem('bloom-record');
+    const r = bloomStorage.getItem('bloom-record');
     if (r) recordData = JSON.parse(r);
-    const b = localStorage.getItem('bloom-badges');
+    const b = bloomStorage.getItem('bloom-badges');
     if (b) badges = JSON.parse(b);
     calcStreak();
   } catch(e) {}
@@ -3722,10 +3734,10 @@ function loadFromStorage() {
 
 function saveToStorage() {
   try {
-    localStorage.setItem('bloom-state', JSON.stringify(state));
-    localStorage.setItem('bloom-todo', JSON.stringify(todoData));
-    localStorage.setItem('bloom-record', JSON.stringify(recordData));
-    localStorage.setItem('bloom-badges', JSON.stringify(badges));
+    bloomStorage.setItem('bloom-state', JSON.stringify(state));
+    bloomStorage.setItem('bloom-todo', JSON.stringify(todoData));
+    bloomStorage.setItem('bloom-record', JSON.stringify(recordData));
+    bloomStorage.setItem('bloom-badges', JSON.stringify(badges));
   } catch(e) {}
 }
 
@@ -3784,9 +3796,9 @@ function openProfileModal() {
   const modal = document.getElementById('profile-modal');
   if (modal) {
     modal.style.display = 'flex';
-    const savedIcon = localStorage.getItem('bloom-profile-icon') || '🌸';
-    const savedName = localStorage.getItem('bloom-profile-username') || '';
-    const savedPhotoUrl = localStorage.getItem('bloom-profile-photo') || '';
+    const savedIcon = bloomStorage.getItem('bloom-profile-icon') || '';
+    const savedName = bloomStorage.getItem('bloom-profile-username') || '';
+    const savedPhotoUrl = bloomStorage.getItem('bloom-profile-photo') || '';
     document.getElementById('profile-icon').value = savedIcon;
     document.getElementById('profile-username').value = savedName;
     document.getElementById('selected-icon-preview').textContent = savedIcon;
@@ -3863,7 +3875,7 @@ function previewAvatarPhoto(event) {
 function removeAvatarPhoto() {
   pendingAvatarPhoto = null;
   removePhotoFlag = true;
-  var savedIcon = document.getElementById('profile-icon').value || '\u{1F338}';
+  var savedIcon = document.getElementById('profile-icon').value || '';
   document.getElementById('avatar-photo-preview').textContent = savedIcon;
   document.getElementById('avatar-photo-input').value = '';
   var hint = document.getElementById('avatar-photo-hint');
@@ -3871,12 +3883,12 @@ function removeAvatarPhoto() {
 }
 
 async function saveProfile() {
-  const icon = document.getElementById('profile-icon').value || '🌸';
+  const icon = document.getElementById('profile-icon').value || '';
   const username = document.getElementById('profile-username').value.trim() || (currentUser ? currentUser.email.split('@')[0] : 'ゲスト');
-  localStorage.setItem('bloom-profile-icon', icon);
-  localStorage.setItem('bloom-profile-username', username);
+  bloomStorage.setItem('bloom-profile-icon', icon);
+  bloomStorage.setItem('bloom-profile-username', username);
   
-  let avatarUrl = localStorage.getItem('bloom-profile-photo') || null;
+  let avatarUrl = bloomStorage.getItem('bloom-profile-photo') || null;
   let photoUploadFailed = false;
   
   try {
@@ -3903,13 +3915,13 @@ async function saveProfile() {
         } else {
           const { data: urlData } = supabaseClient.storage.from('avatars').getPublicUrl(filePath);
           avatarUrl = urlData.publicUrl + '?t=' + Date.now();
-          localStorage.setItem('bloom-profile-photo', avatarUrl);
+          bloomStorage.setItem('bloom-profile-photo', avatarUrl);
         }
       }
       
       if (removePhotoFlag) {
         avatarUrl = null;
-        localStorage.removeItem('bloom-profile-photo');
+        bloomStorage.removeItem('bloom-profile-photo');
       }
       
       const { error } = await supabaseClient.from('profiles').upsert({
@@ -4284,7 +4296,7 @@ function checkStreak() {
   document.getElementById('streak-num').textContent = streakCount;
 }
 
-// 花の成長ステージの絵（絵文字のかわり）。段階 0〜6
+// 花の成長ステージの絵（アイコンのかわり）。段階 0〜6
 function flowerSvg(idx) {
   const rose = '#B96E83', petal = '#F8DDE2', petal2 = '#F4C3CF', sage = '#7E9A7C', leaf = '#E4EEDD', gold = '#C9A872', cream = '#EDDFC7', yel = '#F3E2B0';
   const a = 'stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"';
@@ -4311,20 +4323,20 @@ function moodIcon(n) {
 }
 
 function updateFlower() {
-  const flowers = ['🌱','🌿','🌸','🌺','🌻','🌹','💐'];
+  const flowers = ['','','','','','',''];
   const idx = Math.min(Math.floor(streakCount / 5), flowers.length - 1);
   document.getElementById('flower-emoji').innerHTML = flowerSvg(idx);
-  const msgs = ['習慣を続けると花が成長します','芽が出てきました！','葉っぱが増えてきた！','つぼみができました🌸','花が咲きました！🌺','満開です！🌻','あなたの花が完全に咲きました！💐'];
+  const msgs = ['習慣を続けると花が成長します','芽が出てきました！','葉っぱが増えてきた！','つぼみができました','花が咲きました！','満開です！','あなたの花が完全に咲きました！'];
   document.getElementById('flower-msg').textContent = msgs[idx];
 }
 
 function checkBadges() {
   const newBadges = [];
-  if (streakCount >= 3 && !badges.includes('3日継続')) { newBadges.push('3日継続🏅'); badges.push('3日継続'); }
-  if (streakCount >= 7 && !badges.includes('7日継続')) { newBadges.push('7日継続🥈'); badges.push('7日継続'); }
-  if (streakCount >= 14 && !badges.includes('14日継続')) { newBadges.push('2週間継続🥇'); badges.push('14日継続'); }
-  if (streakCount >= 30 && !badges.includes('30日継続')) { newBadges.push('1ヶ月継続👑'); badges.push('30日継続'); }
-  if (state.selectedHabits.length >= 5 && !badges.includes('5習慣')) { newBadges.push('5習慣設定⭐'); badges.push('5習慣'); }
+  if (streakCount >= 3 && !badges.includes('3日継続')) { newBadges.push('3日継続'); badges.push('3日継続'); }
+  if (streakCount >= 7 && !badges.includes('7日継続')) { newBadges.push('7日継続'); badges.push('7日継続'); }
+  if (streakCount >= 14 && !badges.includes('14日継続')) { newBadges.push('2週間継続'); badges.push('14日継続'); }
+  if (streakCount >= 30 && !badges.includes('30日継続')) { newBadges.push('1ヶ月継続'); badges.push('30日継続'); }
+  if (state.selectedHabits.length >= 5 && !badges.includes('5習慣')) { newBadges.push('5習慣設定'); badges.push('5習慣'); }
   const list = document.getElementById('badges-list');
   const empty = document.getElementById('badges-empty');
   if (badges.length > 0) {
@@ -4332,7 +4344,7 @@ function checkBadges() {
     list.innerHTML = badges.map(b => '<span class="tag tag-pink">' + b + '</span>').join('');
   }
   if (newBadges.length > 0) {
-    setTimeout(() => alert('🎉 バッジ獲得！\n' + newBadges.join('\n')), 300);
+    setTimeout(() => alert(' バッジ獲得！\n' + newBadges.join('\n')), 300);
   }
   saveToStorage();
 }
@@ -4383,7 +4395,7 @@ function renderRecordHistory() {
     document.getElementById('record-history').textContent = '記録がありません';
     return;
   }
-  const moods = ['','😢','😔','😐','🙂','😄'];
+  const moods = ['','','','','',''];
   document.getElementById('record-history').innerHTML = keys.map(k => {
     const r = recordData[k];
     return '<div style="padding:10px 0;border-bottom:1px solid #FAF6EE;display:flex;justify-content:space-between;align-items:center;">' +
@@ -4510,13 +4522,13 @@ let summaryDirty = false;
 
 function loadMonthlySummaries() {
   if (monthlySummaryCache) return monthlySummaryCache;
-  try { monthlySummaryCache = JSON.parse(localStorage.getItem(SUMMARY_KEY) || '{}') || {}; }
+  try { monthlySummaryCache = JSON.parse(bloomStorage.getItem(SUMMARY_KEY) || '{}') || {}; }
   catch (e) { monthlySummaryCache = {}; }
   return monthlySummaryCache;
 }
 
 function persistMonthlySummaries() {
-  try { localStorage.setItem(SUMMARY_KEY, JSON.stringify(monthlySummaryCache || {})); } catch (e) {}
+  try { bloomStorage.setItem(SUMMARY_KEY, JSON.stringify(monthlySummaryCache || {})); } catch (e) {}
 }
 
 function summaryKeyOf(d) {
@@ -4670,7 +4682,7 @@ function saveMonthlySummary() {
   persistMonthlySummaries();
   summaryDirty = false;
   updateReportPage();
-  showSummaryMsg('✅ 保存しました。月次レポートに反映されています。', false);
+  showSummaryMsg(' 保存しました。月次レポートに反映されています。', false);
 }
 
 function clearMonthlySummary() {
@@ -4688,21 +4700,21 @@ function clearMonthlySummary() {
 
 // 月ごとのバッジデザイン（1月〜12月）
 const MONTHLY_BADGE_DESIGNS = {
-  1: '⛄', 2: '💝', 3: '🌸', 4: '🌷', 5: '🎏', 6: '☔',
-  7: '🎋', 8: '🌻', 9: '🌕', 10: '🍁', 11: '🍂', 12: '🎄'
+  1: '', 2: '', 3: '', 4: '', 5: '', 6: '',
+  7: '', 8: '', 9: '', 10: '', 11: '', 12: ''
 };
 
 function awardMonthlyBadge() {
   const year = reportMonth.getFullYear();
   const month = reportMonth.getMonth() + 1;
-  const design = MONTHLY_BADGE_DESIGNS[month] || '🏅';
+  const design = MONTHLY_BADGE_DESIGNS[month] || '';
   const badgeName = year + '年' + month + '月レポート' + design;
   
   if (!badges.includes(badgeName)) {
     badges.push(badgeName);
     saveToStorage();
     setTimeout(() => {
-      alert('🎉 月次バッジ獲得！\n' + badgeName + '\n\n習慣TODOページの「獲得バッジ」に追加されました🌸');
+      alert(' 月次バッジ獲得！\n' + badgeName + '\n\n習慣TODOページの「獲得バッジ」に追加されました');
     }, 1500);
   }
 }
@@ -4719,33 +4731,33 @@ function sendMonthlyReportToLINE() {
   const comment = document.getElementById('report-comment').value;
 
   let msg = '【Bloom Journal 月次レポート】\n';
-  msg += '📅 ' + monthStr + '\n';
-  if (state.name) msg += '👤 ' + state.name + '\n';
+  msg += ' ' + monthStr + '\n';
+  if (state.name) msg += ' ' + state.name + '\n';
   msg += '\n';
-  msg += '✅ 習慣平均達成率：' + avgTodo + '\n';
-  msg += '🔥 最長継続：' + streak + '\n';
-  msg += '⚖️ 体重変化：' + weightDiff + '\n';
-  msg += '📊 記録日数：' + recordDays + '\n';
-  msg += '😤 平均ストレス：' + avgStress + '\n';
-  msg += '📓 ジャーナル：' + journalDays + '\n';
+  msg += ' 習慣平均達成率：' + avgTodo + '\n';
+  msg += ' 最長継続：' + streak + '\n';
+  msg += ' 体重変化：' + weightDiff + '\n';
+  msg += ' 記録日数：' + recordDays + '\n';
+  msg += ' 平均ストレス：' + avgStress + '\n';
+  msg += ' ジャーナル：' + journalDays + '\n';
 
   // 習慣別達成率
   const habits = state.selectedHabits;
   if (habits.length > 0) {
-    msg += '\n🌿 習慣別達成率：\n';
+    msg += '\n 習慣別達成率：\n';
     const days = range.days;
     habits.forEach(h => {
       const pct = getHabitPct(h, days);
       msg += '  ・' + h + '：' + pct + '%\n';
     });
   }
-  if (comment) msg += '\n💬 コメント：\n' + comment + '\n';
+  if (comment) msg += '\n コメント：\n' + comment + '\n';
   msg += '\n#BloomJournal #月次レポート';
 
   window.open('https://lin.ee/5EYolb7', '_blank');
   setTimeout(() => {
     navigator.clipboard.writeText(msg).then(() => {
-      alert('📋 月次レポートをコピーしました！\nLINEでそのままペーストして送信してください🌸');
+      alert(' 月次レポートをコピーしました！\nLINEでそのままペーストして送信してください');
     }).catch(() => {
       alert('月次レポート：\n\n' + msg);
     });
@@ -4769,13 +4781,13 @@ let journalData = {};
 
 function loadJournalData() {
   try {
-    const j = localStorage.getItem('bloom-journal');
+    const j = bloomStorage.getItem('bloom-journal');
     if (j) journalData = JSON.parse(j);
   } catch(e) {}
 }
 
 function saveJournalData() {
-  try { localStorage.setItem('bloom-journal', JSON.stringify(journalData)); } catch(e) {}
+  try { bloomStorage.setItem('bloom-journal', JSON.stringify(journalData)); } catch(e) {}
 }
 
 function changeJournalDate(delta) {
@@ -4794,7 +4806,7 @@ function saveJournal() {
   saveJournalData();
   saveJournalToSupabase(key, text);
   renderJournalHistory();
-  alert('保存しました！💾');
+  alert('保存しました！');
 }
 
 function renderJournalHistory() {
@@ -4825,21 +4837,21 @@ function sendToLINE() {
   const habits = state.selectedHabits;
   const doneCount = habits.filter(h => todoDay[h]).length;
   const pct = habits.length > 0 ? Math.round(doneCount / habits.length * 100) : 0;
-  const moods = ['','😢','😔','😐','🙂','😄'];
+  const moods = ['','','','','',''];
   let msg = '【Bloom Journal 今日の記録】\n';
-  msg += '📅 ' + dateKey + '\n\n';
-  if (state.name) msg += '👤 ' + state.name + '\n\n';
-  msg += '✅ 習慣達成率：' + pct + '% (' + doneCount + '/' + habits.length + ')\n';
-  if (rec.weight) msg += '⚖️ 体重：' + rec.weight + 'kg\n';
-  if (rec.mood) msg += '💭 気分：' + moods[rec.mood] + '\n';
-  if (rec.stress) msg += '😤 ストレス：' + rec.stress + '/10\n';
-  if (rec.memo) msg += '📝 体調メモ：' + rec.memo + '\n';
-  if (journalText) msg += '\n📓 ジャーナル：\n' + journalText + '\n';
+  msg += ' ' + dateKey + '\n\n';
+  if (state.name) msg += ' ' + state.name + '\n\n';
+  msg += ' 習慣達成率：' + pct + '% (' + doneCount + '/' + habits.length + ')\n';
+  if (rec.weight) msg += ' 体重：' + rec.weight + 'kg\n';
+  if (rec.mood) msg += ' 気分：' + moods[rec.mood] + '\n';
+  if (rec.stress) msg += ' ストレス：' + rec.stress + '/10\n';
+  if (rec.memo) msg += ' 体調メモ：' + rec.memo + '\n';
+  if (journalText) msg += '\n ジャーナル：\n' + journalText + '\n';
   msg += '\n#BloomJournal #習慣記録';
   window.open('https://lin.ee/5EYolb7', '_blank');
   setTimeout(() => {
     navigator.clipboard.writeText(msg).then(() => {
-      alert('📋 記録内容をコピーしました！\nLINEが開いたらトークに貼り付けて送信してください\n\n--- 内容プレビュー ---\n' + msg.substring(0, 150) + '...');
+      alert(' 記録内容をコピーしました！\nLINEが開いたらトークに貼り付けて送信してください\n\n--- 内容プレビュー ---\n' + msg.substring(0, 150) + '...');
     }).catch(() => {
       alert('LINEで以下の内容を送ってください：\n\n' + msg);
     });
@@ -4853,9 +4865,9 @@ function getShareText() {
   const streak = document.getElementById('report-streak').textContent;
   const weightDiff = document.getElementById('report-weight-diff').textContent;
   return '【' + now.getFullYear() + '年' + (now.getMonth()+1) + '月の記録】\n' +
-    '✅ 習慣平均達成率：' + avgTodo + '\n' +
-    '🔥 最長継続：' + streak + '\n' +
-    '⚖️ 体重変化：' + weightDiff + '\n' +
+    ' 習慣平均達成率：' + avgTodo + '\n' +
+    ' 最長継続：' + streak + '\n' +
+    ' 体重変化：' + weightDiff + '\n' +
     '\n#BloomJournal #習慣記録 #ダイエット #体質改善';
 }
 
@@ -4868,7 +4880,7 @@ function shareToX() {
 function shareToInstagram() {
   const text = getShareText();
   navigator.clipboard.writeText(text).then(() => {
-    alert('📸 インスタストーリーズ用テキストをコピーしました！\nInstagramを開いてストーリーズに貼り付けてください\n\n推奨サイズ：1080×1920px');
+    alert(' インスタストーリーズ用テキストをコピーしました！\nInstagramを開いてストーリーズに貼り付けてください\n\n推奨サイズ：1080×1920px');
   }).catch(() => alert('コピーできませんでした'));
 }
 
@@ -5213,7 +5225,7 @@ async function submitPost() {
       expires_at: expiresAt.toISOString()
     });
     if (error) throw error;
-    msg.textContent = '投稿しました！🌸';
+    msg.textContent = '投稿しました！';
     msg.style.color = 'var(--green-strong)';
     document.getElementById('post-caption').value = '';
     document.getElementById('post-image-preview').style.display = 'none';
@@ -5278,8 +5290,8 @@ function renderPost(post, likes, comments) {
   const daysLeft = Math.ceil((expiresAt - now) / (1000 * 60 * 60 * 24));
   const timeStr = formatTimeAgo(createdAt);
   const userName = post.user_id.substring(0, 6) + '...';
-  const avatarEmojis = ['🌸','🌺','🌻','🌹','💐','🌷','🌼'];
-  const avatarEmoji = avatarEmojis[post.user_id.charCodeAt(0) % avatarEmojis.length];
+  const avatarEmojis = ['','','','','','',''];
+  const avatarEmoji = '<svg class="ico" aria-hidden="true"><use href="#ic-user"/></svg>';
 
   const commentsHtml = comments.slice(-3).map(c => {
     const cUser = c.user_id.substring(0, 6) + '...';
@@ -5412,7 +5424,7 @@ async function renderShareCanvas(filename) {
     link.click();
     document.body.removeChild(link);
     setTimeout(() => {
-      alert('📸 画像を保存しました！\nダウンロードフォルダに保存されています。\nギャラリーアプリの「ダウンロード」フォルダをご確認ください📁');
+      alert(' 画像を保存しました！\nダウンロードフォルダに保存されています。\nギャラリーアプリの「ダウンロード」フォルダをご確認ください');
     }, 500);
   } catch(e) {
     console.error(e);
@@ -5445,7 +5457,7 @@ function saveReportAsImage() {
 
   const body = document.getElementById('share-canvas-body');
   body.innerHTML = `
-    <div class="share-canvas-title">月次レポート<div class="share-canvas-month">📅 ${monthStr}</div></div>
+    <div class="share-canvas-title">月次レポート<div class="share-canvas-month"> ${monthStr}</div></div>
 
     <div class="share-stat-grid">
       <div class="share-stat-box">
@@ -5464,7 +5476,7 @@ function saveReportAsImage() {
 
     ${habitStats.length > 0 ? `
     <div class="share-habit-list">
-      <div class="share-habit-title">🌿 習慣達成率</div>
+      <div class="share-habit-title"> 習慣達成率</div>
       ${habitStats.map(h => `
         <div class="share-habit-item">
           <span style="font-size:16px;flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">${h.name}</span>
@@ -5476,7 +5488,7 @@ function saveReportAsImage() {
 
     ${comment ? `
     <div style="background:white;border-radius:20px;padding:28px 32px;box-shadow:0 4px 24px rgba(96,78,72,0.032);">
-      <div style="font-size:18px;font-weight:600;color:#B96E83;margin-bottom:12px;">💬 今月のひとこと</div>
+      <div style="font-size:18px;font-weight:600;color:#B96E83;margin-bottom:12px;"> 今月のひとこと</div>
       <div style="font-size:18px;color:#514946;line-height:1.7;">${comment.substring(0,60)}${comment.length>60?'…':''}</div>
     </div>` : ''}
   `;
@@ -5496,7 +5508,7 @@ async function shareReportToStory() {
 
   const body = document.getElementById('story-canvas-body');
   body.innerHTML = `
-    <div style="font-size:30px;color:#604E48;">📅 ${monthStr} の記録</div>
+    <div style="font-size:30px;color:#604E48;"> ${monthStr} の記録</div>
     <div style="background:white;border-radius:32px;padding:48px 40px;box-shadow:0 8px 32px rgba(185,145,100,0.14);width:100%;">
       <div style="font-size:96px;font-weight:700;color:#B96E83;line-height:1;">${avgTodo}</div>
       <div style="font-size:26px;color:#604E48;margin-top:10px;">平均達成率</div>
@@ -5511,7 +5523,7 @@ async function shareReportToStory() {
         <div style="font-size:20px;color:#604E48;margin-top:6px;">体重変化</div>
       </div>
     </div>
-    <div style="font-size:24px;color:#B96E83;font-weight:600;margin-top:12px;">🌸 一緒に続けよう</div>
+    <div style="font-size:24px;color:#B96E83;font-weight:600;margin-top:12px;"> 一緒に続けよう</div>
   `;
 
   const wrap = document.getElementById('story-canvas-wrap');
@@ -5546,7 +5558,7 @@ async function shareReportToStory() {
     const blob = await new Promise(res => c.toBlob(res, 'image/png'));
     const file = blob ? new File([blob], filename, { type: 'image/png' }) : null;
     if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
-      await navigator.share({ files: [file], title: 'Bloom Journal', text: '今月の記録📸 #BloomJournal' });
+      await navigator.share({ files: [file], title: 'Bloom Journal', text: '今月の記録 #BloomJournal' });
     } else {
       const dataUrl = c.toDataURL('image/png');
       const link = document.createElement('a');
@@ -5555,7 +5567,7 @@ async function shareReportToStory() {
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      alert('📲 画像を保存しました！\nInstagramやThreadsのストーリーズ投稿画面から、保存した画像を選んで投稿してください🌸');
+      alert(' 画像を保存しました！\nInstagramやThreadsのストーリーズ投稿画面から、保存した画像を選んで投稿してください');
     }
   } catch (e) {
     console.error(e);
@@ -5576,7 +5588,7 @@ function saveTodoAsImage() {
   const dayData = todoData[dateKey] || {};
   const doneCount = habits.filter(h => dayData[h]).length;
   const pct = habits.length > 0 ? Math.round(doneCount / habits.length * 100) : 0;
-  const flowerEmojis = ['🌱','🌿','🌸','🌺','🌻','🌹','💐'];
+  const flowerEmojis = ['','','','','','',''];
   const flowerIdx = Math.min(Math.floor(streakCount / 5), flowerEmojis.length - 1);
   const flower = flowerEmojis[flowerIdx];
   const doneHabits = habits.filter(h => !!dayData[h]);
@@ -5586,7 +5598,7 @@ function saveTodoAsImage() {
   body.innerHTML = `
     <div style="text-align:center;">
       <div style="font-family:var(--font-main);font-size:52px;font-weight:600;color:#604E48;line-height:1.2;">習慣チェック</div>
-      <div style="font-size:24px;color:#B96E83;font-weight:500;margin-top:4px;">📅 ${dateStr}</div>
+      <div style="font-size:24px;color:#B96E83;font-weight:500;margin-top:4px;"> ${dateStr}</div>
     </div>
 
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
@@ -5606,7 +5618,7 @@ function saveTodoAsImage() {
 
     ${doneHabits.length > 0 ? `
     <div style="background:white;border-radius:18px;padding:20px 28px;box-shadow:0 4px 20px rgba(96,78,72,0.032);">
-      <div style="font-size:24px;font-weight:600;color:#2DAA71;margin-bottom:10px;text-align:center;">✅ 達成した習慣</div>
+      <div style="font-size:24px;font-weight:600;color:#2DAA71;margin-bottom:10px;text-align:center;"> 達成した習慣</div>
       ${doneHabits.slice(0,6).map(h => `
         <div style="text-align:center;font-size:22px;font-weight:600;color:#2DAA71;padding:8px 0;border-bottom:1px solid #f0faf5;">${h}</div>
       `).join('')}
@@ -5614,7 +5626,7 @@ function saveTodoAsImage() {
 
     ${notDoneHabits.length > 0 ? `
     <div style="background:white;border-radius:18px;padding:20px 28px;box-shadow:0 4px 20px rgba(96,78,72,0.032);">
-      <div style="font-size:24px;font-weight:600;color:#B96E83;margin-bottom:10px;text-align:center;">🌱 明日チャレンジ</div>
+      <div style="font-size:24px;font-weight:600;color:#B96E83;margin-bottom:10px;text-align:center;"> 明日チャレンジ</div>
       ${notDoneHabits.slice(0,4).map(h => `
         <div style="text-align:center;font-size:20px;color:#A89A91;padding:7px 0;border-bottom:1px solid #fdf0f5;">${h}</div>
       `).join('')}
@@ -5622,7 +5634,7 @@ function saveTodoAsImage() {
 
     <div style="text-align:center;background:white;border-radius:18px;padding:20px;box-shadow:0 4px 20px rgba(96,78,72,0.032);">
       <div style="font-size:72px;margin-bottom:6px;">${flower}</div>
-      <div style="font-size:24px;color:#B96E83;font-weight:600;">${streakCount}日連続達成中 🔥</div>
+      <div style="font-size:24px;color:#B96E83;font-weight:600;">${streakCount}日連続達成中 </div>
       ${state.name ? `<div style="font-size:20px;color:#78685F;margin-top:4px;">${state.name}さん、継続中！</div>` : ''}
     </div>
   `;
@@ -5638,5 +5650,7 @@ function escapeHtml(str) {
 
 
 </script>
+<script src="/assets/journal-model.js"></script>
+<script src="/assets/journal-v2.js"></script>
 </body>
 </html>
