@@ -117,11 +117,11 @@
     const count = items.filter(i => M.own(row, i.id)).length, item = items[active];
     if (draft === undefined && item) draft = row[item.id];
     const announcement = $('admin-msg-list');
-    root.innerHTML = shell('一粒ずつ、わたしが育つ。', 'できた日も、お休みした日も。記録がひとつのしずくに。',
+    root.innerHTML = shell('今日のわたしを、重ねて。', '小さな記録を、あなたのペースで。',
       '<div id="v2-announcements"></div><div class="daily-head section"><label class="field"><span>記録する日付</span><input type="date" id="v2-date" value="' + date + '" max="' + today() + '"></label>' + button('月次レポートを見る', 'report', 'secondary') + '</div>' +
-      '<div class="drop-pool"><div class="big-drop" style="width:' + (62 + Math.min(count, 5) * 18) + 'px;height:' + (66 + Math.min(count, 5) * 19) + 'px" aria-label="' + count + '項目を記録"><strong>' + count + '</strong><small>粒</small></div><p class="muted">' + count + ' / ' + items.length + ' 項目がひとつに</p></div>' +
+      '<div class="drop-pool"><div class="big-drop" style="width:' + (88 + Math.min(count, 5) * 18) + 'px;height:' + (84 + Math.min(count, 5) * 17) + 'px" role="img" aria-label="' + items.length + '項目のうち' + count + '項目を記録。記録に応じて育つしずく"></div><div class="drop-caption"><p class="drop-title">今日の記録</p><p class="muted record-count">' + (items.length ? items.length + '項目のうち' + count + '項目を記録' : 'マイ項目を選んで、ここから。') + '</p></div></div>' +
       '<div class="daily-items">' + items.map((i, n) => button((M.own(row, i.id) ? icon('check') : '') + e(i.name), 'item', 'chip', 'data-index="' + n + '" aria-pressed="' + (n === active) + '"')).join('') + '</div>' +
-      (item ? '<article class="jelly" id="v2-daily-card"><p class="muted">' + e(date) + ' · ' + (active + 1) + ' / ' + items.length + '</p><h2>' + e(item.name) + '</h2><div class="daily-value">' + field(item, draft) + '</div><p class="swipe-label">' + icon('share') + ' 上にスワイプして、記録にぽとん</p></article>' + button('この内容を記録する', 'save-day', 'primary wide-button', !ready ? 'disabled' : '') : '<p class="notice">「目標設定」からマイ項目を追加してください。</p>') +
+      (item ? '<article class="jelly" id="v2-daily-card"><p class="muted">' + e(date) + ' · ' + (active + 1) + ' / ' + items.length + '</p><h2>' + e(item.name) + '</h2><div class="daily-value">' + field(item, draft) + '</div><p class="swipe-label">' + icon('share') + ' 上にスワイプして、今日の記録へ</p></article>' + button('この内容を記録する', 'save-day', 'primary wide-button', !ready ? 'disabled' : '') : '<p class="notice">「目標設定」からマイ項目を追加してください。</p>') +
       '<p class="muted section">毎日の記録は蓄積されます。カウンセラーへの報告は月次レポートから。</p><div class="row section">' + button('マイ項目・目標を設定', 'settings') + button('グループを見る', 'groups') + '</div><i class="flight" hidden aria-hidden="true"></i>');
     // Preserve the existing announcement endpoint and permissions.
     if (announcement) $('v2-announcements').append(announcement);

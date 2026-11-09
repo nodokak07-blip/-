@@ -31,7 +31,7 @@ test('guest UI starts without email inputs and records explicit did-not-do as on
   const app=await open();const {w}=app;try{
     assert.equal(w.document.querySelectorAll('input[type=email]').length,0);assert.equal(w.document.querySelector('.page.active').id,'page-v2-home');
     click(w,'[data-action=item][data-index="2"]');click(w,'[data-action=pick][data-value=false]');click(w,'[data-action=save-day]');await tick();await tick();
-    assert.equal(w.document.querySelector('.big-drop strong').textContent,'1');
+    assert.equal(w.document.querySelector('.record-count').textContent,'5項目のうち1項目を記録');
     const data=JSON.parse(w.localStorage.getItem('bloom-journal-v2:guest'));assert.equal(Object.values(data.workspace.daily)[0].stretch,false);
     assert.equal(app.errors.length,0,app.errors.map(e=>e.message).join('\n'));
   }finally{app.dom.window.close();}
@@ -54,9 +54,9 @@ test('logged-in goal, daily input and monthly bulk override survive online sync'
 test('switching accounts and logging out never reuse a previous account workspace',async()=>{
   const app=await open({loggedIn:true});const {w}=app;try{
     click(w,'[data-action=item][data-index="2"]');click(w,'[data-action=pick][data-value=true]');click(w,'[data-action=save-day]');await tick();await tick();
-    assert.equal(w.document.querySelector('.big-drop strong').textContent,'1');
-    w.showPage('page-record');await app.switchUser('22222222-2222-4222-8222-222222222222');assert.equal(w.document.querySelector('.page.active').id,'page-v2-home');assert.equal(w.document.querySelector('.big-drop strong').textContent,'0');
-    await app.logout();assert.equal(w.document.querySelector('.big-drop strong').textContent,'0');
+    assert.equal(w.document.querySelector('.record-count').textContent,'5項目のうち1項目を記録');
+    w.showPage('page-record');await app.switchUser('22222222-2222-4222-8222-222222222222');assert.equal(w.document.querySelector('.page.active').id,'page-v2-home');assert.equal(w.document.querySelector('.record-count').textContent,'5項目のうち0項目を記録');
+    await app.logout();assert.equal(w.document.querySelector('.record-count').textContent,'5項目のうち0項目を記録');
     assert.ok(w.localStorage.getItem('bloom-journal-v2:'+userId));assert.equal(app.errors.length,0,app.errors.map(e=>e.message).join('\n'));
   }finally{app.dom.window.close();}
 });
