@@ -55,7 +55,7 @@ test('switching accounts and logging out never reuse a previous account workspac
   const app=await open({loggedIn:true});const {w}=app;try{
     click(w,'[data-action=item][data-index="2"]');click(w,'[data-action=pick][data-value=true]');click(w,'[data-action=save-day]');await tick();await tick();
     assert.equal(w.document.querySelector('.big-drop strong').textContent,'1');
-    await app.switchUser('22222222-2222-4222-8222-222222222222');assert.equal(w.document.querySelector('.big-drop strong').textContent,'0');
+    w.showPage('page-record');await app.switchUser('22222222-2222-4222-8222-222222222222');assert.equal(w.document.querySelector('.page.active').id,'page-v2-home');assert.equal(w.document.querySelector('.big-drop strong').textContent,'0');
     await app.logout();assert.equal(w.document.querySelector('.big-drop strong').textContent,'0');
     assert.ok(w.localStorage.getItem('bloom-journal-v2:'+userId));assert.equal(app.errors.length,0,app.errors.map(e=>e.message).join('\n'));
   }finally{app.dom.window.close();}

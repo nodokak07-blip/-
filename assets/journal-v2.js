@@ -305,7 +305,7 @@
     oldAuthUI(); const userName = identity && account === currentUser?.id ? identity.nickname : 'メンバー';
     if ($('nav-icon')) $('nav-icon').innerHTML = icon(currentUser ? 'user' : 'key');
     if ($('nav-name')) $('nav-name').textContent = currentUser ? userName : 'ログイン';
-    if (account !== (currentUser?.id || 'guest')) { settingsItems = null; settingsTargets = null; loadWorkspace(); }
+    if (account !== (currentUser?.id || 'guest')) { settingsItems = null; settingsTargets = null; if($('page-v2-home'))showPage('page-todo'); loadWorkspace(); }
   };
   // Profile editing requires no real name, photo or email. Keep existing public nickname integrations.
   openProfileModal = async function() {
