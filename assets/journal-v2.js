@@ -1,4 +1,4 @@
-/* Bloom Journal: account-scoped records, monthly goals and coach reports. */
+/* Bloom Journal: account-scoped records, monthly goals and counselor reports. */
 (() => {
   'use strict';
   const M = window.BloomModel;
@@ -70,7 +70,7 @@
       const stored = localStorage.getItem(storageKey());
       if (stored) { try { const parsed = JSON.parse(stored); M.validateWorkspace(parsed.workspace); workspace = parsed.workspace; revision = parsed.revision || 0; dirty = parsed.dirty === true; } catch { announce('保存データを読み込めませんでした。', true); } }
       renderCurrent();
-      if (wanted === 'guest') { ready = true; announce('端末内で記録できます。コーチへの報告にはログインが必要です。'); renderCurrent(); return; }
+      if (wanted === 'guest') { ready = true; announce('端末内で記録できます。カウンセラーへの報告にはログインが必要です。'); renderCurrent(); return; }
       try {
         const [idResult, remote] = await Promise.all([api('/api/member-auth', { action: 'identity' }), supabaseClient.from('journal_workspaces').select('data,revision').eq('user_id', wanted).maybeSingle()]);
         if (epoch !== accountEpoch) return;
@@ -122,7 +122,7 @@
       '<div class="drop-pool"><div class="big-drop" style="width:' + (62 + Math.min(count, 5) * 18) + 'px;height:' + (66 + Math.min(count, 5) * 19) + 'px" aria-label="' + count + '項目を記録"><strong>' + count + '</strong><small>粒</small></div><p class="muted">' + count + ' / ' + items.length + ' 項目がひとつに</p></div>' +
       '<div class="daily-items">' + items.map((i, n) => button((M.own(row, i.id) ? icon('check') : '') + e(i.name), 'item', 'chip', 'data-index="' + n + '" aria-pressed="' + (n === active) + '"')).join('') + '</div>' +
       (item ? '<article class="jelly" id="v2-daily-card"><p class="muted">' + e(date) + ' · ' + (active + 1) + ' / ' + items.length + '</p><h2>' + e(item.name) + '</h2><div class="daily-value">' + field(item, draft) + '</div><p class="swipe-label">' + icon('share') + ' 上にスワイプして、記録にぽとん</p></article>' + button('この内容を記録する', 'save-day', 'primary wide-button', !ready ? 'disabled' : '') : '<p class="notice">「目標設定」からマイ項目を追加してください。</p>') +
-      '<p class="muted section">毎日の記録は蓄積されます。コーチへの報告は月次レポートから。</p><div class="row section">' + button('マイ項目・目標を設定', 'settings') + button('グループを見る', 'groups') + '</div><i class="flight" hidden aria-hidden="true"></i>');
+      '<p class="muted section">毎日の記録は蓄積されます。カウンセラーへの報告は月次レポートから。</p><div class="row section">' + button('マイ項目・目標を設定', 'settings') + button('グループを見る', 'groups') + '</div><i class="flight" hidden aria-hidden="true"></i>');
     // Preserve the existing announcement endpoint and permissions.
     if (announcement) $('v2-announcements').append(announcement);
     bindSwipe($('v2-daily-card'), saveDaily);
@@ -133,9 +133,9 @@
   function monthHeader() { return '<div class="row space monthly-head section"><label class="field"><span>対象月</span><input class="month-input" type="month" id="v2-month" value="' + month + '" max="' + today().slice(0, 7) + '"></label>' + button('月の目標を設定', 'settings', 'secondary') + '</div>'; }
   function renderReport() {
     const rows = M.report(workspace, month);
-    $('page-v2-report').innerHTML = shell('今月の一歩を、届ける。', '本人が決めた月間目標に対して、達成率を自動で計算します。', monthHeader() + '<article class="paper" id="v2-month-card" style="touch-action:none"><p class="muted">MONTHLY REPORT · ' + month + '</p><h2>わたしのふりかえり</h2>' + summaryHtml(rows) + '<p class="swipe-label">' + icon('share') + ' 上にスワイプして、担当コーチへ報告</p></article>' +
-      button('月の回数・数字をまとめて入力', 'bulk', 'secondary wide-button') + '<label class="field section"><span>コーチにひとこと（任意・本名や連絡先は書かないでください）</span><textarea id="v2-comment" rows="3" maxlength="2000">' + e(monthConfig().comment || '') + '</textarea></label>' + button(sendingReport ? '報告しています…' : '月次レポートを報告する', 'send-report', 'primary wide-button', sendingReport || !currentUser || !ready ? 'disabled' : '') +
-      '<p class="muted section" id="v2-report-state">' + (submittedReport ? '提出済みです。記録を更新した場合は、再報告できます。' : '同期済みの記録だけを、担当コーチに届けます。') + '</p><div class="row section">' + button('SNS用画像を保存', 'save-image') + button('SNSにシェア', 'share-image') + '</div><p class="muted">画像には本名・会員番号・コーチへのコメントを載せません。</p><section class="section"><h2>コーチからのお返事</h2>' + (reportReplies.length ? reportReplies.map(r => '<div class="reply">' + e(r.content) + '</div>').join('') : '<p class="muted">まだお返事はありません。</p>') + '</section>');
+    $('page-v2-report').innerHTML = shell('今月の一歩を、届ける。', '本人が決めた月間目標に対して、達成率を自動で計算します。', monthHeader() + '<article class="paper" id="v2-month-card" style="touch-action:none"><p class="muted">MONTHLY REPORT · ' + month + '</p><h2>わたしのふりかえり</h2>' + summaryHtml(rows) + '<p class="swipe-label">' + icon('share') + ' 上にスワイプして、担当カウンセラーへ報告</p></article>' +
+      button('月の回数・数字をまとめて入力', 'bulk', 'secondary wide-button') + '<label class="field section"><span>カウンセラーにひとこと（任意・本名や連絡先は書かないでください）</span><textarea id="v2-comment" rows="3" maxlength="2000">' + e(monthConfig().comment || '') + '</textarea></label>' + button(sendingReport ? '報告しています…' : '月次レポートを報告する', 'send-report', 'primary wide-button', sendingReport || !currentUser || !ready ? 'disabled' : '') +
+      '<p class="muted section" id="v2-report-state">' + (submittedReport ? '提出済みです。記録を更新した場合は、再報告できます。' : '同期済みの記録だけを、担当カウンセラーに届けます。') + '</p><div class="row section">' + button('SNS用画像を保存', 'save-image') + button('SNSにシェア', 'share-image') + '</div><p class="muted">画像には本名・会員番号・カウンセラーへのコメントを載せません。</p><section class="section"><h2>カウンセラーからのお返事</h2>' + (reportReplies.length ? reportReplies.map(r => '<div class="reply">' + e(r.content) + '</div>').join('') : '<p class="muted">まだお返事はありません。</p>') + '</section>');
     bindSwipe($('v2-month-card'), submitReport);
   }
   async function refreshReplies() {
@@ -215,7 +215,7 @@
     if (month > today().slice(0, 7)) throw new Error('未来の月には報告できません。');
     const epoch = accountEpoch, targetMonth = month, text = $('v2-comment')?.value || monthConfig().comment || '';
     ensureMonth().comment = text; changed(); sendingReport = true;
-    try { await sync(); const result = await api('/api/journal-report', { month: targetMonth, revision, comment: text }); if (epoch !== accountEpoch) return; const card = $('v2-month-card'); await animate(card, [{ transform: card.style.transform || 'none', opacity: 1 }, { offset: .25, transform: 'scale(1.06,.9)', opacity: 1 }, { transform: 'translateY(-210px) scale(.15,.2)', borderRadius: '50%', opacity: 0 }], 650); if (targetMonth === month) submittedReport = result.report; announce('月次レポートをコーチに届けました。'); } finally { sendingReport = false; renderCurrent(); }
+    try { await sync(); const result = await api('/api/journal-report', { month: targetMonth, revision, comment: text }); if (epoch !== accountEpoch) return; const card = $('v2-month-card'); await animate(card, [{ transform: card.style.transform || 'none', opacity: 1 }, { offset: .25, transform: 'scale(1.06,.9)', opacity: 1 }, { transform: 'translateY(-210px) scale(.15,.2)', borderRadius: '50%', opacity: 0 }], 650); if (targetMonth === month) submittedReport = result.report; announce('月次レポートをカウンセラーに届けました。'); } finally { sendingReport = false; renderCurrent(); }
   }
   function showCredentials(result) {
     let dialog = $('v2-credentials'); if (!dialog) { const container = document.createElement('div'); container.className = 'jv'; container.innerHTML = '<dialog class="dialog" id="v2-credentials" aria-labelledby="v2-credential-title"></dialog>'; document.body.append(container); dialog = $('v2-credentials'); }
@@ -223,15 +223,19 @@
     dialog.oncancel=event=>event.preventDefault();dialog.showModal(); $('v2-credential-close').onclick = () => { dialog.close(); dialog.replaceChildren(); };
   }
   async function exportImage(share) {
+    if(document.fonts?.ready)await document.fonts.ready;
     const rows=M.report(workspace,month), canvas=document.createElement('canvas');canvas.width=1080;canvas.height=1920;
     const context=canvas.getContext('2d'); if(!context)throw new Error('このブラウザーでは画像を作成できません。');
+    const brandStyles=getComputedStyle(document.body);
+    const fonts={main:brandStyles.getPropertyValue('--font-main').trim()||'sans-serif',heading:brandStyles.getPropertyValue('--font-serif-jp').trim()||'serif',logo:brandStyles.getPropertyValue('--font-serif-en').trim()||'serif'};
+    const setFont=(size,kind='main',weight=400)=>{context.font=weight+' '+size+'px '+fonts[kind];};
     const gradient=context.createLinearGradient(0,0,1080,1920);gradient.addColorStop(0,'#f2dce4');gradient.addColorStop(1,'#faf3e7');context.fillStyle=gradient;context.fillRect(0,0,1080,1920);
     try{const image=await loadStoryTemplateImage();if(image){const scale=Math.max(1080/image.width,1920/image.height);context.drawImage(image,(1080-image.width*scale)/2,(1920-image.height*scale)/2,image.width*scale,image.height*scale);}}catch{}
-    context.fillStyle='#fffdfb';context.fillRect(75,110,930,1700);context.fillStyle='#9e586c';context.font='48px serif';context.textAlign='center';context.fillText('Bloom Journal',540,220);context.font='32px sans-serif';context.fillStyle='#78685f';context.fillText(month+'  MONTHLY REPORT',540,292);context.fillStyle='#514946';context.font='45px sans-serif';context.fillText('小さな一歩が、ひとつになった。',540,380);
+    context.fillStyle='#fffdfb';context.fillRect(75,110,930,1700);context.fillStyle='#9e586c';setFont(48,'logo',500);context.textAlign='center';context.fillText('Bloom Journal',540,220);setFont(32);context.fillStyle='#78685f';context.fillText(month+'  MONTHLY REPORT',540,292);context.fillStyle='#514946';setFont(45,'heading');context.fillText('小さな一歩が、ひとつになった。',540,380);
     const line=Math.min(210,1190/Math.max(rows.length,1));
     function fitted(text,maxWidth){while(context.measureText(text).width>maxWidth&&text.length>1)text=text.slice(0,-2)+'…';return text;}
-    rows.forEach((s,index)=>{const y=475+index*line;context.textAlign='left';context.font='34px sans-serif';context.fillStyle='#514946';context.fillText(fitted(cleanLabel(s.name),800),130,y);context.font='32px sans-serif';context.fillStyle='#9e586c';const value=s.type==='choice'?Object.entries(s.distribution||{}).map(([name,count])=>name+' '+count+'日').join(' ／ '):fmt(s.actual)+' '+s.unit+(s.target?' ／ 目標 '+fmt(s.target)+' '+s.unit+' · '+fmt(s.percentage)+'%':'');context.fillText(fitted(value,800),130,y+48);context.font='24px sans-serif';context.fillStyle='#78685f';context.fillText('記録 '+s.recordedDays+'日 ／ 未記録 '+s.missingDays+'日',130,y+86);});
-    context.textAlign='center';context.font='27px sans-serif';context.fillStyle='#78685f';context.fillText('自分のペースで、また一歩。',540,1740);
+    rows.forEach((s,index)=>{const y=475+index*line;context.textAlign='left';setFont(34,'heading');context.fillStyle='#514946';context.fillText(fitted(cleanLabel(s.name),800),130,y);setFont(32);context.fillStyle='#9e586c';const value=s.type==='choice'?Object.entries(s.distribution||{}).map(([name,count])=>name+' '+count+'日').join(' ／ '):fmt(s.actual)+' '+s.unit+(s.target?' ／ 目標 '+fmt(s.target)+' '+s.unit+' · '+fmt(s.percentage)+'%':'');context.fillText(fitted(value,800),130,y+48);setFont(24);context.fillStyle='#78685f';context.fillText('記録 '+s.recordedDays+'日 ／ 未記録 '+s.missingDays+'日',130,y+86);});
+    context.textAlign='center';setFont(27);context.fillStyle='#78685f';context.fillText('自分のペースで、また一歩。',540,1740);
     const blob=await new Promise((resolve,reject)=>{try{canvas.toBlob(result=>result?resolve(result):reject(new Error('画像を作成できませんでした。')),'image/png');}catch{reject(new Error('背景画像を読み込めませんでした。管理者にご連絡ください。'));}});
     const file=new File([blob],'bloom-'+month+'.png',{type:'image/png'});
     if(share&&navigator.canShare?.({files:[file]})&&navigator.share){try{await navigator.share({files:[file],title:'今月のふりかえり'});return;}catch(error){if(error.name==='AbortError')return;}}
@@ -257,7 +261,7 @@
   }
   function renderAdminDetail() {
     const d = adminDetail; if (!d) return;
-    $('v2-admin-detail').innerHTML = '<div class="paper"><h2>' + e(d.member.nickname) + ' <span class="badge">ID ' + d.member.member_id + '</span></h2>' + (d.report ? '<p class="muted">' + month + ' · 提出時点の記録</p>' + summaryHtml(d.report.snapshot) + '<p class="notice">' + e(d.report.comment || 'ひとことはありません。') + '</p><h2 class="section">コーチから返信</h2>' + d.replies.map(r => '<div class="reply">' + e(r.content) + '</div>').join('') + '<textarea id="v2-admin-reply" rows="3" maxlength="4000" aria-label="返信コメント" placeholder="記録を見て、ひとこと"></textarea>' + button('返信を送る', 'admin-reply', 'primary wide-button') : '<p class="admin-empty">この月のレポートはまだ届いていません。</p>') + '<details><summary>この方の日別記録を確認する</summary><label class="field"><span>日付</span><input type="date" id="v2-admin-date" value="' + month + '-01" min="' + month + '-01" max="' + month + '-' + M.monthDays(month) + '"></label><div id="v2-admin-day"></div></details></div>';
+    $('v2-admin-detail').innerHTML = '<div class="paper"><h2>' + e(d.member.nickname) + ' <span class="badge">ID ' + d.member.member_id + '</span></h2>' + (d.report ? '<p class="muted">' + month + ' · 提出時点の記録</p>' + summaryHtml(d.report.snapshot) + '<p class="notice">' + e(d.report.comment || 'ひとことはありません。') + '</p><h2 class="section">カウンセラーから返信</h2>' + d.replies.map(r => '<div class="reply">' + e(r.content) + '</div>').join('') + '<textarea id="v2-admin-reply" rows="3" maxlength="4000" aria-label="返信コメント" placeholder="記録を見て、ひとこと"></textarea>' + button('返信を送る', 'admin-reply', 'primary wide-button') : '<p class="admin-empty">この月のレポートはまだ届いていません。</p>') + '<details><summary>この方の日別記録を確認する</summary><label class="field"><span>日付</span><input type="date" id="v2-admin-date" value="' + month + '-01" min="' + month + '-01" max="' + month + '-' + M.monthDays(month) + '"></label><div id="v2-admin-day"></div></details></div>';
     renderAdminDay();
   }
   function displayValue(item, value) { return !M.validValue(item, value) ? '— 未記録' : item.type === 'binary' ? value ? 'できた' : 'できなかった' : item.type === 'choice' ? e(value) : fmt(value) + ' ' + e(item.unit); }
