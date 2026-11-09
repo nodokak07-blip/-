@@ -4,6 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const target = path.join(__dirname, '..', 'index.html');
 let html = fs.readFileSync(target, 'utf8');
+html = html.replaceAll('\\u2764\\uFE0F','<svg class="ico" aria-hidden="true"><use href="#ic-heart"/></svg>');
 html = html.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '');
 html = html.replace(/\\u\{([0-9a-f]+)\}/gi, (match, hex) => /\p{Extended_Pictographic}/u.test(String.fromCodePoint(parseInt(hex, 16))) ? '' : match);
 // Supabase's own token storage is untouched. Legacy application records are scoped per account.

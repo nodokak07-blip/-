@@ -3217,7 +3217,7 @@ async function renderGroupReports(groupId) {
       reports = reportRows.map(r => {
         const profile = profileMap[r.user_id];
         const userName = profile ? (profile.username || 'ユーザー') : 'ユーザー';
-        const userIcon = profile ? (profile.avatar_icon || '') : '';
+        const userIcon = '<svg class="ico" aria-hidden="true"><use href="#ic-user"/></svg>';
         const userPhoto = profile ? (profile.avatar_url || null) : null;
         const created = new Date(r.created_at);
         const dateOnly = (created.getMonth() + 1) + '月' + created.getDate() + '日';
@@ -3281,7 +3281,7 @@ async function renderGroupReports(groupId) {
       reportsForDate.map(r => {
         const globalIndex = reports.indexOf(r);
         const avatarHtml = r.userPhoto
-          ? '<div style="width:26px;height:26px;border-radius:50%;overflow:hidden;flex-shrink:0;background:#FBF5EC;"><img src="' + r.userPhoto + '" style="width:100%;height:100%;object-fit:cover;"></div>'
+          ? '<div style="width:26px;height:26px;border-radius:50%;overflow:hidden;flex-shrink:0;background:#FBF5EC;"><img src="' + escapeHtml(r.userPhoto) + '" style="width:100%;height:100%;object-fit:cover;"></div>'
           : '<div style="width:26px;height:26px;border-radius:50%;background:#FBF5EC;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">' + (r.userIcon || '') + '</div>';
 
         return '<div class="group-report-banner" id="report-' + r.id + '" style="background:white;">' +
@@ -3293,7 +3293,7 @@ async function renderGroupReports(groupId) {
             '<span class="group-report-banner-time">' + r.date.split(' ')[1] + '</span>' +
           '</div>' +
           '<div class="group-report-banner-actions">' +
-            '<button class="group-report-banner-action' + (r.likedByUser ? ' active' : '') + '" id="like-btn-' + r.id + '" onclick="likeGroupReport(\'' + r.id + '\',' + globalIndex + ')">\u2764\uFE0F <span id="likes-' + r.id + '">' + r.likes + '</span></button>' +
+            '<button class="group-report-banner-action' + (r.likedByUser ? ' active' : '') + '" id="like-btn-' + r.id + '" onclick="likeGroupReport(\'' + r.id + '\',' + globalIndex + ')"><svg class="ico" aria-hidden="true"><use href="#ic-heart"/></svg> <span id="likes-' + r.id + '">' + r.likes + '</span></button>' +
             '<button class="group-report-banner-action" onclick="toggleCommentForm(\'' + r.id + '\')"><svg class="ico" aria-hidden="true"><use href="#ic-chat"/></svg> <span id="comments-' + r.id + '">' + r.commentsList.length + '</span></button>' +
           '</div>' +
           '<div id="comment-section-' + r.id + '" style="display:none;margin-top:8px;padding-left:32px;">' +
