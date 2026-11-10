@@ -14,5 +14,7 @@
 .jv .big-drop:before{left:18%;top:13%;width:34%;height:19%;border-radius:50%;background:radial-gradient(ellipse,rgba(255,255,255,.85),rgba(255,255,255,0) 72%);transform:rotate(-28deg)}
 .jv .big-drop:after{content:'';position:absolute;bottom:8%;left:20%;width:66%;height:17%;border-radius:50%;background:radial-gradient(ellipse,rgba(255,255,255,.62),rgba(226,241,254,.18) 42%,rgba(255,255,255,0) 74%);transform:rotate(-12deg);pointer-events:none}
 .jv .drop-caption{text-align:center}.jv .drop-title{font-family:var(--font-serif-jp);font-size:16px;letter-spacing:.08em;color:var(--text-mid);margin-bottom:3px}
+.jv .motion-preview{text-align:center;margin:-5px 0 13px}.jv .motion-preview button{font-size:12px}
+.jv .daily-value>.choice-row{width:100%}.jv .choice-row .chip{white-space:nowrap}
 .jv .flight{border:1px solid rgba(255,255,255,.68);box-shadow:inset 2px 3px 3px rgba(255,255,255,.75),inset -2px -3px 4px rgba(221,234,249,.45),0 4px 9px rgba(136,92,108,.06)}
 @media(prefers-reduced-motion:reduce){.jv .big-drop{transition:none}}

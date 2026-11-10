@@ -2,6 +2,7 @@
 (() => {
   'use strict';
   const M = window.BloomModel;
+  const motionPreview = ['localhost','127.0.0.1'].includes(location.hostname) || new URLSearchParams(location.search).get('demo') === '1';
   const $ = id => document.getElementById(id);
   const e = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const cleanLabel = text => String(text || '').replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim();
@@ -107,7 +108,7 @@
   function button(label, action, cls = 'secondary', extra = '') { return '<button type="button" class="' + cls + '" data-action="' + action + '" ' + extra + '>' + label + '</button>'; }
   function field(item, value, mode = 'daily', index = 0) {
     const base = 'data-item="' + e(item.id) + '"';
-    if (item.type === 'binary' && mode === 'daily') return '<div class="choice-row">' + [true, false].map(v => '<button type="button" class="chip" data-action="pick" data-value="' + v + '" aria-pressed="' + (value === v) + '">' + (v ? 'できた' : '今日はできなかった') + '</button>').join('') + '</div>';
+    if (item.type === 'binary' && mode === 'daily') return '<div class="choice-row">' + [true, false].map(v => '<button type="button" class="chip" data-action="pick" data-value="' + v + '" aria-pressed="' + (value === v) + '">' + (v ? 'できた' : '今日はスキップ') + '</button>').join('') + '</div>';
     if (item.type === 'choice') return '<select ' + base + ' data-input="' + mode + '" aria-label="' + e(item.name) + '"><option value="">未記録</option>' + ['すっきり', 'ふつう', '疲れぎみ'].map(v => '<option ' + (v === value ? 'selected' : '') + '>' + v + '</option>').join('') + '</select>';
     return '<div class="row"><input type="number" ' + base + ' data-input="' + mode + '" min="0" max="' + (item.type === 'binary' ? M.monthDays(month) : 1e9) + '" step="' + (item.type === 'binary' ? 1 : 'any') + '" inputmode="decimal" aria-label="' + e(item.name) + '" placeholder="未記録" value="' + e(value ?? '') + '"><span>' + e(item.type === 'binary' ? '回' : item.unit) + '</span></div>';
   }
@@ -120,6 +121,7 @@
     root.innerHTML = shell('今日のわたしを、重ねて。', '小さな記録を、あなたのペースで。',
       '<div id="v2-announcements"></div><div class="daily-head section"><label class="field"><span>記録する日付</span><input type="date" id="v2-date" value="' + date + '" max="' + today() + '"></label>' + button('月次レポートを見る', 'report', 'secondary') + '</div>' +
       '<div class="drop-pool"><div class="big-drop" style="width:' + (88 + Math.min(count, 5) * 18) + 'px;height:' + (84 + Math.min(count, 5) * 17) + 'px" role="img" aria-label="' + items.length + '項目のうち' + count + '項目を記録。記録に応じて育つしずく"></div><div class="drop-caption"><p class="drop-title">今日の記録</p><p class="muted record-count">' + (items.length ? items.length + '項目のうち' + count + '項目を記録' : 'マイ項目を選んで、ここから。') + '</p></div></div>' +
+      (motionPreview && item ? '<div class="motion-preview">' + button('しずくの動きを見る（保存なし）','motion-demo','text-button') + '</div>' : '') +
       '<div class="daily-items">' + items.map((i, n) => button((M.own(row, i.id) ? icon('check') : '') + e(i.name), 'item', 'chip', 'data-index="' + n + '" aria-pressed="' + (n === active) + '"')).join('') + '</div>' +
       (item ? '<article class="jelly" id="v2-daily-card"><p class="muted">' + e(date) + ' · ' + (active + 1) + ' / ' + items.length + '</p><h2>' + e(item.name) + '</h2><div class="daily-value">' + field(item, draft) + '</div><p class="swipe-label">' + icon('share') + ' 上にスワイプして、今日の記録へ</p></article>' + button('この内容を記録する', 'save-day', 'primary wide-button', !ready ? 'disabled' : '') : '<p class="notice">「目標設定」からマイ項目を追加してください。</p>') +
       '<p class="muted section">毎日の記録は蓄積されます。カウンセラーへの報告は月次レポートから。</p><div class="row section">' + button('マイ項目・目標を設定', 'settings') + button('グループを見る', 'groups') + '</div><i class="flight" hidden aria-hidden="true"></i>');
@@ -160,11 +162,11 @@
   }
   function renderBulkDay() {
     const row = workspace.daily[bulkDay] || {};
-    $('v2-bulk-daily').innerHTML = reportItems().map(item => '<label class="field"><span>' + e(item.name) + '</span>' + (item.type === 'binary' ? '<select data-bulk-day="' + item.id + '"><option value="">未記録</option><option value="yes" ' + (row[item.id] === true ? 'selected' : '') + '>できた</option><option value="no" ' + (row[item.id] === false ? 'selected' : '') + '>できなかった</option></select>' : field(item, row[item.id], 'bulk-day')) + '</label>').join('');
+    $('v2-bulk-daily').innerHTML = reportItems().map(item => '<label class="field"><span>' + e(item.name) + '</span>' + (item.type === 'binary' ? '<select data-bulk-day="' + item.id + '"><option value="">未記録</option><option value="yes" ' + (row[item.id] === true ? 'selected' : '') + '>できた</option><option value="no" ' + (row[item.id] === false ? 'selected' : '') + '>スキップ</option></select>' : field(item, row[item.id], 'bulk-day')) + '</label>').join('');
   }
   function renderSettings() {
     settingsItems ||= clone(reportItems()); settingsTargets ||= clone(monthConfig().targets || {});
-    $('page-v2-settings').innerHTML = shell('わたしの項目、わたしの目標。', 'いつもの4〜5項目を選んで、自分のペースを決めましょう。', '<label class="field section"><span>目標を設定する月</span><input type="month" id="v2-settings-month" value="' + month + '"></label><div class="notice">「できた・できない」は、できた1日を1回と数えます。1日に複数回を数えたい項目は「数字・月合計」を選びます。気分は達成率をつけません。</div><form id="v2-settings-form">' + settingsItems.map((item, i) => '<section class="paper" data-config="' + i + '"><div class="row space"><h2>マイ項目 ' + (i + 1) + '</h2>' + button('外す', 'remove-item', 'text-button', 'data-index="' + i + '"') + '</div><label class="field"><span>項目名</span><input data-config-name="' + i + '" maxlength="80" required value="' + e(item.name) + '"></label><div class="fields"><label class="field"><span>記録方法</span><select data-config-type="' + i + '">' + [['binary','できた・できない'],['sum','数字・月合計'],['average','数字・月平均'],['choice','気分を選ぶ']].map(([type, label]) => '<option value="' + type + '" ' + ((item.type === 'number' ? item.aggregate : item.type) === type ? 'selected' : '') + '>' + label + '</option>').join('') + '</select></label>' + (item.type === 'number' ? '<label class="field"><span>単位</span><input data-config-unit="' + i + '" maxlength="12" required value="' + e(item.unit) + '"></label>' : '') + '</div>' + (item.type !== 'choice' ? '<label class="field"><span>' + (item.aggregate === 'average' ? 'この月の目標平均' : 'この月の目標回数・数量') + '（' + e(item.type === 'binary' ? '回' : item.unit) + '）</span><input type="number" min="0.001" max="1000000000" step="any" required data-target="' + item.id + '" value="' + e(settingsTargets[item.id] ?? '') + '" placeholder="例：10"></label>' : '<p class="muted">気分は、選んだ内容を月次で振り返ります。</p>') + '</section>').join('') + '<div class="row section">' + button('項目を追加する', 'add-item', 'secondary', settingsItems.length >= 10 ? 'disabled' : '') + '<button class="primary" type="submit">項目と月間目標を保存する</button></div></form><p class="muted section">以前の月の目標・提出済みレポートは、この月の目標を変えても書き換わりません。</p>');
+    $('page-v2-settings').innerHTML = shell('わたしの項目、わたしの目標。', 'いつもの4〜5項目を選んで、自分のペースを決めましょう。', '<label class="field section"><span>目標を設定する月</span><input type="month" id="v2-settings-month" value="' + month + '"></label><div class="notice">「できた・今日はスキップ」は、できた1日を1回と数えます。1日に複数回を数えたい項目は「数字・月合計」を選びます。気分は達成率をつけません。</div><form id="v2-settings-form">' + settingsItems.map((item, i) => '<section class="paper" data-config="' + i + '"><div class="row space"><h2>マイ項目 ' + (i + 1) + '</h2>' + button('外す', 'remove-item', 'text-button', 'data-index="' + i + '"') + '</div><label class="field"><span>項目名</span><input data-config-name="' + i + '" maxlength="80" required value="' + e(item.name) + '"></label><div class="fields"><label class="field"><span>記録方法</span><select data-config-type="' + i + '">' + [['binary','できた・今日はスキップ'],['sum','数字・月合計'],['average','数字・月平均'],['choice','気分を選ぶ']].map(([type, label]) => '<option value="' + type + '" ' + ((item.type === 'number' ? item.aggregate : item.type) === type ? 'selected' : '') + '>' + label + '</option>').join('') + '</select></label>' + (item.type === 'number' ? '<label class="field"><span>単位</span><input data-config-unit="' + i + '" maxlength="12" required value="' + e(item.unit) + '"></label>' : '') + '</div>' + (item.type !== 'choice' ? '<label class="field"><span>' + (item.aggregate === 'average' ? 'この月の目標平均' : 'この月の目標回数・数量') + '（' + e(item.type === 'binary' ? '回' : item.unit) + '）</span><input type="number" min="0.001" max="1000000000" step="any" required data-target="' + item.id + '" value="' + e(settingsTargets[item.id] ?? '') + '" placeholder="例：10"></label>' : '<p class="muted">気分は、選んだ内容を月次で振り返ります。</p>') + '</section>').join('') + '<div class="row section">' + button('項目を追加する', 'add-item', 'secondary', settingsItems.length >= 10 ? 'disabled' : '') + '<button class="primary" type="submit">項目と月間目標を保存する</button></div></form><p class="muted section">以前の月の目標・提出済みレポートは、この月の目標を変えても書き換わりません。</p>');
   }
   function readSettings() {
     if (!settingsItems) return;
@@ -179,6 +181,27 @@
     if (page === 'page-v2-settings') renderSettings();
   }
   async function animate(element, frames, duration) { if (!element || matchMedia('(prefers-reduced-motion: reduce)').matches || !element.animate) return; await element.animate(frames, { duration, easing: 'cubic-bezier(.22,.7,.25,1)' }).finished; }
+  async function mergeMotion(card, water, flight) {
+    const c=card.getBoundingClientRect(),w=water.getBoundingClientRect();
+    await animate(card,[{transform:card.style.transform||'none',opacity:1},{offset:.3,transform:'scale(1.06,.87)',opacity:1},{transform:'translateY(-12px) scale(.1,.14)',borderRadius:'50%',opacity:0}],350);
+    card.style.visibility='hidden';flight.hidden=false;
+    const start='translate('+(c.left+c.width/2-14)+'px,'+(c.top+30)+'px)',end='translate('+(w.left+w.width/2-14)+'px,'+(w.top+w.height*.7)+'px)';
+    flight.style.transform=start;
+    await animate(flight,[{transform:start+' scale(.9,1.2)',opacity:1},{transform:end+' scale(1.2,.7)',opacity:0}],500);
+  }
+  async function previewMotion() {
+    if(animating)return;
+    const card=$('v2-daily-card'),water=document.querySelector('#page-v2-home .big-drop'),flight=document.querySelector('#page-v2-home .flight'),control=document.querySelector('[data-action="motion-demo"]');
+    if(!card||!water||!flight)return;
+    animating=true;if(control)control.disabled=true;
+    try {
+      await mergeMotion(card,water,flight);flight.hidden=true;
+      await animate(water,[{transform:'scale(1)'},{transform:'scale(1.18,.8)'},{transform:'scale(.94,1.13)'},{transform:'scale(1.1,1.06)'},{transform:'scale(1)'}],700);
+      card.style.visibility='';
+      await animate(card,[{transform:'translateY(12px) scale(.97,1.02)',opacity:.5},{transform:'none',opacity:1}],260);
+      announce('動きのデモを再生しました。記録の保存・送信はしていません。');
+    } finally {animating=false;flight.hidden=true;card.style.visibility='';card.style.transform='';if(control)control.disabled=false;}
+  }
   async function saveDaily() {
     usable(); const item = dayItems()[active], value = draft;
     if (!item || !M.validValue(item, value)) throw new Error('項目の数字を入力するか、選択肢を選んでください。');
@@ -186,12 +209,7 @@
     const epoch = accountEpoch; animating = true;
     const card = $('v2-daily-card'), water = document.querySelector('#page-v2-home .big-drop'), flight = document.querySelector('#page-v2-home .flight');
     try {
-      const c = card.getBoundingClientRect(), w = water.getBoundingClientRect();
-      await animate(card, [{ transform: card.style.transform || 'none', opacity: 1 }, { offset: .3, transform: 'scale(1.06,.87)', opacity: 1 }, { transform: 'translateY(-12px) scale(.1,.14)', borderRadius: '50%', opacity: 0 }], 350);
-      card.style.visibility = 'hidden'; flight.hidden = false;
-      const start = 'translate(' + (c.left + c.width / 2 - 14) + 'px,' + (c.top + 30) + 'px)', end = 'translate(' + (w.left + w.width / 2 - 14) + 'px,' + (w.top + w.height * .7) + 'px)';
-      flight.style.transform = start;
-      await animate(flight, [{ transform: start + ' scale(.9,1.2)', opacity: 1 }, { transform: end + ' scale(1.2,.7)', opacity: 0 }], 500);
+      await mergeMotion(card,water,flight);
       if (epoch !== accountEpoch) return;
       workspace.daily[date] ||= {}; workspace.daily[date][item.id] = value; changed();
       // Mirror the old daily boolean so existing group/flower functionality still has its history.
@@ -264,7 +282,7 @@
     $('v2-admin-detail').innerHTML = '<div class="paper"><h2>' + e(d.member.nickname) + ' <span class="badge">ID ' + d.member.member_id + '</span></h2>' + (d.report ? '<p class="muted">' + month + ' · 提出時点の記録</p>' + summaryHtml(d.report.snapshot) + '<p class="notice">' + e(d.report.comment || 'ひとことはありません。') + '</p><h2 class="section">カウンセラーから返信</h2>' + d.replies.map(r => '<div class="reply">' + e(r.content) + '</div>').join('') + '<textarea id="v2-admin-reply" rows="3" maxlength="4000" aria-label="返信コメント" placeholder="記録を見て、ひとこと"></textarea>' + button('返信を送る', 'admin-reply', 'primary wide-button') : '<p class="admin-empty">この月のレポートはまだ届いていません。</p>') + '<details><summary>この方の日別記録を確認する</summary><label class="field"><span>日付</span><input type="date" id="v2-admin-date" value="' + month + '-01" min="' + month + '-01" max="' + month + '-' + M.monthDays(month) + '"></label><div id="v2-admin-day"></div></details></div>';
     renderAdminDay();
   }
-  function displayValue(item, value) { return !M.validValue(item, value) ? '— 未記録' : item.type === 'binary' ? value ? 'できた' : 'できなかった' : item.type === 'choice' ? e(value) : fmt(value) + ' ' + e(item.unit); }
+  function displayValue(item, value) { return !M.validValue(item, value) ? '— 未記録' : item.type === 'binary' ? value ? 'できた' : 'スキップ' : item.type === 'choice' ? e(value) : fmt(value) + ' ' + e(item.unit); }
   function renderAdminDay() { const d = adminDetail, dateValue = $('v2-admin-date')?.value; if (!d || !dateValue) return; $('v2-admin-day').innerHTML = (d.workspace?.items || []).map(item => '<div class="record-row"><span>' + e(item.name) + '</span><strong>' + displayValue(item, d.workspace.daily?.[dateValue]?.[item.id]) + '</strong></div>').join('') || '<p class="muted">日別の記録はまだありません。</p>'; }
   function buildAdmin() {
     const page = $('page-admin'), existing = page.firstElementChild; existing.classList.add('jv');
@@ -339,6 +357,7 @@
     const b = event.target.closest('[data-action]'); if (!b || b.disabled) return;
     const a = b.dataset.action;
     try {
+      if (a === 'motion-demo') { await previewMotion(); return; }
       if (['report','settings','bulk','groups'].includes(a)) { if (animating) return; showPage({ report:'page-report', settings:'page-goal', bulk:'page-summary', groups:'page-group' }[a]); return; }
       if (a === 'sync') { if (!ready) { await loadWorkspace(true); return; } if (conflict) { if (!confirm('オンラインの記録を読み直しますか？この端末の未同期分は、この端末用のバックアップとして保管します。')) return; localStorage.setItem(storageKey() + ':conflict-backup:' + Date.now(), JSON.stringify(workspace)); localStorage.removeItem(storageKey()); await loadWorkspace(true); } else await sync(); return; }
       if (a === 'admin-tab') { showAdminTab(b.dataset.tab); return; }

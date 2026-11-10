@@ -9,9 +9,9 @@ const html = fs.readFileSync(path.join(base,'index.html'),'utf8');
 const inline = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m=>m[1]).join('\n');
 const tick=()=>new Promise(resolve=>setTimeout(resolve,10));
 const userId='11111111-1111-4111-8111-111111111111';
-async function open({loggedIn=false,admin=false}={}) {
+async function open({loggedIn=false,admin=false,preview=false}={}) {
   const errors=[],vc=new VirtualConsole();vc.on('jsdomError',error=>{if(!error.message.includes('Not implemented: window.scrollTo'))errors.push(error);});
-  const dom=new JSDOM(html,{url:'https://app.test/',runScripts:'outside-only',pretendToBeVisual:true,virtualConsole:vc});
+  const dom=new JSDOM(html,{url:'https://app.test/'+(preview?'?demo=1':''),runScripts:'outside-only',pretendToBeVisual:true,virtualConsole:vc});
   const w=dom.window;let current=loggedIn?{id:userId}:null,listener,remote=null,rev=0;
   w.scrollTo=()=>{};w.matchMedia=()=>({matches:true,addEventListener(){},removeEventListener(){}});w.alert=()=>{};w.confirm=()=>true;w.prompt=()=>null;
   if(w.HTMLDialogElement){w.HTMLDialogElement.prototype.showModal=function(){this.open=true;};w.HTMLDialogElement.prototype.close=function(){this.open=false;};}
@@ -33,6 +33,17 @@ test('guest UI starts without email inputs and records explicit did-not-do as on
     click(w,'[data-action=item][data-index="2"]');click(w,'[data-action=pick][data-value=false]');click(w,'[data-action=save-day]');await tick();await tick();
     assert.equal(w.document.querySelector('.record-count').textContent,'5項目のうち1項目を記録');
     const data=JSON.parse(w.localStorage.getItem('bloom-journal-v2:guest'));assert.equal(Object.values(data.workspace.daily)[0].stretch,false);
+    assert.equal(app.errors.length,0,app.errors.map(e=>e.message).join('\n'));
+  }finally{app.dom.window.close();}
+});
+test('motion preview never changes records or starts online saving',async()=>{
+  const app=await open({loggedIn:true,preview:true}),{w}=app;
+  try{
+    const before=w.localStorage.getItem('bloom-journal-v2:'+userId),revision=app.getRevision();
+    click(w,'[data-action=motion-demo]');await tick();await tick();
+    assert.equal(w.localStorage.getItem('bloom-journal-v2:'+userId),before);
+    assert.equal(app.getRevision(),revision);
+    assert.match(w.document.querySelector('.sync-state').textContent,/記録の保存・送信はしていません/);
     assert.equal(app.errors.length,0,app.errors.map(e=>e.message).join('\n'));
   }finally{app.dom.window.close();}
 });
