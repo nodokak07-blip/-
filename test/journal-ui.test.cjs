@@ -200,7 +200,7 @@ test('record is persisted before visual completion and cancelled animation canno
   const app=await open({loggedIn:true}),{w}=app;try{
     click(w,'[data-action=item][data-index="2"]');click(w,'[data-action=pick][data-value=true]');
     w.matchMedia=()=>({matches:false});let finish;
-    w.HTMLElement.prototype.animate=function(){return {finished:this.id==='v2-daily-card'?new Promise((resolve,reject)=>{finish=()=>reject(new w.DOMException('cancelled','AbortError'));}):Promise.resolve()};};
+    w.HTMLElement.prototype.animate=function(){return {finished:this.classList.contains('merge-card')?new Promise((resolve,reject)=>{finish=()=>reject(new w.DOMException('cancelled','AbortError'));}):Promise.resolve()};};
     swipe(w,w.document.getElementById('v2-daily-card'));
     assert.equal(Object.values(JSON.parse(w.localStorage.getItem('bloom-journal-v2:'+userId)).workspace.daily)[0].stretch,true);
     finish();await tick();await tick();assert.equal(Object.values(app.getRemote().daily)[0].stretch,true);assert.equal(w.document.querySelectorAll('.merge-overlay').length,0);assert.equal(w.document.querySelector('.record-count').textContent,'5項目のうち1項目を記録');assert.equal(app.errors.length,0);

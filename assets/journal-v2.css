@@ -29,5 +29,6 @@
 .jv #v2-month-card{touch-action:pan-y;user-select:auto}
 .jv .swipe-pending .swipe-handle{opacity:.6;cursor:wait}
 .jv.merge-overlay{position:fixed;inset:0;max-width:none;margin:0;padding:0;z-index:280;pointer-events:none}
+.jv.merge-overlay .merge-card{position:absolute;margin:0;transform-origin:50% 0;pointer-events:none;will-change:transform,clip-path,opacity}
 .jv.merge-overlay .merge-landing{position:absolute;left:calc(50% - 43px);top:max(100px,env(safe-area-inset-top));width:86px;height:82px;min-height:0;cursor:default}
 @media(prefers-reduced-motion:reduce){.jv .swipe-handle:before{transition:none}}

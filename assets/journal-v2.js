@@ -205,30 +205,42 @@
     pool.addEventListener('pointermove',event=>{if(event.pointerType==='mouse'&&nearby(event))wobble(event);},{passive:true});
     pool.addEventListener('pointerdown',event=>{if(event.pointerType!=='mouse'&&nearby(event))wobble(event);},{passive:true});
   }
+  function liquidCardOutline(width,height,neck) {
+    const w=width,h=height,c=w/2,r=Math.min(30,w*.1,h*.1),mix=1-neck;
+    const rectangle=[[w*.8,0,w,0,w,r],[w,h*.35,w,h*.65,w,h-r],[w,h,w*.8,h,c,h],[w*.2,h,0,h,0,h-r],[0,h*.65,0,h*.35,0,r],[0,0,w*.2,0,c,0]];
+    const funnel=[[c+w*.025,0,c+w*.035,h*.22,w,h*.48],[w,h*.65,w,h*.85,w*.88,h*.94],[w*.78,h,w*.65,h,c,h],[w*.35,h,w*.22,h,w*.12,h*.94],[0,h*.85,0,h*.65,0,h*.48],[c-w*.035,h*.22,c-w*.025,0,c,0]];
+    return "path('M "+c.toFixed(2)+" 0 "+rectangle.map((curve,i)=>'C '+curve.map((v,j)=>(v+(funnel[i][j]-v)*mix).toFixed(2)).join(' ')).join(' ')+" Z')";
+  }
   async function mergeMotion(card, water) {
     if (!card || !water || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const c=card.getBoundingClientRect(),w=water.getBoundingClientRect();
     const overlay=document.createElement('div');overlay.className='jv merge-overlay';overlay.setAttribute('aria-hidden','true');
-    const flight=document.createElement('i');flight.className='flight';overlay.append(flight);
-    let landing=null,target=w;
-    // Keep the merge visible even when the original drop is above the scrolled card.
+    // Animate one continuous copy of the card, including its contents, rather than
+    // fading the card out and starting an unrelated particle at another location.
+    const liquid=card.cloneNode(true);liquid.classList.remove('swiping','swipe-ready');liquid.classList.add('merge-card');liquid.removeAttribute('id');liquid.setAttribute('inert','');
+    liquid.querySelectorAll('[id]').forEach(n=>n.removeAttribute('id'));
+    Object.assign(liquid.style,{left:c.left+'px',top:c.top+'px',width:c.width+'px',height:c.height+'px',transform:'none',visibility:'visible'});
+    overlay.append(liquid);
+    let landing=null,target=w,linger=false;
     if(w.top<80||w.bottom>innerHeight){
       landing=water.cloneNode(false);landing.removeAttribute('style');landing.removeAttribute('aria-label');landing.tabIndex=-1;landing.classList.add('merge-landing');overlay.append(landing);
     }
     document.body.append(overlay);
     if(landing)target=landing.getBoundingClientRect();
-    const x=c.left+c.width/2-14,y=c.top+Math.min(c.height/2,70);
-    const endX=target.left+target.width/2-14,endY=target.top+target.height*.6;
-    const from='translate('+x+'px,'+y+'px)';
-    const to='translate('+endX+'px,'+endY+'px)';
-    flight.style.transform=from;flight.style.opacity='0';
+    const dx=target.left+target.width/2-(c.left+c.width/2);
+    const dy=target.top+target.height*.6-c.top-c.height*.08/2;
+    const outline=neck=>liquidCardOutline(c.width,c.height,neck);
+    card.style.visibility='hidden';
     try {
-      await animate(card,[{transform:card.style.transform||'none',opacity:1},{transform:'translateY(-35px) scale(.92,1.04)',opacity:.65},{transform:'translateY(-60px) scale(.2,.3)',opacity:0}],160);
-      card.style.visibility='hidden';flight.style.opacity='1';
-      await animate(flight,[{transform:from+' scale(.9,1.15)',opacity:1},{offset:.65,transform:'translate('+endX+'px,'+(endY-16)+'px) scale(.8,1.2)',opacity:1},{transform:to+' scale(1.25,.65)',opacity:0}],260);
-      flight.style.opacity='0';
-      if(landing){animate(landing,[{transform:'scale(1.16,.8)'},{transform:'scale(.94,1.1)'},{transform:'scale(1)',opacity:0}],360).finally(()=>overlay.remove());landing=null;return;}
-    } finally {if(!overlay.querySelector('.merge-landing'))overlay.remove();}
+      await animate(liquid,[
+        {offset:0,transform:'none',clipPath:outline(1),opacity:1},
+        {offset:.2,transform:'translate('+(dx*.04)+'px,-10px) scale(1.02,1.04)',clipPath:outline(.65),opacity:1},
+        {offset:.48,transform:'translate('+(dx*.25)+'px,'+(dy*.18)+'px) scale(.84,1.12)',clipPath:outline(.1),opacity:1},
+        {offset:.8,transform:'translate('+(dx*.74)+'px,'+(dy*.7)+'px) scale(.24,.54)',clipPath:outline(0),opacity:1},
+        {offset:1,transform:'translate('+dx+'px,'+dy+'px) scale(.045,.08)',clipPath:outline(0),opacity:0}
+      ],560);
+      if(landing){linger=true;animate(landing,[{transform:'scale(1.16,.8)'},{transform:'scale(.94,1.1)'},{transform:'scale(1)',opacity:0}],360).finally(()=>overlay.remove());}
+    } finally {if(!linger)overlay.remove();}
   }
   async function previewMotion() {
     if(animating)return;
