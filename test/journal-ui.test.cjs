@@ -30,7 +30,7 @@ function submit(w,id){const form=w.document.getElementById(id);assert.ok(form);f
 test('guest UI starts without email inputs and records explicit did-not-do as one droplet',async()=>{
   const app=await open();const {w}=app;try{
     assert.equal(w.document.querySelectorAll('input[type=email]').length,0);assert.equal(w.document.querySelector('.page.active').id,'page-v2-home');
-    click(w,'[data-action=item][data-index="2"]');click(w,'[data-action=pick][data-value=false]');click(w,'[data-action=save-day]');await tick();await tick();
+    click(w,'[data-action=item][data-index="2"]');assert.equal(w.document.querySelector('[data-action=pick][data-value=false]').textContent,'スキップ');click(w,'[data-action=pick][data-value=false]');click(w,'[data-action=save-day]');await tick();await tick();
     assert.equal(w.document.querySelector('.record-count').textContent,'5項目のうち1項目を記録');
     const data=JSON.parse(w.localStorage.getItem('bloom-journal-v2:guest'));assert.equal(Object.values(data.workspace.daily)[0].stretch,false);
     assert.equal(app.errors.length,0,app.errors.map(e=>e.message).join('\n'));
@@ -45,6 +45,20 @@ test('motion preview never changes records or starts online saving',async()=>{
     assert.equal(app.getRevision(),revision);
     assert.match(w.document.querySelector('.sync-state').textContent,/記録の保存・送信はしていません/);
     assert.equal(app.errors.length,0,app.errors.map(e=>e.message).join('\n'));
+  }finally{app.dom.window.close();}
+});
+test('hover and touch wobble without saving, blocking scrolling or ignoring reduced motion',async()=>{
+  const app=await open({loggedIn:true}),{w}=app;
+  try{
+    const before=w.localStorage.getItem('bloom-journal-v2:'+userId),revision=app.getRevision(),water=w.document.querySelector('.big-drop'),pool=water.closest('.drop-pool');
+    let animations=0,time=1000;
+    Object.defineProperty(w.performance,'now',{value:()=>time});
+    water.animate=()=>{animations++;return {finished:Promise.resolve()};};
+    w.matchMedia=()=>({matches:false});
+    water.dispatchEvent(new w.MouseEvent('pointerenter',{clientX:0,clientY:0}));assert.equal(animations,1);
+    time+=1000;const touch=new w.MouseEvent('pointerdown',{bubbles:true,cancelable:true,clientX:0,clientY:0});Object.defineProperty(touch,'pointerType',{value:'touch'});pool.dispatchEvent(touch);assert.equal(animations,2);assert.equal(touch.defaultPrevented,false);
+    time+=1000;w.matchMedia=()=>({matches:true});water.click();assert.equal(animations,2);
+    assert.equal(w.localStorage.getItem('bloom-journal-v2:'+userId),before);assert.equal(app.getRevision(),revision);
   }finally{app.dom.window.close();}
 });
 test('logged-in goal, daily input and monthly bulk override survive online sync',async()=>{

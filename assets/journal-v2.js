@@ -108,7 +108,7 @@
   function button(label, action, cls = 'secondary', extra = '') { return '<button type="button" class="' + cls + '" data-action="' + action + '" ' + extra + '>' + label + '</button>'; }
   function field(item, value, mode = 'daily', index = 0) {
     const base = 'data-item="' + e(item.id) + '"';
-    if (item.type === 'binary' && mode === 'daily') return '<div class="choice-row">' + [true, false].map(v => '<button type="button" class="chip" data-action="pick" data-value="' + v + '" aria-pressed="' + (value === v) + '">' + (v ? 'できた' : '今日はスキップ') + '</button>').join('') + '</div>';
+    if (item.type === 'binary' && mode === 'daily') return '<div class="choice-row">' + [true, false].map(v => '<button type="button" class="chip" data-action="pick" data-value="' + v + '" aria-pressed="' + (value === v) + '">' + (v ? 'できた' : 'スキップ') + '</button>').join('') + '</div>';
     if (item.type === 'choice') return '<select ' + base + ' data-input="' + mode + '" aria-label="' + e(item.name) + '"><option value="">未記録</option>' + ['すっきり', 'ふつう', '疲れぎみ'].map(v => '<option ' + (v === value ? 'selected' : '') + '>' + v + '</option>').join('') + '</select>';
     return '<div class="row"><input type="number" ' + base + ' data-input="' + mode + '" min="0" max="' + (item.type === 'binary' ? M.monthDays(month) : 1e9) + '" step="' + (item.type === 'binary' ? 1 : 'any') + '" inputmode="decimal" aria-label="' + e(item.name) + '" placeholder="未記録" value="' + e(value ?? '') + '"><span>' + e(item.type === 'binary' ? '回' : item.unit) + '</span></div>';
   }
@@ -120,7 +120,7 @@
     const announcement = $('admin-msg-list');
     root.innerHTML = shell('今日のわたしを、重ねて。', '小さな記録を、あなたのペースで。',
       '<div id="v2-announcements"></div><div class="daily-head section"><label class="field"><span>記録する日付</span><input type="date" id="v2-date" value="' + date + '" max="' + today() + '"></label>' + button('月次レポートを見る', 'report', 'secondary') + '</div>' +
-      '<div class="drop-pool"><div class="big-drop" style="width:' + (88 + Math.min(count, 5) * 18) + 'px;height:' + (84 + Math.min(count, 5) * 17) + 'px" role="img" aria-label="' + items.length + '項目のうち' + count + '項目を記録。記録に応じて育つしずく"></div><div class="drop-caption"><p class="drop-title">今日の記録</p><p class="muted record-count">' + (items.length ? items.length + '項目のうち' + count + '項目を記録' : 'マイ項目を選んで、ここから。') + '</p></div></div>' +
+      '<div class="drop-pool"><button type="button" class="big-drop" style="width:' + (88 + Math.min(count, 5) * 18) + 'px;height:' + (84 + Math.min(count, 5) * 17) + 'px" aria-label="' + items.length + '項目のうち' + count + '項目を記録。触れるとしずくが揺れます。記録は保存されません。"></button><div class="drop-caption"><p class="drop-title">今日の記録</p><p class="muted record-count">' + (items.length ? items.length + '項目のうち' + count + '項目を記録' : 'マイ項目を選んで、ここから。') + '</p></div></div>' +
       (motionPreview && item ? '<div class="motion-preview">' + button('しずくの動きを見る（保存なし）','motion-demo','text-button') + '</div>' : '') +
       '<div class="daily-items">' + items.map((i, n) => button((M.own(row, i.id) ? icon('check') : '') + e(i.name), 'item', 'chip', 'data-index="' + n + '" aria-pressed="' + (n === active) + '"')).join('') + '</div>' +
       (item ? '<article class="jelly" id="v2-daily-card"><p class="muted">' + e(date) + ' · ' + (active + 1) + ' / ' + items.length + '</p><h2>' + e(item.name) + '</h2><div class="daily-value">' + field(item, draft) + '</div><p class="swipe-label">' + icon('share') + ' 上にスワイプして、今日の記録へ</p></article>' + button('この内容を記録する', 'save-day', 'primary wide-button', !ready ? 'disabled' : '') : '<p class="notice">「目標設定」からマイ項目を追加してください。</p>') +
@@ -128,6 +128,7 @@
     // Preserve the existing announcement endpoint and permissions.
     if (announcement) $('v2-announcements').append(announcement);
     bindSwipe($('v2-daily-card'), saveDaily);
+    bindDropWobble(root.querySelector('.big-drop'));
   }
   function summaryHtml(rows) {
     return rows.map(s => '<div class="metric-row"><h3>' + e(s.name) + '</h3>' + (s.type === 'choice' ? '<p>' + Object.entries(s.distribution || {}).map(([k, v]) => e(k) + ' ' + v + '日').join(' ／ ') + '</p>' : '<div class="row space"><strong>' + fmt(s.actual) + ' ' + e(s.unit) + '</strong><span>' + (s.target ? '目標 ' + fmt(s.target) + ' ' + e(s.unit) + ' · ' + (s.percentage === null ? '—' : fmt(s.percentage) + '%') : '目標未設定') + '</span></div>' + (s.percentage !== null ? '<div class="meter"><div style="width:' + Math.min(s.percentage, 100) + '%"></div></div>' : '')) + '<p class="muted">記録 ' + s.recordedDays + '日 ／ 未記録 ' + s.missingDays + '日' + (s.manual ? ' · 月合計を手入力' : '') + (s.aggregate === 'average' ? ' · 記録日の平均' : '') + '</p></div>').join('');
@@ -166,7 +167,7 @@
   }
   function renderSettings() {
     settingsItems ||= clone(reportItems()); settingsTargets ||= clone(monthConfig().targets || {});
-    $('page-v2-settings').innerHTML = shell('わたしの項目、わたしの目標。', 'いつもの4〜5項目を選んで、自分のペースを決めましょう。', '<label class="field section"><span>目標を設定する月</span><input type="month" id="v2-settings-month" value="' + month + '"></label><div class="notice">「できた・今日はスキップ」は、できた1日を1回と数えます。1日に複数回を数えたい項目は「数字・月合計」を選びます。気分は達成率をつけません。</div><form id="v2-settings-form">' + settingsItems.map((item, i) => '<section class="paper" data-config="' + i + '"><div class="row space"><h2>マイ項目 ' + (i + 1) + '</h2>' + button('外す', 'remove-item', 'text-button', 'data-index="' + i + '"') + '</div><label class="field"><span>項目名</span><input data-config-name="' + i + '" maxlength="80" required value="' + e(item.name) + '"></label><div class="fields"><label class="field"><span>記録方法</span><select data-config-type="' + i + '">' + [['binary','できた・今日はスキップ'],['sum','数字・月合計'],['average','数字・月平均'],['choice','気分を選ぶ']].map(([type, label]) => '<option value="' + type + '" ' + ((item.type === 'number' ? item.aggregate : item.type) === type ? 'selected' : '') + '>' + label + '</option>').join('') + '</select></label>' + (item.type === 'number' ? '<label class="field"><span>単位</span><input data-config-unit="' + i + '" maxlength="12" required value="' + e(item.unit) + '"></label>' : '') + '</div>' + (item.type !== 'choice' ? '<label class="field"><span>' + (item.aggregate === 'average' ? 'この月の目標平均' : 'この月の目標回数・数量') + '（' + e(item.type === 'binary' ? '回' : item.unit) + '）</span><input type="number" min="0.001" max="1000000000" step="any" required data-target="' + item.id + '" value="' + e(settingsTargets[item.id] ?? '') + '" placeholder="例：10"></label>' : '<p class="muted">気分は、選んだ内容を月次で振り返ります。</p>') + '</section>').join('') + '<div class="row section">' + button('項目を追加する', 'add-item', 'secondary', settingsItems.length >= 10 ? 'disabled' : '') + '<button class="primary" type="submit">項目と月間目標を保存する</button></div></form><p class="muted section">以前の月の目標・提出済みレポートは、この月の目標を変えても書き換わりません。</p>');
+    $('page-v2-settings').innerHTML = shell('わたしの項目、わたしの目標。', 'いつもの4〜5項目を選んで、自分のペースを決めましょう。', '<label class="field section"><span>目標を設定する月</span><input type="month" id="v2-settings-month" value="' + month + '"></label><div class="notice">「できた・スキップ」は、できた1日を1回と数えます。1日に複数回を数えたい項目は「数字・月合計」を選びます。気分は達成率をつけません。</div><form id="v2-settings-form">' + settingsItems.map((item, i) => '<section class="paper" data-config="' + i + '"><div class="row space"><h2>マイ項目 ' + (i + 1) + '</h2>' + button('外す', 'remove-item', 'text-button', 'data-index="' + i + '"') + '</div><label class="field"><span>項目名</span><input data-config-name="' + i + '" maxlength="80" required value="' + e(item.name) + '"></label><div class="fields"><label class="field"><span>記録方法</span><select data-config-type="' + i + '">' + [['binary','できた・スキップ'],['sum','数字・月合計'],['average','数字・月平均'],['choice','気分を選ぶ']].map(([type, label]) => '<option value="' + type + '" ' + ((item.type === 'number' ? item.aggregate : item.type) === type ? 'selected' : '') + '>' + label + '</option>').join('') + '</select></label>' + (item.type === 'number' ? '<label class="field"><span>単位</span><input data-config-unit="' + i + '" maxlength="12" required value="' + e(item.unit) + '"></label>' : '') + '</div>' + (item.type !== 'choice' ? '<label class="field"><span>' + (item.aggregate === 'average' ? 'この月の目標平均' : 'この月の目標回数・数量') + '（' + e(item.type === 'binary' ? '回' : item.unit) + '）</span><input type="number" min="0.001" max="1000000000" step="any" required data-target="' + item.id + '" value="' + e(settingsTargets[item.id] ?? '') + '" placeholder="例：10"></label>' : '<p class="muted">気分は、選んだ内容を月次で振り返ります。</p>') + '</section>').join('') + '<div class="row section">' + button('項目を追加する', 'add-item', 'secondary', settingsItems.length >= 10 ? 'disabled' : '') + '<button class="primary" type="submit">項目と月間目標を保存する</button></div></form><p class="muted section">以前の月の目標・提出済みレポートは、この月の目標を変えても書き換わりません。</p>');
   }
   function readSettings() {
     if (!settingsItems) return;
@@ -181,6 +182,29 @@
     if (page === 'page-v2-settings') renderSettings();
   }
   async function animate(element, frames, duration) { if (!element || matchMedia('(prefers-reduced-motion: reduce)').matches || !element.animate) return; await element.animate(frames, { duration, easing: 'cubic-bezier(.22,.7,.25,1)' }).finished; }
+  function bindDropWobble(water) {
+    if(!water)return;
+    const pool=water.closest('.drop-pool');let lastWobble=-Infinity;
+    function wobble(event) {
+      if(animating||!water.isConnected||!water.animate||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+      const now=performance.now();if(now-lastWobble<900)return;lastWobble=now;
+      const rect=water.getBoundingClientRect();
+      const direction=event&&Number.isFinite(event.clientX)&&rect.width?Math.max(-1,Math.min(1,(event.clientX-rect.left-rect.width/2)/(rect.width/2))):.5;
+      water.animate([
+        {transform:'scale(1) rotate(0deg)'},
+        {offset:.18,transform:'scale(1.065,.94) rotate('+(-3*direction)+'deg)'},
+        {offset:.39,transform:'scale(.95,1.055) rotate('+(2.5*direction)+'deg)'},
+        {offset:.61,transform:'scale(1.035,.975) rotate('+(-1.5*direction)+'deg)'},
+        {offset:.8,transform:'scale(.99,1.015) rotate('+(direction)+'deg)'},
+        {transform:'scale(1) rotate(0deg)'}
+      ],{duration:720,easing:'cubic-bezier(.22,.61,.36,1)'}).finished.catch(()=>{});
+    }
+    function nearby(event){const rect=water.getBoundingClientRect();return event.clientX>=rect.left-28&&event.clientX<=rect.right+28&&event.clientY>=rect.top-28&&event.clientY<=rect.bottom+28;}
+    water.addEventListener('pointerenter',event=>{if(event.pointerType!=='touch')wobble(event);});
+    water.addEventListener('click',wobble);
+    pool.addEventListener('pointermove',event=>{if(event.pointerType==='mouse'&&nearby(event))wobble(event);},{passive:true});
+    pool.addEventListener('pointerdown',event=>{if(event.pointerType!=='mouse'&&nearby(event))wobble(event);},{passive:true});
+  }
   async function mergeMotion(card, water, flight) {
     const c=card.getBoundingClientRect(),w=water.getBoundingClientRect();
     await animate(card,[{transform:card.style.transform||'none',opacity:1},{offset:.3,transform:'scale(1.06,.87)',opacity:1},{transform:'translateY(-12px) scale(.1,.14)',borderRadius:'50%',opacity:0}],350);

@@ -16,5 +16,6 @@
 .jv .drop-caption{text-align:center}.jv .drop-title{font-family:var(--font-serif-jp);font-size:16px;letter-spacing:.08em;color:var(--text-mid);margin-bottom:3px}
 .jv .motion-preview{text-align:center;margin:-5px 0 13px}.jv .motion-preview button{font-size:12px}
 .jv .daily-value>.choice-row{width:100%}.jv .choice-row .chip{white-space:nowrap}
+.jv button.big-drop{appearance:none;padding:0;touch-action:pan-y;user-select:none;-webkit-tap-highlight-color:transparent}
 .jv .flight{border:1px solid rgba(255,255,255,.68);box-shadow:inset 2px 3px 3px rgba(255,255,255,.75),inset -2px -3px 4px rgba(221,234,249,.45),0 4px 9px rgba(136,92,108,.06)}
 @media(prefers-reduced-motion:reduce){.jv .big-drop{transition:none}}
