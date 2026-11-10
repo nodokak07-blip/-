@@ -19,10 +19,20 @@ async function open({loggedIn=false,admin=false,preview=false}={}) {
     function execute(){if(table==='journal_workspaces')result.data=remote?{data:JSON.parse(JSON.stringify(remote)),revision:rev}:null;else if(table==='profiles')result.data={id:current?.id,username:'こはる',selected_habits:[]};else if(table==='admins')result.data=admin?{user_id:current?.id}:null;else result.data=[];return Promise.resolve(result);}return q;}
   const client={auth:{async startAutoRefresh(){},async getSession(){return {data:{session:current?{user:current,access_token:'token'}:null},error:null};},onAuthStateChange(cb){listener=cb;},async setSession(){return {error:null};},async signOut(){current=null;listener?.('SIGNED_OUT',null);}},from:query,async rpc(name,body){if(name==='save_journal_workspace'){if(body.p_expected_revision!==rev)return {data:null,error:{message:'workspace_conflict'}};remote=JSON.parse(JSON.stringify(body.p_data));rev++;return {data:rev,error:null};}return {data:null,error:null};}};
   w.supabase={createClient:()=>client};
+  let journeyMine=[],journeyFailure=false;const journeyCalls=[];
+  const originalRpc=client.rpc;
+  client.rpc=async(name,body)=>{
+    if(name!=='journal_journey')return originalRpc(name,body);
+    journeyCalls.push(JSON.parse(JSON.stringify(body)));
+    if(journeyFailure)return {error:{message:'network unavailable'},data:null};
+    const day=new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Tokyo',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+    if(body.p_action==='save'){journeyMine=[{id:'post-own',own:true,day,...body.p_payload,reactions:[]}];return {data:{id:'post-own'},error:null};}
+    return {data:{today:day,mine:journeyMine,groups:[{id:'group-one',name:'朝のおさんぽ'}],posts:[{id:'post-peer',day,nickname:'こはる',group_name:'朝のおさんぽ',choice:'step',note:'',reactions:[],comments:[]}],words:[{id:'comment-one',post_id:'post-own',choice:'rest',day,content:'休むのも一歩ですね。',nickname:'カウンセラー',created_at:day}]},error:null};
+  };
   w.fetch=async(url,opts)=>{const body=opts?.body?JSON.parse(opts.body):null;if(url==='/api/member-auth')return {ok:true,json:async()=>({member_id:'1234567890',nickname:current?.id===userId?'こはる':'別メンバー'})};if(String(url).startsWith('/api/journal-admin'))return {ok:true,json:async()=>({members:[],next_offset:null})};if(url==='/api/journal-report')return {ok:true,json:async()=>({report:{id:'report',month:body.month}})};return {ok:true,json:async()=>({})};};
-  const context=dom.getInternalVMContext();vm.runInContext(inline,context);vm.runInContext(fs.readFileSync(path.join(base,'assets/journal-model.js'),'utf8'),context);vm.runInContext(fs.readFileSync(path.join(base,'assets/journal-v2.js'),'utf8'),context);
+  const context=dom.getInternalVMContext();vm.runInContext(inline,context);vm.runInContext(fs.readFileSync(path.join(base,'assets/journal-model.js'),'utf8'),context);vm.runInContext(fs.readFileSync(path.join(base,'assets/journal-v2.js'),'utf8'),context);vm.runInContext(fs.readFileSync(path.join(base,'assets/journey.js'),'utf8'),context);
   await tick();await tick();await tick();
-  return {dom,w,errors,getRemote:()=>remote,getRevision:()=>rev,async switchUser(id){current={id};remote=null;rev=0;w.eval('currentUser = '+JSON.stringify(current));w.updateAuthUI();await tick();await tick();},async logout(){await client.auth.signOut();await tick();await tick();}};
+  return {dom,w,errors,journeyCalls,setJourneyFailure:v=>{journeyFailure=v;},getRemote:()=>remote,getRevision:()=>rev,async switchUser(id){current={id};remote=null;rev=0;w.eval('currentUser = '+JSON.stringify(current));w.updateAuthUI();await tick();await tick();},async logout(){await client.auth.signOut();await tick();await tick();}};
 }
 function change(w,node,value){assert.ok(node);node.value=value;node.dispatchEvent(new w.Event('input',{bubbles:true}));node.dispatchEvent(new w.Event('change',{bubbles:true}));}
 function click(w,selector){const node=w.document.querySelector(selector);assert.ok(node,selector);node.click();}
@@ -96,4 +106,32 @@ test('admin navigation preserves existing announcement, groups, requests and sto
 });
 test('app-authored UI has no emoji literals and inline script parses after migration',()=>{
   assert.equal(/\p{Extended_Pictographic}/u.test(html),false);assert.doesNotThrow(()=>new Function(inline));
+});
+test('journey choices save without comments, reactions and received words work, booking and health history remain accessible',async()=>{
+ const app=await open({loggedIn:true}),{w}=app;try{
+  w.showPage('page-journey');await tick();await tick();
+  assert.equal(w.document.querySelector('.nav-tab.active').textContent.trim(),'わたしの歩み');
+  assert.equal(w.document.getElementById('journey-audience').value,'self');
+  assert.equal(w.document.querySelector('.journey-optional').open,false);
+  click(w,'[data-journey=choice][data-choice=rest]');submit(w,'journey-form');await tick();await tick();
+  const saved=app.journeyCalls.find(c=>c.p_action==='save');assert.equal(saved.p_payload.audience,'self');assert.equal(saved.p_payload.note,'');assert.equal(saved.p_payload.choice,'rest');
+  assert.equal(w.document.querySelector('#journey-form'),null);
+  click(w,'[data-journey=react][data-kind=step]');await tick();await tick();
+  assert.ok(app.journeyCalls.some(c=>c.p_action==='react'&&c.p_payload.enabled===true));
+  click(w,'[data-journey=tab][data-tab=words]');assert.equal(w.document.getElementById('journey-panel-words').hidden,false);assert.match(w.document.querySelector('.journey-quote').textContent,/休むのも/);
+  assert.equal(w.document.querySelector('.journey-reservation').href,'https://timerex.net/s/iw-inc.jp/dd1d7f4f');assert.match(w.document.querySelector('.journey-reservation').textContent,/新規の方は別途お問い合わせ/);
+  w.showPage('page-more');const history=[...w.document.querySelectorAll('#page-more button')].find(b=>b.textContent==='以前の体調記録を見る');assert.ok(history);history.click();assert.equal(w.document.querySelector('.page.active').id,'page-record');
+  assert.equal(app.errors.length,0,app.errors.map(e=>e.message).join('\n'));
+ }finally{app.dom.window.close();}
+});
+test('journey failed saves retain input and account switches clear private drafts',async()=>{
+ const app=await open({loggedIn:true}),{w}=app;try{
+  w.showPage('page-journey');await tick();await tick();
+  click(w,'[data-journey=choice][data-choice=pace]');change(w,w.document.getElementById('journey-note'),'<私だけの言葉>');
+  app.setJourneyFailure(true);submit(w,'journey-form');await tick();await tick();
+  assert.equal(w.document.getElementById('journey-note').value,'<私だけの言葉>');assert.match(w.document.getElementById('journey-status').textContent,/接続できません/);
+  await app.switchUser('22222222-2222-4222-8222-222222222222');
+  assert.equal(w.document.getElementById('journey-note').value,'');assert.equal(w.document.getElementById('journey-audience').value,'self');assert.equal(w.document.querySelectorAll('.journey-choice[aria-pressed=true]').length,0);
+  assert.equal(app.errors.length,0,app.errors.map(e=>e.message).join('\n'));
+ }finally{app.dom.window.close();}
 });

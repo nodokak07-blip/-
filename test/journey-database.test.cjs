@@ -1,0 +1,45 @@
+const test=require('node:test');
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const {PGlite}=require('@electric-sql/pglite');
+const ids=['11111111-1111-4111-8111-111111111111','22222222-2222-4222-8222-222222222222','33333333-3333-4333-8333-333333333333','44444444-4444-4444-8444-444444444444'];
+const group='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
+test('journey RPC enforces private/counselor/group scopes, idempotent reactions, comment visibility and scope cleanup',async()=>{
+ const db=new PGlite();
+ try{
+ await db.exec(`create role anon;create role authenticated;create role service_role bypassrls;
+ create schema auth;grant usage on schema public,auth to anon,authenticated,service_role;
+ create function auth.uid() returns uuid language sql stable as $$select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid$$;
+ create table auth.users(id uuid primary key);create table profiles(id uuid primary key,username text);
+ create table admins(user_id uuid primary key);create table groups(id uuid primary key,name text);
+ create table group_members(group_id uuid references groups(id),user_id uuid references auth.users(id),status text);
+ insert into auth.users values ${ids.map(id=>`('${id}')`).join(',')};
+ insert into profiles values ${ids.map((id,i)=>`('${id}','nickname-${i}')`).join(',')};
+ insert into admins values('${ids[3]}');insert into groups values('${group}','朝のおさんぽ');
+ insert into group_members values('${group}','${ids[0]}','accepted'),('${group}','${ids[1]}','accepted'),('${group}','${ids[2]}','pending');`);
+ for(const file of ['202611090001_journal_v2.sql','202611100001_journey.sql'])await db.exec(fs.readFileSync(path.join(__dirname,'../supabase/migrations',file),'utf8'));
+ const as=async id=>db.exec(`reset role;set role authenticated;select set_config('request.jwt.claim.sub','${id}',false);`);
+ const rpc=async(action='feed',payload={})=>(await db.query('select journal_journey($1,$2::jsonb) result',[action,JSON.stringify(payload)])).rows[0].result;
+ await as(ids[0]);const first=await rpc('save',{choice:'rest'});let data=await rpc();assert.equal(data.mine[0].audience,'self');assert.equal(data.groups.length,1);
+ await assert.rejects(db.query('select * from journey_posts'),/permission denied/);
+ await assert.rejects(db.query('select * from member_identity'),/permission denied/);
+ await as(ids[1]);assert.equal((await rpc()).posts.length,0);await assert.rejects(rpc('react',{post_id:first.id,kind:'rest',enabled:true}),/journey_forbidden/);
+ await as(ids[3]);assert.equal((await rpc()).posts.length,0,'even counselor cannot read private posts');
+ await as(ids[0]);await rpc('save',{choice:'pace',audience:'counselor'});
+ await as(ids[1]);assert.equal((await rpc()).posts.length,0);
+ await as(ids[3]);assert.equal((await rpc()).posts.length,1);await rpc('react',{post_id:first.id,kind:'rest',enabled:true});await rpc('react',{post_id:first.id,kind:'rest',enabled:true});
+ const comment='bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb';await rpc('comment',{post_id:first.id,id:comment,content:'自分のペースで。'});await rpc('comment',{post_id:first.id,id:comment,content:'自分のペースで。'});
+ await as(ids[0]);data=await rpc();assert.equal(data.mine[0].reactions[0].count,1);assert.equal(data.words.length,1);assert.equal(data.words[0].nickname,'カウンセラー');
+ await rpc('save',{choice:'step',audience:'group',group_ref:group});data=await rpc();assert.equal(data.words.length,0,'old comments never cross sharing scopes');assert.equal(data.mine[0].reactions.length,0);
+ await as(ids[2]);assert.equal((await rpc()).posts.length,0);assert.equal((await rpc()).groups.length,0);await assert.rejects(rpc('save',{choice:'rest',audience:'group',group_ref:group}),/journey_group_forbidden/);
+ await as(ids[1]);data=await rpc();assert.equal(data.posts.length,1);assert.equal(data.posts[0].nickname,'nickname-0');assert.equal(JSON.stringify(data).includes(ids[0]),false,'no author UUID in projected feed');
+ await rpc('react',{post_id:first.id,kind:'same',enabled:true});await rpc('react',{post_id:first.id,kind:'same',enabled:false});assert.equal((await rpc()).posts[0].reactions.length,0);
+ await rpc('comment',{post_id:first.id,id:comment,content:'一緒にゆっくり。'});await as(ids[0]);assert.equal((await rpc()).words.length,1);
+ await as(ids[2]);await assert.rejects(rpc('comment',{post_id:first.id,id:'cccccccc-cccc-4ccc-8ccc-cccccccccccc',content:'見えない投稿'}),/journey_forbidden/);
+ await db.exec(`reset role;update group_members set status='pending' where user_id='${ids[1]}';`);await as(ids[1]);assert.equal((await rpc()).posts.length,0,'revoked members immediately lose access');await assert.rejects(rpc('delete',{post_id:first.id}),/journey_forbidden/);
+ await as(ids[0]);await rpc('delete_comment',{post_id:first.id,id:comment});assert.equal((await rpc()).words.length,0);await rpc('delete',{post_id:first.id});assert.equal((await rpc()).mine.length,0);
+ await rpc('save',{note:'選択肢にない、私の言葉'});assert.equal((await rpc()).mine[0].choice,'');await assert.rejects(rpc('save',{choice:'invalid'}),/journey_invalid_input/);
+ await db.exec('reset role;set role anon');await assert.rejects(rpc(),/permission denied/);await assert.rejects(db.query('select * from journey_comments'),/permission denied/);
+ }finally{await db.close();}
+});
