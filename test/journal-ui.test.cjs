@@ -9,14 +9,15 @@ const html = fs.readFileSync(path.join(base,'index.html'),'utf8');
 const inline = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m=>m[1]).join('\n');
 const tick=()=>new Promise(resolve=>setTimeout(resolve,10));
 const userId='11111111-1111-4111-8111-111111111111';
-async function open({loggedIn=false,admin=false,preview=false}={}) {
+async function open({loggedIn=false,admin=false,preview=false,legacy=null}={}) {
   const errors=[],vc=new VirtualConsole();vc.on('jsdomError',error=>{if(!error.message.includes('Not implemented: window.scrollTo'))errors.push(error);});
   const dom=new JSDOM(html,{url:'https://app.test/'+(preview?'?demo=1':''),runScripts:'outside-only',pretendToBeVisual:true,virtualConsole:vc});
   const w=dom.window;let current=loggedIn?{id:userId}:null,listener,remote=null,rev=0;
+  for(const [key,value] of Object.entries(legacy?.local||{}))w.localStorage.setItem(key,JSON.stringify(value));
   w.scrollTo=()=>{};w.matchMedia=()=>({matches:true,addEventListener(){},removeEventListener(){}});w.alert=()=>{};w.confirm=()=>true;w.prompt=()=>null;
   if(w.HTMLDialogElement){w.HTMLDialogElement.prototype.showModal=function(){this.open=true;};w.HTMLDialogElement.prototype.close=function(){this.open=false;};}
   function query(table){const result={data:null,error:null},filters={};const q={select(){return q;},eq(key,value){filters[key]=value;return q;},gt(){return q;},order(){return q;},limit(){return q;},in(){return q;},upsert(){return Promise.resolve({data:null,error:null});},single(){return execute();},maybeSingle(){return execute();},then(a,b){return execute().then(a,b);}};
-    function execute(){if(table==='journal_workspaces')result.data=remote?{data:JSON.parse(JSON.stringify(remote)),revision:rev}:null;else if(table==='profiles')result.data={id:current?.id,username:'こはる',selected_habits:[]};else if(table==='admins')result.data=admin?{user_id:current?.id}:null;else result.data=[];return Promise.resolve(result);}return q;}
+    function execute(){if(table==='journal_workspaces')result.data=remote?{data:JSON.parse(JSON.stringify(remote)),revision:rev}:null;else if(table==='profiles')result.data=legacy?.profile||{id:current?.id,username:'こはる',selected_habits:[]};else if(table==='admins')result.data=admin?{user_id:current?.id}:null;else result.data=legacy?.[table]||[];return Promise.resolve(result);}return q;}
   const client={auth:{async startAutoRefresh(){},async getSession(){return {data:{session:current?{user:current,access_token:'token'}:null},error:null};},onAuthStateChange(cb){listener=cb;},async setSession(){return {error:null};},async signOut(){current=null;listener?.('SIGNED_OUT',null);}},from:query,async rpc(name,body){if(name==='save_journal_workspace'){if(body.p_expected_revision!==rev)return {data:null,error:{message:'workspace_conflict'}};remote=JSON.parse(JSON.stringify(body.p_data));rev++;return {data:rev,error:null};}return {data:null,error:null};}};
   w.supabase={createClient:()=>client};
   let journeyMine=[],journeyFailure=false;const journeyCalls=[];
@@ -151,5 +152,21 @@ test('reordered navigation keeps reports, bulk entry, journey and meals selected
   await app.logout();assert.equal(w.document.getElementById('account-settings').open,false);assert.equal(w.document.getElementById('account-settings').textContent,'');
   inlineClick('#nav-auth-btn');assert.ok(w.document.querySelector('[data-action=account-login]'));click(w,'[data-action=account-login]');assert.equal(w.document.getElementById('auth-overlay').style.display,'flex');
   assert.equal(w.document.querySelectorAll('input[type=email]').length,0);assert.equal(app.errors.length,0,app.errors.map(e=>e.message).join('\n'));
+ }finally{app.dom.window.close();}
+});
+test('existing server habits and health/journal history remain readable after the UI upgrade',async()=>{
+ const legacy={profile:{id:userId,username:'こはる',selected_habits:['散歩','ストレッチ']},todos:[{date:'2026-10-01',habit:'散歩',done:true},{date:'2026-10-02',habit:'散歩',done:false}],records:[{date:'2026-10-01',weight:61.2,mood:3,stress:3,memo:'以前の体調メモ'}],journals:[{date:'2026-10-01',content:'以前の自分の言葉'}]};
+ const before=JSON.stringify(legacy),app=await open({loggedIn:true,legacy}),{w}=app;try{
+  const remote=app.getRemote();assert.equal(remote.items[0].legacyName,'散歩');assert.equal(remote.daily['2026-10-01']['legacy-0'],true);assert.equal(remote.daily['2026-10-02']['legacy-0'],false);assert.equal(JSON.stringify(legacy),before);
+  w.showPage('page-record');assert.match(w.document.getElementById('page-record').textContent,/61.2/);assert.match(w.document.getElementById('page-record').textContent,/以前の体調メモ/);assert.match(w.document.getElementById('page-record').textContent,/以前の自分の言葉/);
+  assert.equal(app.errors.length,0,app.errors.map(e=>e.message).join('\n'));
+ }finally{app.dom.window.close();}
+});
+test('unattributed old device-only records are retained but intentionally not silently assigned to a new account',async()=>{
+ const old={'bloom-todo':{'2026-10-01':{'散歩':true}},'bloom-record':{'2026-10-01':{weight:61.2,memo:'端末だけの記録'}},'bloom-monthly-summary':{'2026-10':{avgTodo:50}}};
+ const app=await open({loggedIn:true,legacy:{local:old}}),{w}=app;try{
+  for(const [key,value] of Object.entries(old))assert.equal(w.localStorage.getItem(key),JSON.stringify(value));
+  assert.deepEqual(Object.keys(app.getRemote().daily),[]);
+  w.showPage('page-record');assert.doesNotMatch(w.document.getElementById('page-record').textContent,/端末だけの記録/);
  }finally{app.dom.window.close();}
 });
