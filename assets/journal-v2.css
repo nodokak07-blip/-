@@ -19,3 +19,15 @@
 .jv button.big-drop{appearance:none;padding:0;touch-action:pan-y;user-select:none;-webkit-tap-highlight-color:transparent}
 .jv .flight{border:1px solid rgba(255,255,255,.68);box-shadow:inset 2px 3px 3px rgba(255,255,255,.75),inset -2px -3px 4px rgba(221,234,249,.45),0 4px 9px rgba(136,92,108,.06)}
 @media(prefers-reduced-motion:reduce){.jv .big-drop{transition:none}}
+
+/* A short, direct upward flick; monthly content remains normally scrollable. */
+.jv .swipe-handle{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;min-height:52px;margin-top:14px;padding:9px 6px;border-radius:13px;background:#f5e6ec66;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}
+.jv .swipe-handle:before{content:'';width:42px;height:4px;border-radius:4px;background:#c68ba0a6;transition:width .12s,background .12s}
+.jv .swipe-handle .swipe-label{margin:0;text-align:center;line-height:1.6}
+.jv .swipe-ready .swipe-handle:before{width:68px;background:var(--pink-strong)}
+.jv .swiping{will-change:transform;cursor:grabbing}
+.jv #v2-month-card{touch-action:pan-y;user-select:auto}
+.jv .swipe-pending .swipe-handle{opacity:.6;cursor:wait}
+.jv.merge-overlay{position:fixed;inset:0;max-width:none;margin:0;padding:0;z-index:280;pointer-events:none}
+.jv.merge-overlay .merge-landing{position:absolute;left:calc(50% - 43px);top:max(100px,env(safe-area-inset-top));width:86px;height:82px;min-height:0;cursor:default}
+@media(prefers-reduced-motion:reduce){.jv .swipe-handle:before{transition:none}}

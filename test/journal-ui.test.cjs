@@ -30,10 +30,11 @@ async function open({loggedIn=false,admin=false,preview=false,legacy=null}={}) {
     if(body.p_action==='save'){journeyMine=[{id:'post-own',own:true,day,...body.p_payload,reactions:[]}];return {data:{id:'post-own'},error:null};}
     return {data:{today:day,mine:journeyMine,groups:[{id:'group-one',name:'朝のおさんぽ'}],posts:[{id:'post-peer',day,nickname:'こはる',group_name:'朝のおさんぽ',choice:'step',note:'',reactions:[],comments:[]}],words:[{id:'comment-one',post_id:'post-own',choice:'rest',day,content:'休むのも一歩ですね。',nickname:'カウンセラー',created_at:day}]},error:null};
   };
-  w.fetch=async(url,opts)=>{const body=opts?.body?JSON.parse(opts.body):null;if(url==='/api/member-auth')return {ok:true,json:async()=>({member_id:'1234567890',nickname:current?.id===userId?'こはる':'別メンバー'})};if(String(url).startsWith('/api/journal-admin'))return {ok:true,json:async()=>({members:[],next_offset:null})};if(url==='/api/journal-report')return {ok:true,json:async()=>({report:{id:'report',month:body.month}})};return {ok:true,json:async()=>({})};};
+  const reportRequests=[];let reportFailure=false;
+  w.fetch=async(url,opts)=>{const body=opts?.body?JSON.parse(opts.body):null;if(url==='/api/member-auth')return {ok:true,json:async()=>({member_id:'1234567890',nickname:current?.id===userId?'こはる':'別メンバー'})};if(String(url).startsWith('/api/journal-admin'))return {ok:true,json:async()=>({members:[],next_offset:null})};if(url==='/api/journal-report'){reportRequests.push(body);return reportFailure?{ok:false,json:async()=>({error:'報告に接続できませんでした。'})}:{ok:true,json:async()=>({report:{id:'report',month:body.month}})};}return {ok:true,json:async()=>({})};};
   const context=dom.getInternalVMContext();vm.runInContext(inline,context);vm.runInContext(fs.readFileSync(path.join(base,'assets/journal-model.js'),'utf8'),context);vm.runInContext(fs.readFileSync(path.join(base,'assets/journal-v2.js'),'utf8'),context);vm.runInContext(fs.readFileSync(path.join(base,'assets/journey.js'),'utf8'),context);
   await tick();await tick();await tick();
-  return {dom,w,errors,journeyCalls,setJourneyFailure:v=>{journeyFailure=v;},getRemote:()=>remote,getRevision:()=>rev,async switchUser(id){current={id};remote=null;rev=0;w.eval('currentUser = '+JSON.stringify(current));w.updateAuthUI();await tick();await tick();},async logout(){await client.auth.signOut();await tick();await tick();}};
+  return {dom,w,errors,journeyCalls,reportRequests,setReportFailure:v=>{reportFailure=v;},setJourneyFailure:v=>{journeyFailure=v;},getRemote:()=>remote,getRevision:()=>rev,async switchUser(id){current={id};remote=null;rev=0;w.eval('currentUser = '+JSON.stringify(current));w.updateAuthUI();await tick();await tick();},async logout(){await client.auth.signOut();await tick();await tick();}};
 }
 function change(w,node,value){assert.ok(node);node.value=value;node.dispatchEvent(new w.Event('input',{bubbles:true}));node.dispatchEvent(new w.Event('change',{bubbles:true}));}
 function click(w,selector){const node=w.document.querySelector(selector);assert.ok(node,selector);node.click();}
@@ -169,4 +170,46 @@ test('unattributed old device-only records are retained but intentionally not si
   assert.deepEqual(Object.keys(app.getRemote().daily),[]);
   w.showPage('page-record');assert.doesNotMatch(w.document.getElementById('page-record').textContent,/端末だけの記録/);
  }finally{app.dom.window.close();}
+});
+
+function swipe(w,node,{dx=0,dy=-32,elapsed=250,cancel=false,id=1}={}){
+  function pointer(type,x,y,time){const event=new w.MouseEvent(type,{bubbles:true,cancelable:true,button:0,clientX:x,clientY:y});Object.defineProperties(event,{pointerId:{value:id},isPrimary:{value:true},pointerType:{value:'touch'},timeStamp:{value:time}});node.dispatchEvent(event);}
+  pointer('pointerdown',100,200,1000);pointer('pointermove',100+dx,200+dy,1000+elapsed);
+  pointer(cancel?'pointercancel':'pointerup',100+dx,200+dy,1000+elapsed);
+}
+test('short upward touch swipe saves once; sideways, tiny and cancelled drags do not save',async()=>{
+  const app=await open(),{w}=app;try{
+    click(w,'[data-action=item][data-index="2"]');click(w,'[data-action=pick][data-value=true]');
+    const card=w.document.getElementById('v2-daily-card');card.setPointerCapture=()=>{throw Error('not available');};
+    const before=w.localStorage.getItem('bloom-journal-v2:guest');
+    for(const attempt of [{dy:-8},{dy:-32,cancel:true},{dx:60,dy:-40},{dy:24}]){swipe(w,card,attempt);await tick();assert.equal(w.localStorage.getItem('bloom-journal-v2:guest'),before);assert.equal(card.style.transform,'');}
+    swipe(w,card);swipe(w,card);await tick();await tick();
+    const data=JSON.parse(w.localStorage.getItem('bloom-journal-v2:guest'));assert.equal(Object.values(data.workspace.daily)[0].stretch,true);assert.equal(w.document.querySelector('.record-count').textContent,'5項目のうち1項目を記録');assert.equal(app.errors.length,0);
+  }finally{app.dom.window.close();}
+});
+test('quick small flick is accepted but a slow small drag is returned without saving',async()=>{
+  const app=await open(),{w}=app;try{
+    click(w,'[data-action=item][data-index="2"]');click(w,'[data-action=pick][data-value=false]');
+    const card=w.document.getElementById('v2-daily-card'),before=w.localStorage.getItem('bloom-journal-v2:guest');
+    swipe(w,card,{dy:-18,elapsed:400});await tick();assert.equal(w.localStorage.getItem('bloom-journal-v2:guest'),before);
+    swipe(w,card,{dy:-18,elapsed:50});await tick();await tick();
+    assert.equal(Object.values(JSON.parse(w.localStorage.getItem('bloom-journal-v2:guest')).workspace.daily)[0].stretch,false);
+  }finally{app.dom.window.close();}
+});
+test('record is persisted before visual completion and cancelled animation cannot prevent saving',async()=>{
+  const app=await open({loggedIn:true}),{w}=app;try{
+    click(w,'[data-action=item][data-index="2"]');click(w,'[data-action=pick][data-value=true]');
+    w.matchMedia=()=>({matches:false});let finish;
+    w.HTMLElement.prototype.animate=function(){return {finished:this.id==='v2-daily-card'?new Promise((resolve,reject)=>{finish=()=>reject(new w.DOMException('cancelled','AbortError'));}):Promise.resolve()};};
+    swipe(w,w.document.getElementById('v2-daily-card'));
+    assert.equal(Object.values(JSON.parse(w.localStorage.getItem('bloom-journal-v2:'+userId)).workspace.daily)[0].stretch,true);
+    finish();await tick();await tick();assert.equal(Object.values(app.getRemote().daily)[0].stretch,true);assert.equal(w.document.querySelectorAll('.merge-overlay').length,0);assert.equal(w.document.querySelector('.record-count').textContent,'5項目のうち1項目を記録');assert.equal(app.errors.length,0);
+  }finally{app.dom.window.close();}
+});
+test('monthly content scroll gesture does not report; handle reports once and failure can be retried',async()=>{
+  const app=await open({loggedIn:true}),{w}=app;try{
+    w.showPage('page-report');let card=w.document.getElementById('v2-month-card');swipe(w,card,{dy:-80});await tick();assert.equal(app.reportRequests.length,0);
+    change(w,w.document.getElementById('v2-comment'),'今月のひとこと');app.setReportFailure(true);let handle=card.querySelector('[data-swipe-handle]');swipe(w,handle);swipe(w,handle);await tick();await tick();assert.equal(app.reportRequests.length,1);assert.match(w.document.querySelector('.sync-state').textContent,/接続できません/);assert.equal(w.document.getElementById('v2-comment').value,'今月のひとこと');assert.equal(w.document.getElementById('v2-month-card').style.transform,'');
+    app.setReportFailure(false);handle=w.document.querySelector('#v2-month-card [data-swipe-handle]');swipe(w,handle);await tick();await tick();assert.equal(app.reportRequests.length,2);assert.match(w.document.getElementById('v2-report-state').textContent,/提出済み/);assert.equal(app.reportRequests[1].comment,'今月のひとこと');assert.equal(app.errors.length,0);
+  }finally{app.dom.window.close();}
 });

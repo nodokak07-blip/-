@@ -123,8 +123,8 @@
       '<div class="drop-pool"><button type="button" class="big-drop" style="width:' + (88 + Math.min(count, 5) * 18) + 'px;height:' + (84 + Math.min(count, 5) * 17) + 'px" aria-label="' + items.length + '項目のうち' + count + '項目を記録。触れるとしずくが揺れます。記録は保存されません。"></button><div class="drop-caption"><p class="drop-title">今日の記録</p><p class="muted record-count">' + (items.length ? items.length + '項目のうち' + count + '項目を記録' : 'マイ項目を選んで、ここから。') + '</p></div></div>' +
       (motionPreview && item ? '<div class="motion-preview">' + button('しずくの動きを見る（保存なし）','motion-demo','text-button') + '</div>' : '') +
       '<div class="daily-items">' + items.map((i, n) => button((M.own(row, i.id) ? icon('check') : '') + e(i.name), 'item', 'chip', 'data-index="' + n + '" aria-pressed="' + (n === active) + '"')).join('') + '</div>' +
-      (item ? '<article class="jelly" id="v2-daily-card"><p class="muted">' + e(date) + ' · ' + (active + 1) + ' / ' + items.length + '</p><h2>' + e(item.name) + '</h2><div class="daily-value">' + field(item, draft) + '</div><p class="swipe-label">' + icon('share') + ' 上にスワイプして、今日の記録へ</p></article>' + button('この内容を記録する', 'save-day', 'primary wide-button', !ready ? 'disabled' : '') : '<p class="notice">「目標設定」からマイ項目を追加してください。</p>') +
-      '<p class="muted section">毎日の記録は蓄積されます。カウンセラーへの報告は月次レポートから。</p><div class="row section">' + button('マイ項目・目標を設定', 'settings') + button('グループを見る', 'groups') + '</div><i class="flight" hidden aria-hidden="true"></i>');
+      (item ? '<article class="jelly" id="v2-daily-card"><p class="muted">' + e(date) + ' · ' + (active + 1) + ' / ' + items.length + '</p><h2>' + e(item.name) + '</h2><div class="daily-value">' + field(item, draft) + '</div><div class="swipe-handle" data-swipe-handle><p class="swipe-label">' + icon('share') + ' 軽く上へスワイプして記録</p></div></article>' + button('この内容を記録する', 'save-day', 'primary wide-button', !ready ? 'disabled' : '') : '<p class="notice">「目標設定」からマイ項目を追加してください。</p>') +
+      '<p class="muted section">毎日の記録は蓄積されます。カウンセラーへの報告は月次レポートから。</p><div class="row section">' + button('マイ項目・目標を設定', 'settings') + button('グループを見る', 'groups') + '</div>');
     // Preserve the existing announcement endpoint and permissions.
     if (announcement) $('v2-announcements').append(announcement);
     bindSwipe($('v2-daily-card'), saveDaily);
@@ -136,7 +136,7 @@
   function monthHeader() { return '<div class="row space monthly-head section"><label class="field"><span>対象月</span><input class="month-input" type="month" id="v2-month" value="' + month + '" max="' + today().slice(0, 7) + '"></label>' + button('月の目標を設定', 'settings', 'secondary') + '</div>'; }
   function renderReport() {
     const rows = M.report(workspace, month);
-    $('page-v2-report').innerHTML = shell('今月の一歩を、届ける。', '本人が決めた月間目標に対して、達成率を自動で計算します。', monthHeader() + '<article class="paper" id="v2-month-card" style="touch-action:none"><p class="muted">MONTHLY REPORT · ' + month + '</p><h2>わたしのふりかえり</h2>' + summaryHtml(rows) + '<p class="swipe-label">' + icon('share') + ' 上にスワイプして、担当カウンセラーへ報告</p></article>' +
+    $('page-v2-report').innerHTML = shell('今月の一歩を、届ける。', '本人が決めた月間目標に対して、達成率を自動で計算します。', monthHeader() + '<article class="paper" id="v2-month-card" data-swipe-area="handle"><p class="muted">MONTHLY REPORT · ' + month + '</p><h2>わたしのふりかえり</h2>' + summaryHtml(rows) + '<div class="swipe-handle" data-swipe-handle><p class="swipe-label">' + icon('share') + ' ここを軽く上へスワイプして報告</p></div></article>' +
       button('月の回数・数字をまとめて入力', 'bulk', 'secondary wide-button') + '<label class="field section"><span>カウンセラーにひとこと（任意・本名や連絡先は書かないでください）</span><textarea id="v2-comment" rows="3" maxlength="2000">' + e(monthConfig().comment || '') + '</textarea></label>' + button(sendingReport ? '報告しています…' : '月次レポートを報告する', 'send-report', 'primary wide-button', sendingReport || !currentUser || !ready ? 'disabled' : '') +
       '<p class="muted section" id="v2-report-state">' + (submittedReport ? '提出済みです。記録を更新した場合は、再報告できます。' : '同期済みの記録だけを、担当カウンセラーに届けます。') + '</p><div class="row section">' + button('SNS用画像を保存', 'save-image') + button('SNSにシェア', 'share-image') + '</div><p class="muted">画像には本名・会員番号・カウンセラーへのコメントを載せません。</p><section class="section"><h2>カウンセラーからのお返事</h2>' + (reportReplies.length ? reportReplies.map(r => '<div class="reply">' + e(r.content) + '</div>').join('') : '<p class="muted">まだお返事はありません。</p>') + '</section>');
     bindSwipe($('v2-month-card'), submitReport);
@@ -181,7 +181,7 @@
     if (page === 'page-v2-summary') renderBulk();
     if (page === 'page-v2-settings') renderSettings();
   }
-  async function animate(element, frames, duration) { if (!element || matchMedia('(prefers-reduced-motion: reduce)').matches || !element.animate) return; await element.animate(frames, { duration, easing: 'cubic-bezier(.22,.7,.25,1)' }).finished; }
+  async function animate(element, frames, duration) { if (!element || matchMedia('(prefers-reduced-motion: reduce)').matches || !element.animate) return; try { await element.animate(frames, { duration, easing: 'cubic-bezier(.2,.8,.25,1)' }).finished; } catch { /* A cancelled visual effect must never cancel a saved record. */ } }
   function bindDropWobble(water) {
     if(!water)return;
     const pool=water.closest('.drop-pool');let lastWobble=-Infinity;
@@ -205,59 +205,104 @@
     pool.addEventListener('pointermove',event=>{if(event.pointerType==='mouse'&&nearby(event))wobble(event);},{passive:true});
     pool.addEventListener('pointerdown',event=>{if(event.pointerType!=='mouse'&&nearby(event))wobble(event);},{passive:true});
   }
-  async function mergeMotion(card, water, flight) {
+  async function mergeMotion(card, water) {
+    if (!card || !water || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const c=card.getBoundingClientRect(),w=water.getBoundingClientRect();
-    await animate(card,[{transform:card.style.transform||'none',opacity:1},{offset:.3,transform:'scale(1.06,.87)',opacity:1},{transform:'translateY(-12px) scale(.1,.14)',borderRadius:'50%',opacity:0}],350);
-    card.style.visibility='hidden';flight.hidden=false;
-    const start='translate('+(c.left+c.width/2-14)+'px,'+(c.top+30)+'px)',end='translate('+(w.left+w.width/2-14)+'px,'+(w.top+w.height*.7)+'px)';
-    flight.style.transform=start;
-    await animate(flight,[{transform:start+' scale(.9,1.2)',opacity:1},{transform:end+' scale(1.2,.7)',opacity:0}],500);
+    const overlay=document.createElement('div');overlay.className='jv merge-overlay';overlay.setAttribute('aria-hidden','true');
+    const flight=document.createElement('i');flight.className='flight';overlay.append(flight);
+    let landing=null,target=w;
+    // Keep the merge visible even when the original drop is above the scrolled card.
+    if(w.top<80||w.bottom>innerHeight){
+      landing=water.cloneNode(false);landing.removeAttribute('style');landing.removeAttribute('aria-label');landing.tabIndex=-1;landing.classList.add('merge-landing');overlay.append(landing);
+    }
+    document.body.append(overlay);
+    if(landing)target=landing.getBoundingClientRect();
+    const x=c.left+c.width/2-14,y=c.top+Math.min(c.height/2,70);
+    const endX=target.left+target.width/2-14,endY=target.top+target.height*.6;
+    const from='translate('+x+'px,'+y+'px)';
+    const to='translate('+endX+'px,'+endY+'px)';
+    flight.style.transform=from;flight.style.opacity='0';
+    try {
+      await animate(card,[{transform:card.style.transform||'none',opacity:1},{transform:'translateY(-35px) scale(.92,1.04)',opacity:.65},{transform:'translateY(-60px) scale(.2,.3)',opacity:0}],160);
+      card.style.visibility='hidden';flight.style.opacity='1';
+      await animate(flight,[{transform:from+' scale(.9,1.15)',opacity:1},{offset:.65,transform:'translate('+endX+'px,'+(endY-16)+'px) scale(.8,1.2)',opacity:1},{transform:to+' scale(1.25,.65)',opacity:0}],260);
+      flight.style.opacity='0';
+      if(landing){animate(landing,[{transform:'scale(1.16,.8)'},{transform:'scale(.94,1.1)'},{transform:'scale(1)',opacity:0}],360).finally(()=>overlay.remove());landing=null;return;}
+    } finally {if(!overlay.querySelector('.merge-landing'))overlay.remove();}
   }
   async function previewMotion() {
     if(animating)return;
-    const card=$('v2-daily-card'),water=document.querySelector('#page-v2-home .big-drop'),flight=document.querySelector('#page-v2-home .flight'),control=document.querySelector('[data-action="motion-demo"]');
-    if(!card||!water||!flight)return;
+    const card=$('v2-daily-card'),water=document.querySelector('#page-v2-home .big-drop'),control=document.querySelector('[data-action="motion-demo"]');
+    if(!card||!water)return;
     animating=true;if(control)control.disabled=true;
     try {
-      await mergeMotion(card,water,flight);flight.hidden=true;
-      await animate(water,[{transform:'scale(1)'},{transform:'scale(1.18,.8)'},{transform:'scale(.94,1.13)'},{transform:'scale(1.1,1.06)'},{transform:'scale(1)'}],700);
+      await mergeMotion(card,water);
+      await animate(water,[{transform:'scale(1)'},{transform:'scale(1.18,.8)'},{transform:'scale(.94,1.13)'},{transform:'scale(1.1,1.06)'},{transform:'scale(1)'}],380);
       card.style.visibility='';
       await animate(card,[{transform:'translateY(12px) scale(.97,1.02)',opacity:.5},{transform:'none',opacity:1}],260);
       announce('動きのデモを再生しました。記録の保存・送信はしていません。');
-    } finally {animating=false;flight.hidden=true;card.style.visibility='';card.style.transform='';if(control)control.disabled=false;}
+    } finally {animating=false;card.style.visibility='';card.style.transform='';if(control)control.disabled=false;}
   }
   async function saveDaily() {
     usable(); const item = dayItems()[active], value = draft;
     if (!item || !M.validValue(item, value)) throw new Error('項目の数字を入力するか、選択肢を選んでください。');
     if (!M.validDay(date, date.slice(0, 7)) || date > today()) throw new Error('記録する日付を確認してください。');
     const epoch = accountEpoch; animating = true;
-    const card = $('v2-daily-card'), water = document.querySelector('#page-v2-home .big-drop'), flight = document.querySelector('#page-v2-home .flight');
+    const card = $('v2-daily-card'), water = document.querySelector('#page-v2-home .big-drop');
     try {
-      await mergeMotion(card,water,flight);
-      if (epoch !== accountEpoch) return;
       workspace.daily[date] ||= {}; workspace.daily[date][item.id] = value; changed();
       // Mirror the old daily boolean so existing group/flower functionality still has its history.
       if (item.type === 'binary') { const legacyName = item.legacyName || item.name; todoData[date] ||= {}; todoData[date][legacyName] = value; }
+      backgroundSync();
+      await mergeMotion(card,water);
+      if (epoch !== accountEpoch) return;
       const next = dayItems().findIndex(i => !M.own(workspace.daily[date], i.id));
       active = next === -1 ? (active + 1) % dayItems().length : next; draft = undefined;
       renderDaily(); const grown = document.querySelector('#page-v2-home .big-drop');
-      await animate(grown, [{ transform: 'scale(1)' }, { transform: 'scale(1.18,.8)' }, { transform: 'scale(.91,1.12)' }, { transform: 'scale(1.05,.95)' }, { transform: 'scale(1)' }], 600);
-      backgroundSync();
-    } finally { animating = false; if (flight?.isConnected) flight.hidden = true; if (card?.isConnected) { card.style.visibility = ''; card.style.transform = ''; } }
+      await animate(grown, [{ transform: 'scale(1)' }, { transform: 'scale(1.18,.8)' }, { transform: 'scale(.91,1.12)' }, { transform: 'scale(1.05,.95)' }, { transform: 'scale(1)' }], 380);
+    } finally { animating = false; if (card?.isConnected) { card.style.visibility = ''; card.style.transform = ''; } }
   }
   function bindSwipe(element, action) {
-    if (!element) return; let start = null, delta = 0;
-    element.addEventListener('pointerdown', event => { if (animating || event.target.closest('input,button,select,textarea')) return; start = event.clientY; delta = 0; element.setPointerCapture(event.pointerId); });
-    element.addEventListener('pointermove', event => { if (start === null) return; delta = Math.max(-130, Math.min(20, event.clientY - start)); element.style.transform = 'translateY(' + delta * .65 + 'px) scale(' + (1 - Math.abs(delta) / 1800) + ',' + (1 + Math.abs(delta) / 1000) + ')'; });
-    element.addEventListener('pointerup', async () => { if (start === null) return; start = null; try { if (delta < -58) await action(); else { const from = element.style.transform; element.style.transform = ''; await animate(element, [{ transform: from }, { transform: 'scale(1.04,.95)' }, { transform: 'none' }], 400); } } catch (error) { announce(error.message, true); } finally { element.style.transform = ''; } });
-    element.addEventListener('pointercancel', () => { start = null; element.style.transform = ''; });
+    if (!element) return;
+    const surface=element.dataset.swipeArea==='handle'?element.querySelector('[data-swipe-handle]'):element;
+    if(!surface)return;
+    let gesture=null,running=false;
+    function clear(){gesture=null;element.classList.remove('swiping','swipe-ready');}
+    function qualifies(dx,dy,elapsed){return dy<0&&Math.abs(dy)>Math.abs(dx)*1.25&&(dy<=-30||(dy<=-16&&elapsed<=180&&-dy/Math.max(elapsed,1)>=.28));}
+    function reset(){const from=element.style.transform;element.style.transform='';clear();if(from)animate(element,[{transform:from},{transform:'translateY(3px) scale(1.01,.99)'},{transform:'none'}],180);}
+    surface.addEventListener('pointerdown',event=>{
+      if(running||animating||sendingReport||gesture||event.isPrimary===false||(event.button!==undefined&&event.button!==0)||event.target.closest('input,button,select,textarea,a'))return;
+      gesture={id:event.pointerId,x:event.clientX,y:event.clientY,time:event.timeStamp};
+      try{surface.setPointerCapture?.(event.pointerId);}catch{/* Pointer capture is optional on older browsers. */}
+    });
+    surface.addEventListener('pointermove',event=>{
+      if(!gesture||event.pointerId!==gesture.id)return;
+      const dx=event.clientX-gesture.x,dy=event.clientY-gesture.y;
+      if(Math.abs(dx)>12&&Math.abs(dx)>Math.abs(dy)){reset();return;}
+      if(dy>10){reset();return;}
+      if(dy>=-4)return;
+      element.classList.add('swiping');
+      element.classList.toggle('swipe-ready',qualifies(dx,dy,event.timeStamp-gesture.time));
+      const lift=Math.max(-180,dy*.98);
+      element.style.transform='translateY('+lift+'px) scale('+(1+Math.min(-dy,100)/8000)+','+(1-Math.min(-dy,100)/10000)+')';
+    });
+    surface.addEventListener('pointerup',async event=>{
+      if(!gesture||event.pointerId!==gesture.id)return;
+      const accepted=qualifies(event.clientX-gesture.x,event.clientY-gesture.y,event.timeStamp-gesture.time);
+      if(!accepted){reset();return;}
+      clear();running=true;
+      try{await action();}catch(error){reset();announce(error.message,true);}finally{running=false;element.style.transform='';}
+    });
+    surface.addEventListener('pointercancel',event=>{if(gesture?.id===event.pointerId)reset();});
+    surface.addEventListener('lostpointercapture',event=>{if(gesture?.id===event.pointerId)reset();});
   }
   async function submitReport() {
     usable(); if (sendingReport) return; if (!currentUser) throw new Error('ログインしてから報告してください。');
     if (month > today().slice(0, 7)) throw new Error('未来の月には報告できません。');
     const epoch = accountEpoch, targetMonth = month, text = $('v2-comment')?.value || monthConfig().comment || '';
     ensureMonth().comment = text; changed(); sendingReport = true;
-    try { await sync(); const result = await api('/api/journal-report', { month: targetMonth, revision, comment: text }); if (epoch !== accountEpoch) return; const card = $('v2-month-card'); await animate(card, [{ transform: card.style.transform || 'none', opacity: 1 }, { offset: .25, transform: 'scale(1.06,.9)', opacity: 1 }, { transform: 'translateY(-210px) scale(.15,.2)', borderRadius: '50%', opacity: 0 }], 650); if (targetMonth === month) submittedReport = result.report; announce('月次レポートをカウンセラーに届けました。'); } finally { sendingReport = false; renderCurrent(); }
+    const pendingCard=$('v2-month-card'); if(pendingCard){pendingCard.style.transform='';pendingCard.classList.add('swipe-pending');pendingCard.setAttribute('aria-busy','true');} const sendButton=document.querySelector('[data-action="send-report"]'); if(sendButton){sendButton.disabled=true;sendButton.textContent='報告しています…';}
+    try { await sync(); const result = await api('/api/journal-report', { month: targetMonth, revision, comment: text }); if (epoch !== accountEpoch) return; const card = $('v2-month-card'); await animate(card, [{ transform: card.style.transform || 'none', opacity: 1 }, { offset: .25, transform: 'scale(1.06,.9)', opacity: 1 }, { transform: 'translateY(-210px) scale(.15,.2)', borderRadius: '50%', opacity: 0 }], 320); if (targetMonth === month) submittedReport = result.report; announce('月次レポートをカウンセラーに届けました。'); } finally { sendingReport = false; renderCurrent(); }
   }
   function showCredentials(result) {
     let dialog = $('v2-credentials'); if (!dialog) { const container = document.createElement('div'); container.className = 'jv'; container.innerHTML = '<dialog class="dialog" id="v2-credentials" aria-labelledby="v2-credential-title"></dialog>'; document.body.append(container); dialog = $('v2-credentials'); }
