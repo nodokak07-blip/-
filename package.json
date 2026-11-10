@@ -2,7 +2,18 @@
   "name": "bloom-journal-fastina",
   "private": true,
   "version": "1.0.0",
-  "engines": { "node": ">=22" },
-  "scripts": { "test": "node --test test/*.test.cjs" },
-  "dependencies": { "fast-xml-parser": "5.12.0" }
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.cjs",
+    "dev": "node scripts/dev-server.cjs"
+  },
+  "dependencies": {
+    "fast-xml-parser": "5.12.0"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.15",
+    "jsdom": "^26.1.0"
+  }
 }
