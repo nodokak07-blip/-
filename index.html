@@ -794,6 +794,7 @@ body { color: var(--text-dark); font-weight: 400; line-height: 1.8; }
 .result-hero .drop--hero { width: 78px; height: 74px; right: -8px; top: -12px; }
 .result-hero .drop--hero-s { width: 26px; height: 24px; left: 16px; bottom: 14px; border-radius: 52% 48% 56% 44% / 46% 54% 46% 54%; }
 </style>
+<link rel="stylesheet" href="/assets/layout.css">
 </head>
 <body class="auth-checking">
 <div class="auth-loading" role="status">ログイン状態を確認しています…</div>
@@ -983,13 +984,13 @@ body { color: var(--text-dark); font-weight: 400; line-height: 1.8; }
     </div>
   </div>
   <div class="nav-tabs">
-    <button class="nav-tab" data-nav="home" onclick="showPage('page-todo')"><svg class="ico" aria-hidden="true"><use href="#ic-home"/></svg> ホーム</button>
-    <button class="nav-tab active" data-nav="settings" onclick="showPage('page-goal')"><svg class="ico" aria-hidden="true"><use href="#ic-target"/></svg> 目標設定</button>
-    <button class="nav-tab" data-nav="reports" onclick="showPage('page-more')"><svg class="ico" aria-hidden="true"><use href="#ic-doc"/></svg> 記録レポート</button>
-    <button class="nav-tab" data-nav="journey" onclick="showPage('page-record')"><svg class="ico" aria-hidden="true"><use href="#ic-flower"/></svg> わたしの歩み</button>
-    <button class="nav-tab" data-nav="groups" onclick="showPage('page-group')"><svg class="ico" aria-hidden="true"><use href="#ic-users"/></svg> グループ</button>
-    <button class="nav-tab" data-nav="meals" onclick="showPage('page-sns')"><svg class="ico" aria-hidden="true"><use href="#ic-camera"/></svg> みんなのご飯</button>
-    <button class="nav-tab" data-nav="column" onclick="showPage('page-column')"><svg class="ico" aria-hidden="true"><use href="#ic-news"/></svg> コラム</button>
+    <button class="nav-tab" data-nav="home" aria-label="ホーム" data-mobile-label="ホーム" onclick="showPage('page-todo')"><svg class="ico" aria-hidden="true"><use href="#ic-home"/></svg> ホーム</button>
+    <button class="nav-tab active" data-nav="settings" aria-label="目標設定" data-mobile-label="目標" onclick="showPage('page-goal')"><svg class="ico" aria-hidden="true"><use href="#ic-target"/></svg> 目標設定</button>
+    <button class="nav-tab" data-nav="reports" aria-label="記録レポート" data-mobile-label="レポート" onclick="showPage('page-more')"><svg class="ico" aria-hidden="true"><use href="#ic-doc"/></svg> 記録レポート</button>
+    <button class="nav-tab" data-nav="journey" aria-label="わたしの歩み" data-mobile-label="歩み" onclick="showPage('page-record')"><svg class="ico" aria-hidden="true"><use href="#ic-flower"/></svg> わたしの歩み</button>
+    <button class="nav-tab" data-nav="groups" aria-label="グループ" data-mobile-label="グループ" onclick="showPage('page-group')"><svg class="ico" aria-hidden="true"><use href="#ic-users"/></svg> グループ</button>
+    <button class="nav-tab" data-nav="meals" aria-label="みんなのご飯" data-mobile-label="ご飯" onclick="showPage('page-sns')"><svg class="ico" aria-hidden="true"><use href="#ic-camera"/></svg> みんなのご飯</button>
+    <button class="nav-tab" data-nav="column" aria-label="コラム" data-mobile-label="コラム" onclick="showPage('page-column')"><svg class="ico" aria-hidden="true"><use href="#ic-news"/></svg> コラム</button>
   </div>
 </nav>
 
@@ -1183,7 +1184,7 @@ body { color: var(--text-dark); font-weight: 400; line-height: 1.8; }
 
 <!-- ========== 習慣TODOページ ========== -->
 <div id="page-todo" class="page">
-  <div style="padding:16px;">
+  <div class="page-content">
     <!-- 管理者からのお知らせ（v7 ガラスバナー） -->
     <div id="admin-msg-list" style="display:none;margin-bottom:14px;"></div>
 
@@ -1242,7 +1243,7 @@ body { color: var(--text-dark); font-weight: 400; line-height: 1.8; }
 
 <!-- ========== 体調記録ページ ========== -->
 <div id="page-record" class="page">
-  <div style="padding:16px;">
+  <div class="page-content">
     <div class="date-header">
       <button class="date-nav" onclick="changeRecordDate(-1)">‹</button>
       <div class="date-label" id="record-date-label">今日</div>
@@ -1315,7 +1316,7 @@ body { color: var(--text-dark); font-weight: 400; line-height: 1.8; }
 
 <!-- ========== レポートページ ========== -->
 <div id="page-report" class="page">
-  <div style="padding:16px;">
+  <div class="page-content">
     <div class="card">
       <div class="card-title"><svg class="ico" aria-hidden="true"><use href="#ic-doc"/></svg> 月次レポート</div>
       <div class="date-header" style="margin-bottom:16px;">
@@ -1367,7 +1368,7 @@ body { color: var(--text-dark); font-weight: 400; line-height: 1.8; }
 
 <!-- ========== コラムページ ========== -->
 <div id="page-column" class="page">
-  <div style="padding:16px;">
+  <div class="page-content">
     <div class="column-category-filter" id="column-category-filter"></div>
 
     <div id="column-articles-list" class="column-articles-list"></div>
@@ -1377,7 +1378,7 @@ body { color: var(--text-dark); font-weight: 400; line-height: 1.8; }
 
 <!-- ========== グループページ ========== -->
 <div id="page-group" class="page">
-  <div style="padding:16px;">
+  <div class="page-content">
     <!-- わたしの花畑（簡易版） -->
     <div class="card" onclick="openMyFlower()" style="cursor:pointer;transition:all .2s;">
       <div class="card-title"><svg class="ico" aria-hidden="true"><use href="#ic-flower"/></svg> わたしの花畑</div>
@@ -1412,7 +1413,7 @@ body { color: var(--text-dark); font-weight: 400; line-height: 1.8; }
 
 <!-- ========== グループ詳細ページ（みんなの花畑） ========== -->
 <div id="page-group-detail" class="page">
-  <div style="padding:16px;">
+  <div class="page-content">
     <!-- グループ情報 -->
     <div class="card">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
@@ -1445,7 +1446,7 @@ body { color: var(--text-dark); font-weight: 400; line-height: 1.8; }
 
 <!-- ========== グループ報告フィード ========== -->
 <div id="page-group-report" class="page">
-  <div style="padding:16px;">
+  <div class="page-content">
     <!-- ナビゲーション -->
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
       <div class="card-title" style="margin:0;">報告フィード</div>
@@ -1482,7 +1483,7 @@ body { color: var(--text-dark); font-weight: 400; line-height: 1.8; }
 
 <!-- ========== わたしの花畑（グループ内） ========== -->
 <div id="page-group-my-flower" class="page">
-  <div style="padding:16px;">
+  <div class="page-content">
     <!-- ナビゲーション -->
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
       <div class="card-title" style="margin:0;"><svg class="ico" aria-hidden="true"><use href="#ic-flower"/></svg> わたしの花畑</div>
@@ -1580,7 +1581,7 @@ body { color: var(--text-dark); font-weight: 400; line-height: 1.8; }
 
 <!-- ========== 管理画面 ========== -->
 <div id="page-admin" class="page">
-  <div style="padding:16px;">
+  <div class="page-content">
     <!-- ナビゲーション -->
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
       <div class="card-title" style="margin:0;"><svg class="ico" aria-hidden="true"><use href="#ic-sliders"/></svg> グループ管理</div>
@@ -1713,7 +1714,7 @@ body { color: var(--text-dark); font-weight: 400; line-height: 1.8; }
 
 <!-- ========== 1ヶ月の結果をまとめて入力ページ（新規追加） ========== -->
 <div id="page-summary" class="page">
-  <div style="padding:16px;">
+  <div class="page-content">
     <div class="card">
       <div class="card-title"><svg class="ico" aria-hidden="true"><use href="#ic-edit"/></svg> 1ヶ月の結果をまとめて入力</div>
       <p class="sum-note">他のアプリやノートで記録している方向けです。1ヶ月の結果（％など）だけを入れると、月次レポートに反映されます。日々の習慣チェックや体調記録は、これまで通りお使いいただけます。<br>空欄の項目は、これまでの記録から自動で計算されます。</p>
@@ -1748,7 +1749,7 @@ body { color: var(--text-dark); font-weight: 400; line-height: 1.8; }
 
 <!-- ========== 記録レポートの入口（page-moreは既存リンクとの互換用） ========== -->
 <div id="page-more" class="page">
-  <div class="record-report-hub" style="padding:16px;">
+  <div class="record-report-hub page-content">
     <header><p class="meal-eyebrow">MY RECORDS</p><h1>記録レポート</h1><p>日々の記録をまとめて、自分のペースでふりかえる。</p></header>
     <div class="card" style="padding:8px;">
       <button class="more-menu-item" onclick="showPage('page-report')">

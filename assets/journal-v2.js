@@ -96,14 +96,14 @@
         ready = true; store();
         bloomStorage.setItem('bloom-profile-username', identity.nickname);
         updateAuthUI();
-        announce(conflict ? '別端末の更新と競合しています。同期を確認してください。' : '会員番号 ' + identity.member_id + ' · オンラインの記録を読み込みました。', conflict);
+        announce(conflict ? '別端末の更新と競合しています。同期を確認してください。' : 'オンラインの記録を読み込みました。', conflict);
         renderCurrent(); if (dirty && !conflict) backgroundSync();
       } catch (error) { if (epoch !== accountEpoch) return; ready = false; announce(error.message + '「同期を確認」で再試行できます。', true); renderCurrent(); }
     })();
     const thisLoad = loadInFlight;
     try { await thisLoad; } finally { if (loadInFlight === thisLoad) { loadInFlight = null; loadingAccount = null; } }
   }
-  function shell(title, sub, content) { return '<h1>' + title + '</h1><p class="muted">' + sub + '</p>' + (identity ? '<p class="section"><span class="badge">' + e(identity.nickname) + ' · 会員番号 ' + e(identity.member_id) + '</span></p>' : '') + '<p class="sync-state" role="status">' + e(syncMessage) + '</p><button type="button" class="text-button" data-action="sync">同期を確認</button>' + content; }
+  function shell(title, sub, content) { return '<h1>' + title + '</h1><p class="muted">' + sub + '</p>' + '<div class="workspace-status">' + (identity ? '<p class="workspace-identity"><span class="badge">' + e(identity.nickname) + ' · 会員番号 ' + e(identity.member_id) + '</span></p>' : '') + '<p class="sync-state" role="status">' + e(syncMessage) + '</p><button type="button" class="text-button" data-action="sync">同期を確認</button></div>' + content; }
   function usable() { if (!ready || animating) throw new Error('読み込み・保存の完了を待ってください。'); }
   function button(label, action, cls = 'secondary', extra = '') { return '<button type="button" class="' + cls + '" data-action="' + action + '" ' + extra + '>' + label + '</button>'; }
   function field(item, value, mode = 'daily', index = 0) {
