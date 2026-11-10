@@ -3,9 +3,19 @@ const assert = require('node:assert/strict');
 const Auth = require('../api/member-auth.js');
 const Report = require('../api/journal-report.js');
 const Admin = require('../api/journal-admin.js');
-const { hash } = require('../lib/journal-server.cjs');
+const { hash, createServices } = require('../lib/journal-server.cjs');
 const env = { SUPABASE_URL:'https://example.supabase.co',SUPABASE_ANON_KEY:'public-test',SUPABASE_SERVICE_ROLE_KEY:'secret-test',AUTH_RATE_LIMIT_SECRET:'test-rate-limit-secret-at-least-32-characters' };
 const uid='11111111-1111-4111-8111-111111111111';
+test('modern Supabase app keys use apikey while authenticated requests retain the user token',async()=>{
+ const calls=[];const modern={...env,SUPABASE_ANON_KEY:'sb_publishable_fixture',SUPABASE_SERVICE_ROLE_KEY:'sb_secret_fixture'};
+ const service=createServices({env:modern,fetchImpl:async(url,options)=>{calls.push({url,options});return {ok:true,json:async()=>url.endsWith('/auth/v1/user')?{id:uid}:[]};}});
+ await service.rest('member_identity');assert.equal(calls[0].options.headers.apikey,'sb_secret_fixture');assert.equal(calls[0].options.headers.Authorization,undefined);
+ await service.request('/auth/v1/token?grant_type=password',{method:'POST',key:modern.SUPABASE_ANON_KEY,token:modern.SUPABASE_ANON_KEY,body:{}});assert.equal(calls[1].options.headers.apikey,'sb_publishable_fixture');assert.equal(calls[1].options.headers.Authorization,undefined);
+ assert.equal((await service.actor({headers:{authorization:'Bearer real-user-jwt'}})).id,uid);assert.equal(calls[2].options.headers.apikey,'sb_publishable_fixture');assert.equal(calls[2].options.headers.Authorization,'Bearer real-user-jwt');
+});
+test('legacy Supabase JWT keys preserve their existing Authorization header',async()=>{
+ let headers;const service=createServices({env,fetchImpl:async(url,options)=>{headers=options.headers;return {ok:true,json:async()=>[]};}});await service.rest('profiles');assert.equal(headers.apikey,env.SUPABASE_SERVICE_ROLE_KEY);assert.equal(headers.Authorization,'Bearer '+env.SUPABASE_SERVICE_ROLE_KEY);
+});
 function setup(module, route) {
   const calls=[];
   const fetchImpl=async(url,options)=>{const body=options.body?JSON.parse(options.body):undefined;calls.push({url,options,body});const r=await route(url,options,body);if(r===undefined)throw Error('Unexpected upstream call: '+url);return {ok:(r.status||200)<400,status:r.status||200,json:async()=>r.data};};

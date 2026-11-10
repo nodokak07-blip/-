@@ -24,6 +24,8 @@
 
 新しいAPIは設定がない場合503で停止する。公開中のmainブランチには自動でマージしない。
 
+現在のSupabaseのキー形式にも対応する。SUPABASE_ANON_KEYにはsb_publishable_形式、SUPABASE_SERVICE_ROLE_KEYには既存のsb_secret_形式を設定でき、従来のanon/service_role JWTも引き続き使用できる。新形式はapikeyヘッダーだけで渡し、利用者のアクセストークンは別のAuthorizationヘッダーに保持する。[Supabase公式のAPIキー仕様](https://supabase.com/docs/guides/getting-started/api-keys)に従う。変数名は既存設定との互換性のため維持する。
+
 ## わたしの歩み（2026年11月10日追加）
 
 - 主ナビの体調記録を「わたしの歩み」に変更。既存データ・画面は維持し、「記録レポート」の「以前の体調記録を見る」から参照できる。
