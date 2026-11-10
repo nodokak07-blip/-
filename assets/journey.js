@@ -81,11 +81,11 @@
     }else{const post_id=form.dataset.journeyComment;const content=form.querySelector('textarea').value.trim();if(!content){status('ひとことを入力してください。',true);return;}const cd=commentDrafts.get(post_id)||{id:crypto.randomUUID(),text:content};cd.text=content;commentDrafts.set(post_id,cd);const epoch=generation;const ok=await mutate('comment',{post_id,id:cd.id,content},'言葉を届けました。');if(ok&&epoch===generation){commentDrafts.delete(post_id);render();}}
   }
   const oldPage=showPage;
-  showPage=function(id){oldPage(id);if(id==='page-journey'){$('page-journey')?.classList.add('active');document.querySelectorAll('.nav-tab').forEach((n,i)=>n.classList.toggle('active',i===2));if(owner!==ownId())reset();render();refresh();}};
+  showPage=function(id){oldPage(id);if(id==='page-journey'){$('page-journey')?.classList.add('active');document.querySelectorAll('.nav-tab').forEach(n=>n.classList.toggle('active',n.dataset.nav==='journey'));if(owner!==ownId())reset();render();refresh();}};
   const oldAuth=updateAuthUI;updateAuthUI=function(){if(owner!==ownId())reset();oldAuth();};
   window.addEventListener('load',()=>{
     const page=document.createElement('section');page.id='page-journey';page.className='page jv journey';$('page-record').before(page);
-    const nav=document.querySelectorAll('.nav-tab')[2];nav.innerHTML=icon('flower')+' わたしの歩み';nav.setAttribute('onclick',"showPage('page-journey')");
+    const nav=document.querySelector('.nav-tab[data-nav="journey"]');nav.setAttribute('onclick',"showPage('page-journey')");
     const history=document.createElement('button');history.type='button';history.className='btn-secondary';history.textContent='以前の体調記録を見る';history.addEventListener('click',()=>showPage('page-record'));$('page-more').firstElementChild.append(history);
     const admin=document.createElement('button');admin.type='button';admin.className='chip';admin.textContent='歩み・応援';admin.addEventListener('click',()=>showPage('page-journey'));document.querySelector('.admin-tabs')?.append(admin);
     page.addEventListener('click',action);page.addEventListener('submit',submit);

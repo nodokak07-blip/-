@@ -323,6 +323,7 @@
   }
   function showAdminTab(tab) { document.querySelectorAll('[data-admin-panel]').forEach(p => p.hidden = p.dataset.adminPanel !== tab); document.querySelectorAll('[data-action="admin-tab"]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.tab === tab))); if (tab === 'reports' && isAdmin) loadAdmin().catch(error => announce(error.message, true)); }
   function setupPages() {
+    if($('nav-icon'))$('nav-icon').innerHTML=icon('settings');
     const parent = $('page-todo').parentElement;
     for (const name of ['home', 'settings', 'report', 'summary']) { const div = document.createElement('section'); div.id = 'page-v2-' + name; div.className = 'page jv'; parent.insertBefore(div,$('page-goal')); }
     // Move rather than duplicate this element, keeping the existing announcement renderer intact.
@@ -334,7 +335,7 @@
     if (animating) return;
     const remap = { 'page-todo': 'page-v2-home', 'page-goal': 'page-v2-settings', 'page-report': 'page-v2-report', 'page-summary': 'page-v2-summary' };
     const target = remap[id] || id; originalShowPage(target);
-    const tabs = document.querySelectorAll('.nav-tab'); if (target.startsWith('page-v2-')) { tabs.forEach(t => t.classList.remove('active')); tabs[target === 'page-v2-home' ? 0 : target === 'page-v2-settings' ? 1 : 5]?.classList.add('active'); }
+    const tabs = document.querySelectorAll('.nav-tab'); if (target.startsWith('page-v2-')) { tabs.forEach(t => t.classList.remove('active')); const nav=target === 'page-v2-home' ? 'home' : target === 'page-v2-settings' ? 'settings' : 'reports'; document.querySelector('.nav-tab[data-nav="'+nav+'"]')?.classList.add('active'); }
     if (target === 'page-v2-home') { renderDaily(); loadAnnouncement(); }
     if (target === 'page-v2-settings') renderSettings();
     if (target === 'page-v2-report') { renderReport(); refreshReplies(); }
@@ -347,13 +348,20 @@
   loadUserDataFromSupabase = async function() { resetLegacyAccount(); await oldUserLoad(); await loadWorkspace(); };
   const oldAuthUI = updateAuthUI;
   updateAuthUI = function() {
+    if(account!==(currentUser?.id||'guest')){$('account-settings')?.close();$('account-settings')?.replaceChildren();}
     resetLegacyAccount();
     oldAuthUI(); const userName = identity && account === currentUser?.id ? identity.nickname : 'メンバー';
-    if ($('nav-icon')) $('nav-icon').innerHTML = icon(currentUser ? 'user' : 'key');
+    if ($('nav-icon')) $('nav-icon').innerHTML = icon('settings');
     if ($('nav-name')) $('nav-name').textContent = currentUser ? userName : 'ログイン';
     if (account !== (currentUser?.id || 'guest')) { settingsItems = null; settingsTargets = null; if($('page-v2-home'))showPage('page-todo'); loadWorkspace(); }
   };
   // Profile editing requires no real name, photo or email. Keep existing public nickname integrations.
+  window.openAccountSettings = function() {
+    let dialog=$('account-settings');
+    if(!dialog){const wrap=document.createElement('div');wrap.className='jv';dialog=document.createElement('dialog');dialog.id='account-settings';dialog.className='dialog account-dialog';dialog.setAttribute('aria-labelledby','account-settings-title');wrap.append(dialog);document.body.append(wrap);}
+    dialog.innerHTML='<h2 id="account-settings-title">アカウント・プロフィール設定</h2>'+(currentUser?'<p class="muted">'+e(identity?.nickname||'メンバー')+(identity?.member_id?' · 会員番号 '+e(identity.member_id):'')+'</p><div class="list section">'+button('ニックネームを変更','account-profile')+button('ログアウト','account-logout')+'</div>':'<p class="muted">会員番号でログインできます。本名やメールアドレスの入力は不要です。</p>'+button('ログイン・新規登録','account-login','primary wide-button'))+button('閉じる','account-close','secondary wide-button');
+    dialog.showModal();
+  };
   openProfileModal = async function() {
     try { await loadWorkspace(); const result = prompt('ニックネームを入力してください。本名や連絡先は使わないでください。', identity?.nickname || ''); if (result === null) return; const nick = result.trim(); if (!nick || nick.length > 40 || nick.includes('@')) throw new Error('ニックネームは1〜40文字で入力してください。'); identity = await api('/api/member-auth', { action: 'identity', nickname: nick }); bloomStorage.setItem('bloom-profile-username',nick); updateAuthUI(); if (identity.recovery_code) showCredentials(identity); announce('ニックネームを保存しました。'); } catch (error) { alert(error.message); }
   };
@@ -381,6 +389,7 @@
     const b = event.target.closest('[data-action]'); if (!b || b.disabled) return;
     const a = b.dataset.action;
     try {
+      if(a.startsWith('account-')){const dialog=$('account-settings');dialog?.close();if(a==='account-profile')await openProfileModal();if(a==='account-login')$('auth-overlay').style.display='flex';if(a==='account-logout')await handleLogout();return;}
       if (a === 'motion-demo') { await previewMotion(); return; }
       if (['report','settings','bulk','groups'].includes(a)) { if (animating) return; showPage({ report:'page-report', settings:'page-goal', bulk:'page-summary', groups:'page-group' }[a]); return; }
       if (a === 'sync') { if (!ready) { await loadWorkspace(true); return; } if (conflict) { if (!confirm('オンラインの記録を読み直しますか？この端末の未同期分は、この端末用のバックアップとして保管します。')) return; localStorage.setItem(storageKey() + ':conflict-backup:' + Date.now(), JSON.stringify(workspace)); localStorage.removeItem(storageKey()); await loadWorkspace(true); } else await sync(); return; }

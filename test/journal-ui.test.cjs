@@ -15,7 +15,7 @@ async function open({loggedIn=false,admin=false,preview=false}={}) {
   const w=dom.window;let current=loggedIn?{id:userId}:null,listener,remote=null,rev=0;
   w.scrollTo=()=>{};w.matchMedia=()=>({matches:true,addEventListener(){},removeEventListener(){}});w.alert=()=>{};w.confirm=()=>true;w.prompt=()=>null;
   if(w.HTMLDialogElement){w.HTMLDialogElement.prototype.showModal=function(){this.open=true;};w.HTMLDialogElement.prototype.close=function(){this.open=false;};}
-  function query(table){const result={data:null,error:null},filters={};const q={select(){return q;},eq(key,value){filters[key]=value;return q;},order(){return q;},limit(){return q;},in(){return q;},upsert(){return Promise.resolve({data:null,error:null});},single(){return execute();},maybeSingle(){return execute();},then(a,b){return execute().then(a,b);}};
+  function query(table){const result={data:null,error:null},filters={};const q={select(){return q;},eq(key,value){filters[key]=value;return q;},gt(){return q;},order(){return q;},limit(){return q;},in(){return q;},upsert(){return Promise.resolve({data:null,error:null});},single(){return execute();},maybeSingle(){return execute();},then(a,b){return execute().then(a,b);}};
     function execute(){if(table==='journal_workspaces')result.data=remote?{data:JSON.parse(JSON.stringify(remote)),revision:rev}:null;else if(table==='profiles')result.data={id:current?.id,username:'こはる',selected_habits:[]};else if(table==='admins')result.data=admin?{user_id:current?.id}:null;else result.data=[];return Promise.resolve(result);}return q;}
   const client={auth:{async startAutoRefresh(){},async getSession(){return {data:{session:current?{user:current,access_token:'token'}:null},error:null};},onAuthStateChange(cb){listener=cb;},async setSession(){return {error:null};},async signOut(){current=null;listener?.('SIGNED_OUT',null);}},from:query,async rpc(name,body){if(name==='save_journal_workspace'){if(body.p_expected_revision!==rev)return {data:null,error:{message:'workspace_conflict'}};remote=JSON.parse(JSON.stringify(body.p_data));rev++;return {data:rev,error:null};}return {data:null,error:null};}};
   w.supabase={createClient:()=>client};
@@ -39,7 +39,7 @@ function click(w,selector){const node=w.document.querySelector(selector);assert.
 function submit(w,id){const form=w.document.getElementById(id);assert.ok(form);form.dispatchEvent(new w.Event('submit',{bubbles:true,cancelable:true}));}
 test('guest UI starts without email inputs and records explicit did-not-do as one droplet',async()=>{
   const app=await open();const {w}=app;try{
-    assert.equal(w.document.querySelectorAll('input[type=email]').length,0);assert.equal(w.document.querySelector('.page.active').id,'page-v2-home');
+    assert.equal(w.document.querySelectorAll('input[type=email]').length,0);assert.equal(w.document.querySelector('.page.active').id,'page-v2-home');assert.equal(w.document.querySelector('#nav-icon use').getAttribute('href'),'#ic-settings');
     click(w,'[data-action=item][data-index="2"]');assert.equal(w.document.querySelector('[data-action=pick][data-value=false]').textContent,'スキップ');click(w,'[data-action=pick][data-value=false]');click(w,'[data-action=save-day]');await tick();await tick();
     assert.equal(w.document.querySelector('.record-count').textContent,'5項目のうち1項目を記録');
     const data=JSON.parse(w.localStorage.getItem('bloom-journal-v2:guest'));assert.equal(Object.values(data.workspace.daily)[0].stretch,false);
@@ -133,5 +133,23 @@ test('journey failed saves retain input and account switches clear private draft
   await app.switchUser('22222222-2222-4222-8222-222222222222');
   assert.equal(w.document.getElementById('journey-note').value,'');assert.equal(w.document.getElementById('journey-audience').value,'self');assert.equal(w.document.querySelectorAll('.journey-choice[aria-pressed=true]').length,0);
   assert.equal(app.errors.length,0,app.errors.map(e=>e.message).join('\n'));
+ }finally{app.dom.window.close();}
+});
+test('reordered navigation keeps reports, bulk entry, journey and meals selected; gear opens account settings',async()=>{
+ const app=await open({loggedIn:true}),{w}=app;try{
+  const nav=[...w.document.querySelectorAll('.nav-tab')];
+  const inlineClick=selector=>w.eval(w.document.querySelector(selector).getAttribute('onclick'));
+  assert.deepEqual(nav.map(n=>n.textContent.trim()),['ホーム','目標設定','記録レポート','わたしの歩み','グループ','みんなのご飯','コラム']);
+  inlineClick('.nav-tab[data-nav=reports]');assert.equal(w.document.querySelector('.page.active').id,'page-more');
+  inlineClick('#page-more button[onclick*="page-report"]');assert.equal(w.document.querySelector('.page.active').id,'page-v2-report');assert.equal(w.document.querySelector('.nav-tab.active').dataset.nav,'reports');
+  w.showPage('page-summary');assert.equal(w.document.querySelector('.nav-tab.active').dataset.nav,'reports');
+  inlineClick('.nav-tab[data-nav=journey]');await tick();assert.equal(w.document.querySelector('.nav-tab.active').dataset.nav,'journey');
+  inlineClick('.nav-tab[data-nav=meals]');await tick();assert.equal(w.document.querySelector('.page.active').id,'page-sns');assert.equal(w.document.querySelector('.nav-tab.active').dataset.nav,'meals');
+  w.switchSnsTab('post');assert.equal(w.document.getElementById('sns-post').style.display,'block');assert.match(w.document.getElementById('post-caption').placeholder,/ランチ/);
+  w.switchSnsTab('feed');assert.match(w.document.getElementById('posts-container').textContent,/みんなのご飯/);
+  inlineClick('#nav-auth-btn');assert.equal(w.document.getElementById('account-settings').open,true);assert.ok(w.document.querySelector('[data-action=account-profile]'));assert.match(w.document.getElementById('account-settings').textContent,/会員番号 1234567890/);
+  await app.logout();assert.equal(w.document.getElementById('account-settings').open,false);assert.equal(w.document.getElementById('account-settings').textContent,'');
+  inlineClick('#nav-auth-btn');assert.ok(w.document.querySelector('[data-action=account-login]'));click(w,'[data-action=account-login]');assert.equal(w.document.getElementById('auth-overlay').style.display,'flex');
+  assert.equal(w.document.querySelectorAll('input[type=email]').length,0);assert.equal(app.errors.length,0,app.errors.map(e=>e.message).join('\n'));
  }finally{app.dom.window.close();}
 });

@@ -979,23 +979,25 @@ body { color: var(--text-dark); font-weight: 400; line-height: 1.8; }
 
 <!-- ナビゲーション -->
 <nav class="app-nav">
+  <svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute"><defs><symbol id="ic-settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 3-.6 2.4-2 .9L4.2 5.6 2.7 8.2l1.8 1.7v2.3L2.7 14l1.5 2.6 2.2-.7 2 .9L9 19.2h3l.6-2.4 2-.9 2.2.7 1.5-2.6-1.8-1.8V9.9l1.8-1.7-1.5-2.6-2.2.7-2-.9L12 3z" transform="translate(1.5 1)"/><circle cx="12" cy="12" r="3"/></symbol></defs></svg>
   <div class="nav-header">
     <span style="font-size:20px;flex-shrink:0;"><svg class="ico" aria-hidden="true"><use href="#ic-flower"/></svg></span>
     <span class="nav-logo wm" style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><b>Bloom</b><i>Journal</i></span>
     <div style="margin-left:auto;display:flex;align-items:center;gap:4px;flex-shrink:0;">
       <button id="nav-admin-btn" onclick="showPage('page-admin')" style="display:none;padding:4px 10px;border-radius:20px;border:1.5px solid rgba(125,212,168,0.4);background:rgba(240,250,245,0.35);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);font-size:10px;cursor:pointer;color:var(--green-strong);font-weight:500;white-space:nowrap;box-shadow:inset 0 1px 3px rgba(255,255,255,0.7);font-family:var(--font-main);"><svg class="ico" aria-hidden="true"><use href="#ic-sliders"/></svg> 管理</button>
-      <button id="nav-auth-btn" onclick="toggleAuth()" style="padding:4px 10px;border-radius:20px;border:1.5px solid rgba(255,255,255,0.65);background:rgba(255,255,255,0.3);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);font-size:10px;cursor:pointer;color:var(--text-mid);display:flex;align-items:center;gap:3px;white-space:nowrap;max-width:120px;overflow:hidden;box-shadow:inset 0 1px 3px rgba(255,255,255,0.7);font-family:var(--font-main);">
+      <button id="nav-auth-btn" class="nav-settings" onclick="openAccountSettings()" aria-label="アカウント・プロフィール設定" aria-haspopup="dialog" aria-controls="account-settings">
         <span id="nav-icon" style="flex-shrink:0;"></span><span id="nav-name" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">ログイン</span>
       </button>
     </div>
   </div>
   <div class="nav-tabs">
-    <button class="nav-tab" onclick="showPage('page-todo')"><svg class="ico" aria-hidden="true"><use href="#ic-home"/></svg> ホーム</button>
-    <button class="nav-tab active" onclick="showPage('page-goal')"><svg class="ico" aria-hidden="true"><use href="#ic-target"/></svg> 目標設定</button>
-    <button class="nav-tab" onclick="showPage('page-record')"><svg class="ico" aria-hidden="true"><use href="#ic-chart"/></svg> 体調記録</button>
-    <button class="nav-tab" onclick="showPage('page-group')"><svg class="ico" aria-hidden="true"><use href="#ic-flower"/></svg> グループ</button>
-    <button class="nav-tab" onclick="showPage('page-column')"><svg class="ico" aria-hidden="true"><use href="#ic-news"/></svg> コラム</button>
-    <button class="nav-tab" onclick="showPage('page-more')"><svg class="ico" aria-hidden="true"><use href="#ic-menu"/></svg> その他</button>
+    <button class="nav-tab" data-nav="home" onclick="showPage('page-todo')"><svg class="ico" aria-hidden="true"><use href="#ic-home"/></svg> ホーム</button>
+    <button class="nav-tab active" data-nav="settings" onclick="showPage('page-goal')"><svg class="ico" aria-hidden="true"><use href="#ic-target"/></svg> 目標設定</button>
+    <button class="nav-tab" data-nav="reports" onclick="showPage('page-more')"><svg class="ico" aria-hidden="true"><use href="#ic-doc"/></svg> 記録レポート</button>
+    <button class="nav-tab" data-nav="journey" onclick="showPage('page-record')"><svg class="ico" aria-hidden="true"><use href="#ic-flower"/></svg> わたしの歩み</button>
+    <button class="nav-tab" data-nav="groups" onclick="showPage('page-group')"><svg class="ico" aria-hidden="true"><use href="#ic-users"/></svg> グループ</button>
+    <button class="nav-tab" data-nav="meals" onclick="showPage('page-sns')"><svg class="ico" aria-hidden="true"><use href="#ic-camera"/></svg> みんなのご飯</button>
+    <button class="nav-tab" data-nav="column" onclick="showPage('page-column')"><svg class="ico" aria-hidden="true"><use href="#ic-news"/></svg> コラム</button>
   </div>
 </nav>
 
@@ -1699,11 +1701,12 @@ body { color: var(--text-dark); font-weight: 400; line-height: 1.8; }
 
 <!-- ========== SNSページ（インスタンツ）========== -->
 <div id="page-sns" class="page">
+  <header class="meal-intro"><p class="meal-eyebrow">OUR EVERYDAY TABLE</p><h1>みんなのご飯</h1><p>好きなものを、あなたらしく。<br>残したくなった食事を、気軽に一枚。</p><small>手づくりも、外食も、おやつも。毎日投稿しなくても大丈夫。</small></header>
 
   <!-- SNSタブ（フィード/投稿） -->
   <div class="sns-tabs">
-    <button class="sns-tab active" onclick="switchSnsTab('feed')"><svg class="ico" aria-hidden="true"><use href="#ic-camera"/></svg> みんなの記録</button>
-    <button class="sns-tab" onclick="switchSnsTab('post')"><svg class="ico" aria-hidden="true"><use href="#ic-edit"/></svg> 投稿する</button>
+    <button class="sns-tab active" onclick="switchSnsTab('feed')"><svg class="ico" aria-hidden="true"><use href="#ic-camera"/></svg> みんなのご飯</button>
+    <button class="sns-tab" onclick="switchSnsTab('post')"><svg class="ico" aria-hidden="true"><use href="#ic-edit"/></svg> ご飯を投稿する</button>
   </div>
 
   <!-- フィード -->
@@ -1715,7 +1718,8 @@ body { color: var(--text-dark); font-weight: 400; line-height: 1.8; }
   <!-- 投稿作成 -->
   <div id="sns-post" style="display:none;">
     <div class="post-create-card">
-      <div class="post-create-title"><svg class="ico" aria-hidden="true"><use href="#ic-camera"/></svg> 今日の取り組みをシェア</div>
+      <div class="post-create-title"><svg class="ico" aria-hidden="true"><use href="#ic-camera"/></svg> 今日のご飯を、気軽にシェア</div>
+      <p class="meal-post-note">食べたものや、おいしかったひとときを。内容や量を比べなくても大丈夫です。</p>
       <div class="expires-badge"><svg class="ico" aria-hidden="true"><use href="#ic-clock"/></svg> 投稿は7日後に自動削除されます</div>
 
       <div class="image-upload-area" id="upload-area" onclick="document.getElementById('post-image-input').click()">
@@ -1729,7 +1733,7 @@ body { color: var(--text-dark); font-weight: 400; line-height: 1.8; }
       <input type="file" id="post-image-input" accept="image/*" style="display:none;" onchange="previewImage(this)">
 
       <div class="form-group" style="margin-top:12px;">
-        <textarea id="post-caption" placeholder="今日の取り組みを書こう&#10;例：ウォーキング30分達成！" rows="3" style="font-size:14px;"></textarea>
+        <label for="post-caption" class="meal-caption-label">ひとこと（任意）</label><textarea id="post-caption" placeholder="例：今日は、お気に入りのお店でランチ。" rows="3" style="font-size:16px;"></textarea>
       </div>
 
       <button class="btn-primary" onclick="submitPost()">投稿する</button>
@@ -1774,23 +1778,19 @@ body { color: var(--text-dark); font-weight: 400; line-height: 1.8; }
   </div>
 </div>
 
-<!-- ========== その他ページ（既存機能はここに集約・削除なし） ========== -->
+<!-- ========== 記録レポートの入口（page-moreは既存リンクとの互換用） ========== -->
 <div id="page-more" class="page">
-  <div style="padding:16px;">
+  <div class="record-report-hub" style="padding:16px;">
+    <header><p class="meal-eyebrow">MY RECORDS</p><h1>記録レポート</h1><p>日々の記録をまとめて、自分のペースでふりかえる。</p></header>
     <div class="card" style="padding:8px;">
       <button class="more-menu-item" onclick="showPage('page-report')">
         <span class="more-menu-ic"><svg class="ico" aria-hidden="true"><use href="#ic-doc"/></svg></span>
-        <span class="more-menu-body"><span class="more-menu-title">個人レポート</span><span class="more-menu-sub">月次の達成率・体重推移をPDF出力</span></span>
+        <span class="more-menu-body"><span class="more-menu-title">月次レポート</span><span class="more-menu-sub">目標と歩みをふりかえり、カウンセラーへ報告</span></span>
         <span class="more-menu-chev">›</span>
       </button>
-      <button class="more-menu-item" onclick="showPage('page-sns')">
-        <span class="more-menu-ic"><svg class="ico" aria-hidden="true"><use href="#ic-camera"/></svg></span>
-        <span class="more-menu-body"><span class="more-menu-title">みんなの記録</span><span class="more-menu-sub">みんなの取り組み写真を見る</span></span>
-        <span class="more-menu-chev">›</span>
-      </button>
-      <button class="more-menu-item" onclick="toggleAuth()">
-        <span class="more-menu-ic"><svg class="ico" aria-hidden="true"><use href="#ic-sliders"/></svg></span>
-        <span class="more-menu-body"><span class="more-menu-title">アカウント・プロフィール設定</span><span class="more-menu-sub">ログイン・プロフィール管理</span></span>
+      <button class="more-menu-item" onclick="showPage('page-summary')">
+        <span class="more-menu-ic"><svg class="ico" aria-hidden="true"><use href="#ic-edit"/></svg></span>
+        <span class="more-menu-body"><span class="more-menu-title">記録をまとめて入力</span><span class="more-menu-sub">日付ごとの記録や、月の回数・数字を入力</span></span>
         <span class="more-menu-chev">›</span>
       </button>
     </div>
@@ -3747,9 +3747,8 @@ function showPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  const tabs = document.querySelectorAll('.nav-tab');
-  const map = {'page-todo':0,'page-goal':1,'page-record':2,'page-group':3,'page-column':4,'page-more':5,'page-report':5,'page-sns':5,'page-summary':5};
-  if (map[id] !== undefined) tabs[map[id]].classList.add('active');
+  const map = {'page-todo':'home','page-goal':'settings','page-record':'reports','page-group':'groups','page-group-detail':'groups','page-column':'column','page-more':'reports','page-report':'reports','page-sns':'meals','page-summary':'reports'};
+  if (map[id]) document.querySelector('.nav-tab[data-nav="'+map[id]+'"]')?.classList.add('active');
   if (id === 'page-todo') { renderTodo(); loadAnnouncement(); }
   if (id === 'page-record') { 
     renderRecordHistory(); 
@@ -5168,7 +5167,7 @@ let postsCache = [];
 function switchSnsTab(tab) {
   snsCurrentTab = tab;
   document.querySelectorAll('.sns-tab').forEach(t => t.classList.remove('active'));
-  event.target.classList.add('active');
+  document.querySelectorAll('.sns-tab')[tab === 'feed' ? 0 : 1]?.classList.add('active');
   document.getElementById('sns-feed').style.display = tab === 'feed' ? 'flex' : 'none';
   document.getElementById('sns-post').style.display = tab === 'post' ? 'block' : 'none';
   if (tab === 'feed') loadPosts();
@@ -5263,7 +5262,7 @@ async function loadPosts() {
     if (error) throw error;
     loading.style.display = 'none';
     if (!posts || posts.length === 0) {
-      container.innerHTML = '<div class="no-posts"><div class="no-posts-icon"><svg class="ico" aria-hidden="true"><use href="#ic-leaf"/></svg></div><div style="font-size:14px;font-weight:500;margin-bottom:8px;">まだ投稿がありません</div><div style="font-size:13px;">最初の投稿をしてみよう！</div></div>';
+      container.innerHTML = '<div class="no-posts"><div class="no-posts-icon"><svg class="ico" aria-hidden="true"><use href="#ic-leaf"/></svg></div><div style="font-size:14px;font-weight:400;margin-bottom:8px;">みんなのご飯が、ここに集まります。</div><div style="font-size:13px;">残したくなった食事を、気軽に一枚。</div></div>';
       return;
     }
     postsCache = posts;
