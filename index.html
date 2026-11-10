@@ -433,10 +433,6 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
 .habit-result-grid { display:grid;grid-template-columns:1fr 1fr;gap:8px; }
 .habit-result-item { background:var(--green-light);border:1.5px solid var(--green-mid);border-radius:var(--radius-sm);padding:12px;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500; }
 
-/* LINE */
-.line-banner { background:#06C755;border-radius:var(--radius);padding:20px;text-align:center;color:white;margin-bottom:16px; }
-.btn-line { display:inline-block;background:white;color:#06C755;border:none;border-radius:8px;padding:12px 28px;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none; }
-
 /* アクション */
 .action-row { display:flex;gap:10px;margin-top:8px; }
 .btn-pdf,.btn-share { flex:1;padding:13px;border-radius:var(--radius-sm);font-size:14px;font-weight:500;cursor:pointer;border:none;transition:all .2s; }
@@ -581,9 +577,6 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none;width:20px;h
 .column-article-date { font-size:11px;color:var(--text-light); }
 .column-article-title { font-size:15px;font-weight:600;color:var(--text-dark);line-height:1.5; }
 .column-article-excerpt { font-size:13px;color:var(--text-mid);line-height:1.7; }
-.column-discord-banner { background:linear-gradient(135deg,#5865F2,#8B5CF6);border-radius:var(--radius);padding:28px 20px;text-align:center;color:white; }
-.btn-discord { display:inline-block;background:white;color:#5865F2;border:none;border-radius:8px;padding:12px 28px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font-main);transition:all .2s; }
-.btn-discord:hover { transform:translateY(-1px);box-shadow:0 6px 18px rgba(0,0,0,0.15); }
 
 /* ========== グループ機能 ========== */
 .group-card { background:rgba(255,255,255,0.25);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:var(--glass-pill-border);border-radius:var(--radius);padding:14px;margin-bottom:10px;cursor:pointer;transition:all .2s;box-shadow:inset 0 1px 4px rgba(255,255,255,0.6);position:relative;overflow:hidden; }
@@ -764,14 +757,13 @@ body { color: var(--text-dark); font-weight: 400; line-height: 1.8; }
 .column-article-cat.cat-inner-care { background: #F9E6EA; color: #9E586C; }
 .column-article-cat.cat-self-care { background: #F3EAD6; color: #7B6648; }
 .column-article-cat.cat-warmth-flow { background: #F7E4DA; color: #9A6150; }
-.column-discord-banner .ico { color: #fff; width: 1.3em; height: 1.3em; }
 .column-note { text-align: center; padding: 28px 12px; color: var(--text-light); font-size: 13px; line-height: 1.9; }
 .btn-start { color: var(--text-mid); font-weight: 500; letter-spacing: .1em; }
 .lp-step-num { color: var(--text-mid); }
 
 /* ===== アイコン（アイコンのかわりの線画） ===== */
 .ico { width: 1.12em; height: 1.12em; vertical-align: -.2em; color: var(--pink-strong); flex-shrink: 0; }
-.nav-tab .ico, .sns-tab .ico, .btn-primary .ico, .btn-secondary .ico, .btn-pdf .ico, .btn-share .ico, .auth-btn .ico, .btn-sm .ico, .btn-discord .ico { color: currentColor; }
+.nav-tab .ico, .sns-tab .ico, .btn-primary .ico, .btn-secondary .ico, .btn-pdf .ico, .btn-share .ico, .auth-btn .ico, .btn-sm .ico { color: currentColor; }
 .card-title .ico { width: 1.05em; height: 1.05em; }
 .nav-tab .ico { width: 1.05em; height: 1.05em; margin-right: 2px; }
 .lp-feat-icon-wrap .ico { width: 26px; height: 26px; }
@@ -1159,11 +1151,6 @@ body { color: var(--text-dark); font-weight: 400; line-height: 1.8; }
           <div class="card-title"><svg class="ico" aria-hidden="true"><use href="#ic-leaf"/></svg> 選んだ習慣TODO</div>
           <div class="habit-result-grid" id="habit-result-list"></div>
         </div>
-        <div class="line-banner">
-          <div style="font-size:15px;font-weight:700;margin-bottom:8px;"><svg class="ico" aria-hidden="true"><use href="#ic-share"/></svg> LINEで毎日サポート！</div>
-          <div style="font-size:13px;opacity:.9;margin-bottom:12px;">毎朝の応援メッセージをお届けします。</div>
-          <a href="#" class="btn-line" onclick="alert('LINEのURLを設定してください')">LINEで受け取る</a>
-        </div>
         <div class="action-row">
           <button class="btn-pdf" onclick="downloadPDF()"><svg class="ico" aria-hidden="true"><use href="#ic-doc"/></svg> PDFで保存</button>
           <button class="btn-share" onclick="showPage('page-report')"><svg class="ico" aria-hidden="true"><use href="#ic-chart"/></svg> レポートへ</button>
@@ -1317,19 +1304,7 @@ body { color: var(--text-dark); font-weight: 400; line-height: 1.8; }
       </div>
       <div style="display:flex;gap:10px;">
         <button class="btn-primary" onclick="saveJournal()" style="flex:1;"><svg class="ico" aria-hidden="true"><use href="#ic-save"/></svg> 保存する</button>
-        <button class="btn-sm btn-sm-outline" onclick="sendToLINE()" style="padding:14px 16px;border-radius:var(--radius-sm);font-size:14px;"><svg class="ico" aria-hidden="true"><use href="#ic-chat"/></svg> LINEで相談</button>
       </div>
-    </div>
-    <div class="card" style="background:linear-gradient(135deg,#e8f8f0,#f0fff8);border:1.5px solid #7DD4A8;">
-      <div class="card-title" style="color:#2DAA71;"><svg class="ico" aria-hidden="true"><use href="#ic-chat"/></svg> LINEでフィードバックをもらおう</div>
-      <p style="font-size:13px;color:#4a8a6a;line-height:1.8;margin-bottom:16px;">ジャーナルを保存してからボタンを押すと、今日の記録がLINEに送信されます。あなたの記録を見てフィードバックをお返しします！</p>
-      <div style="background:#f0fff8;border-radius:10px;padding:16px;margin-bottom:12px;font-size:13px;color:#4a8a6a;line-height:1.8;">
-        <svg class="ico" aria-hidden="true"><use href="#ic-mail"/></svg> <strong>nodoka に直接メッセージが届きます！</strong><br>
-        担当者直通（AIではなく本人が返信します）<br>
-        LINEに移行したら、そのまま<strong>ペースト→送信</strong>してください！
-      </div>
-      <button onclick="sendToLINE()" style="width:100%;padding:16px;background:#06C755;color:white;border:none;border-radius:var(--radius-sm);font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;"><svg class="ico" aria-hidden="true"><use href="#ic-chat"/></svg> 今日の記録をLINEで送る</button>
-      <p style="font-size:11px;color:#6aaa8a;text-align:center;margin-top:8px;">※記録内容が自動でコピーされます。LINEでそのままペーストして送信！</p>
     </div>
     <div class="card">
       <div class="card-title"><svg class="ico" aria-hidden="true"><use href="#ic-book"/></svg> 過去のジャーナル</div>
@@ -1386,7 +1361,6 @@ body { color: var(--text-dark); font-weight: 400; line-height: 1.8; }
       </div>
       <button onclick="saveReportAsImage()" style="width:100%;padding:14px;background:linear-gradient(135deg,#F4CFD6 0%,#FBF1EA 54%,#EDDFC7 100%);color:#604E48;border:1px solid rgba(255,255,255,0.95);box-shadow:0 10px 20px -8px rgba(96,78,72,0.1);border-radius:var(--radius-sm);font-size:15px;font-weight:700;cursor:pointer;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:8px;"><svg class="ico" aria-hidden="true"><use href="#ic-camera"/></svg> SNSでシェアする(画像保存)</button>
       <button onclick="shareReportToStory()" style="width:100%;padding:14px;background:white;color:var(--pink-strong);border:1.5px solid #F4CFD6;border-radius:var(--radius-sm);font-size:15px;font-weight:700;cursor:pointer;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:8px;"><svg class="ico" aria-hidden="true"><use href="#ic-share"/></svg> ストーリーズでシェア(Instagram/Threads)</button>
-      <button onclick="sendMonthlyReportToLINE()" style="width:100%;padding:14px;background:#06C755;color:white;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:700;cursor:pointer;margin-top:10px;"><svg class="ico" aria-hidden="true"><use href="#ic-chat"/></svg> 月次レポートをLINEで送る</button>
     </div>
   </div>
 </div>
@@ -1398,12 +1372,6 @@ body { color: var(--text-dark); font-weight: 400; line-height: 1.8; }
 
     <div id="column-articles-list" class="column-articles-list"></div>
 
-    <div class="column-discord-banner">
-      <div style="font-size:26px;margin-bottom:6px;"><svg class="ico" aria-hidden="true"><use href="#ic-chat"/></svg></div>
-      <div style="font-size:15px;font-weight:700;margin-bottom:6px;">みんなと一緒に頑張ろう！</div>
-      <div style="font-size:13px;opacity:.9;margin-bottom:14px;line-height:1.7;">Discordコミュニティで仲間と情報交換したり、<br>励まし合いながら習慣を続けよう</div>
-      <button class="btn-discord" onclick="openDiscordCommunity()">Discordに参加する</button>
-    </div>
   </div>
 </div>
 
@@ -1847,7 +1815,6 @@ const bloomStorage = {
 
 // ========== コミュニティ・ブログ設定 ==========
 const BLOG_URL = 'https://blog.fastina.net';
-const COMMUNITY_URL = 'https://discord.gg/REPLACE_WITH_INVITE_CODE'; // Discordコミュニティ開設後に更新してください
 
 // パスワード再設定メールのリンクから戻ってきたかを、Supabaseがハッシュを消す前に記録（新規追加）
 const AUTH_HASH_AT_LOAD = location.hash || '';
@@ -2365,10 +2332,6 @@ function openColumnItem(index) {
 }
 
 function openColumnArticle() { window.open(WP_BLOG_URL + '/', '_blank', 'noopener'); }
-
-function openDiscordCommunity() {
-  window.open(COMMUNITY_URL, '_blank');
-}
 
 // ========== グループ機能 ==========
 // ========== 運営からのお知らせ ==========
@@ -4719,54 +4682,6 @@ function awardMonthlyBadge() {
   }
 }
 
-function sendMonthlyReportToLINE() {
-  const range = getReportMonthRange();
-  const monthStr = range.monthStr;
-  const avgTodo = document.getElementById('report-avg-todo').textContent;
-  const streak = document.getElementById('report-streak').textContent;
-  const weightDiff = document.getElementById('report-weight-diff').textContent;
-  const recordDays = document.getElementById('report-record-days').textContent;
-  const avgStress = document.getElementById('report-avg-stress').textContent;
-  const journalDays = document.getElementById('report-journal-days').textContent;
-  const comment = document.getElementById('report-comment').value;
-
-  let msg = '【Bloom Journal 月次レポート】\n';
-  msg += ' ' + monthStr + '\n';
-  if (state.name) msg += ' ' + state.name + '\n';
-  msg += '\n';
-  msg += ' 習慣平均達成率：' + avgTodo + '\n';
-  msg += ' 最長継続：' + streak + '\n';
-  msg += ' 体重変化：' + weightDiff + '\n';
-  msg += ' 記録日数：' + recordDays + '\n';
-  msg += ' 平均ストレス：' + avgStress + '\n';
-  msg += ' ジャーナル：' + journalDays + '\n';
-
-  // 習慣別達成率
-  const habits = state.selectedHabits;
-  if (habits.length > 0) {
-    msg += '\n 習慣別達成率：\n';
-    const days = range.days;
-    habits.forEach(h => {
-      const pct = getHabitPct(h, days);
-      msg += '  ・' + h + '：' + pct + '%\n';
-    });
-  }
-  if (comment) msg += '\n コメント：\n' + comment + '\n';
-  msg += '\n#BloomJournal #月次レポート';
-
-  window.open('https://lin.ee/5EYolb7', '_blank');
-  setTimeout(() => {
-    navigator.clipboard.writeText(msg).then(() => {
-      alert(' 月次レポートをコピーしました！\nLINEでそのままペーストして送信してください');
-    }).catch(() => {
-      alert('月次レポート：\n\n' + msg);
-    });
-  }, 800);
-  
-  // 月次バッジを付与（その年その月ごとのデザイン）
-  awardMonthlyBadge();
-}
-
 function saveReportComment() {
   saveToStorage();
   alert('コメントを保存しました！');
@@ -4827,35 +4742,6 @@ function loadJournalEntry(key) {
   journalDate = new Date(key + 'T00:00:00');
   document.getElementById('journal-date-label').textContent = formatDateLabel(journalDate);
   document.getElementById('journal-text').value = journalData[key] || '';
-}
-
-function sendToLINE() {
-  const dateKey = formatDate(new Date());
-  const journalText = journalData[dateKey] || '';
-  const rec = recordData[dateKey] || {};
-  const todoDay = todoData[dateKey] || {};
-  const habits = state.selectedHabits;
-  const doneCount = habits.filter(h => todoDay[h]).length;
-  const pct = habits.length > 0 ? Math.round(doneCount / habits.length * 100) : 0;
-  const moods = ['','','','','',''];
-  let msg = '【Bloom Journal 今日の記録】\n';
-  msg += ' ' + dateKey + '\n\n';
-  if (state.name) msg += ' ' + state.name + '\n\n';
-  msg += ' 習慣達成率：' + pct + '% (' + doneCount + '/' + habits.length + ')\n';
-  if (rec.weight) msg += ' 体重：' + rec.weight + 'kg\n';
-  if (rec.mood) msg += ' 気分：' + moods[rec.mood] + '\n';
-  if (rec.stress) msg += ' ストレス：' + rec.stress + '/10\n';
-  if (rec.memo) msg += ' 体調メモ：' + rec.memo + '\n';
-  if (journalText) msg += '\n ジャーナル：\n' + journalText + '\n';
-  msg += '\n#BloomJournal #習慣記録';
-  window.open('https://lin.ee/5EYolb7', '_blank');
-  setTimeout(() => {
-    navigator.clipboard.writeText(msg).then(() => {
-      alert(' 記録内容をコピーしました！\nLINEが開いたらトークに貼り付けて送信してください\n\n--- 内容プレビュー ---\n' + msg.substring(0, 150) + '...');
-    }).catch(() => {
-      alert('LINEで以下の内容を送ってください：\n\n' + msg);
-    });
-  }, 800);
 }
 
 // ========== SNSシェア ==========

@@ -62,17 +62,7 @@ diet-goal-sheet/
 
 ## 🛠 カスタマイズ
 
-### LINEのURLを設定する
-
-`index.html` の以下の部分を変更してください：
-
-```html
-<!-- 変更前 -->
-<a href="#" class="btn-line" onclick="alert('LINEのURLを設定してください')">
-
-<!-- 変更後 -->
-<a href="https://line.me/R/ti/p/@あなたのLINEID" class="btn-line">
-```
+Discord参加案内とLINEへの送信・サポート案内は、コミュニティ準備中のため現在は表示していません。
 
 ### ブランド名・カラーを変更する
 
