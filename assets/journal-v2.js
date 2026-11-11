@@ -22,7 +22,7 @@
   let date = today(), month = today().slice(0, 7), active = 0, draft, animating = false, reportReplies = [], submittedReport = null;
   let members = [], adminDetail = null, adminSelected = '', adminOffset = 0, adminNext = null, adminRequest = 0;
   let settingsItems = null, settingsTargets = null, bulkDay = today(), syncMessage = '記録を読み込んでいます。';
-  let sendingReport = false;
+  let sendingReport = false, syncError = false;
   const legacyInitialState = clone(state);
   let legacyOwner = null;
   function resetLegacyAccount() {
@@ -36,7 +36,7 @@
   function reportItems() { return monthConfig().items || workspace.items; }
   function dayItems() { return workspace.months[date.slice(0,7)]?.items || workspace.items; }
   function store() { localStorage.setItem(storageKey(), JSON.stringify({ workspace, revision, dirty })); }
-  function announce(text, bad = false) { syncMessage = text; document.querySelectorAll('.jv .sync-state').forEach(n => { n.textContent = text; n.classList.toggle('error', bad); }); }
+  function announce(text, bad = false) { syncMessage = text; syncError = bad; document.querySelectorAll('.jv .sync-state').forEach(n => { n.textContent = text; n.classList.toggle('error', bad); }); }
   function changed() { M.validateWorkspace(workspace); dirty = true; editGeneration++; store(); announce(currentUser ? 'この端末に保存しました。同期しています。' : 'この端末に保存しました。ログインすると同期・報告できます。'); }
   async function token() { if (!supabaseClient || !currentUser) throw new Error('ログインしてください。'); const { data, error } = await supabaseClient.auth.getSession(); if (error || !data.session) throw new Error('ログインし直してください。'); return data.session.access_token; }
   async function api(path, body, auth = true) {
@@ -103,7 +103,11 @@
     const thisLoad = loadInFlight;
     try { await thisLoad; } finally { if (loadInFlight === thisLoad) { loadInFlight = null; loadingAccount = null; } }
   }
-  function shell(title, sub, content) { return '<h1>' + title + '</h1><p class="muted">' + sub + '</p>' + '<div class="workspace-status">' + (identity ? '<p class="workspace-identity"><span class="badge">' + e(identity.nickname) + ' · 会員番号 ' + e(identity.member_id) + '</span></p>' : '') + '<p class="sync-state" role="status">' + e(syncMessage) + '</p><button type="button" class="text-button" data-action="sync">同期を確認</button></div>' + content; }
+  function shell(title, sub, content, compact = false) {
+    const status='<p class="sync-state'+(syncError?' error':'')+'" role="status">'+e(syncMessage)+'</p>';
+    if(compact)return '<header class="report-title"><h1>'+title+'</h1>'+button(icon('sync'),'sync','sync-icon','aria-label="同期を確認" title="記録の同期を確認"')+'</header>'+status+content;
+    return '<h1>' + title + '</h1><p class="muted">' + sub + '</p><div class="workspace-status">' + (identity ? '<p class="workspace-identity"><span class="badge">' + e(identity.nickname) + ' · 会員番号 ' + e(identity.member_id) + '</span></p>' : '') + status + '<button type="button" class="text-button" data-action="sync">同期を確認</button></div>' + content;
+  }
   function usable() { if (!ready || animating) throw new Error('読み込み・保存の完了を待ってください。'); }
   function button(label, action, cls = 'secondary', extra = '') { return '<button type="button" class="' + cls + '" data-action="' + action + '" ' + extra + '>' + label + '</button>'; }
   function field(item, value, mode = 'daily', index = 0) {
@@ -130,15 +134,16 @@
     bindSwipe($('v2-daily-card'), saveDaily);
     bindDropWobble(root.querySelector('.big-drop'));
   }
-  function summaryHtml(rows) {
-    return rows.map(s => '<div class="metric-row"><div class="metric-head"><h3>' + e(s.name) + '</h3>' + (s.type === 'choice' ? '' : '<strong>' + fmt(s.actual) + ' ' + e(s.unit) + '</strong>') + '</div>' + (s.type === 'choice' ? '<p class="metric-distribution">' + Object.entries(s.distribution || {}).map(([k, v]) => e(k) + ' ' + v + '日').join(' ／ ') + '</p>' : '<p class="metric-target">' + (s.target ? '目標 ' + fmt(s.target) + ' ' + e(s.unit) + ' · ' + (s.percentage === null ? '—' : fmt(s.percentage) + '%') : '目標未設定') + '</p>' + (s.percentage !== null ? '<div class="meter"><div style="width:' + Math.min(s.percentage, 100) + '%"></div></div>' : '')) + '<p class="muted">記録 ' + s.recordedDays + '日 ／ 未記録 ' + s.missingDays + '日' + (s.manual ? ' · 月合計を手入力' : '') + (s.aggregate === 'average' ? ' · 記録日の平均' : '') + '</p></div>').join('');
+  function summaryHtml(rows, compact = false) {
+    return rows.map(s => '<div class="metric-row"><div class="metric-head"><h3>' + e(s.name) + '</h3>' + (s.type === 'choice' ? '' : '<strong>' + (compact && s.aggregate === 'average' ? '<small>平均</small> ' : '') + fmt(s.actual) + ' ' + e(s.unit) + '</strong>') + '</div>' + (s.type === 'choice' ? '<p class="metric-distribution">' + Object.entries(s.distribution || {}).map(([k, v]) => e(k) + ' ' + v + '日').join(' ／ ') + '</p>' : '<p class="metric-target">' + (s.target ? '目標 ' + fmt(s.target) + ' ' + e(s.unit) + ' · ' + (s.percentage === null ? '—' : fmt(s.percentage) + '%') : '目標未設定') + (compact && s.manual ? ' <span class="metric-manual">まとめ入力</span>' : '') + '</p>' + (s.percentage !== null ? '<div class="meter"><div style="width:' + Math.min(s.percentage, 100) + '%"></div></div>' : '')) + (compact ? '' : '<p class="muted">記録 ' + s.recordedDays + '日 ／ 未記録 ' + s.missingDays + '日' + (s.manual ? ' · 月合計を手入力' : '') + (s.aggregate === 'average' ? ' · 記録日の平均' : '') + '</p>') + '</div>').join('');
   }
   function monthHeader() { return '<div class="row space monthly-head section"><label class="field"><span>対象月</span><input class="month-input" type="month" id="v2-month" value="' + month + '" max="' + today().slice(0, 7) + '"></label>' + button('目標設定', 'settings', 'secondary', 'aria-label="月の目標を設定"') + '</div>'; }
   function renderReport() {
     const rows = M.report(workspace, month);
-    $('page-v2-report').innerHTML = shell('今月の一歩を、届ける。', '本人が決めた月間目標に対して、達成率を自動で計算します。', monthHeader() + '<article class="paper" id="v2-month-card" data-swipe-area="handle"><p class="muted">MONTHLY REPORT · ' + month + '</p><h2>わたしのふりかえり</h2>' + summaryHtml(rows) + '<div class="swipe-handle" data-swipe-handle><p class="swipe-label">' + icon('swipe-up') + ' ここを軽く上へスワイプして報告</p></div></article>' +
-      button('月の回数・数字をまとめて入力', 'bulk', 'secondary wide-button') + '<label class="field section"><span>カウンセラーにひとこと（任意・本名や連絡先は書かないでください）</span><textarea id="v2-comment" rows="3" maxlength="2000">' + e(monthConfig().comment || '') + '</textarea></label>' + button(sendingReport ? '報告しています…' : '月次レポートを報告する', 'send-report', 'primary wide-button', sendingReport || !currentUser || !ready ? 'disabled' : '') +
-      '<p class="muted section" id="v2-report-state">' + (submittedReport ? '提出済みです。記録を更新した場合は、再報告できます。' : '同期済みの記録だけを、担当カウンセラーに届けます。') + '</p><div class="row section">' + button('SNS用画像を保存', 'save-image') + button('SNSにシェア', 'share-image') + '</div><p class="muted">画像には本名・会員番号・カウンセラーへのコメントを載せません。</p><section class="section"><h2>カウンセラーからのお返事</h2>' + (reportReplies.length ? reportReplies.map(r => '<div class="reply">' + e(r.content) + '</div>').join('') : '<p class="muted">まだお返事はありません。</p>') + '</section>');
+    const details='<details class="report-details"><summary>記録の内訳</summary>'+rows.map(s=>'<div class="record-row"><span>'+e(s.name)+'</span><span>記録 '+s.recordedDays+'日 ／ 未記録 '+s.missingDays+'日'+(s.manual?' · まとめ入力':'')+'</span></div>').join('')+'</details>';
+    $('page-v2-report').innerHTML = shell('月次レポート', '', monthHeader() + '<article class="paper" id="v2-month-card" data-swipe-area="handle" aria-label="月次の実績">' + summaryHtml(rows, true) + '<div class="swipe-handle" data-swipe-handle><p class="swipe-label">' + icon('swipe-up') + ' 上へスワイプで報告</p></div></article>' +
+      button('まとめて入力', 'bulk', 'secondary wide-button', 'aria-label="月の回数・数字をまとめて入力"') + details + '<details class="report-comment"'+(monthConfig().comment?' open':'')+'><summary>ひとこと添える（任意）</summary><label class="field"><span>カウンセラーへ・本名や連絡先は書かないでください</span><textarea id="v2-comment" rows="2" maxlength="2000" aria-label="カウンセラーにひとこと">' + e(monthConfig().comment || '') + '</textarea></label></details>' + button(sendingReport ? '報告しています…' : '報告する', 'send-report', 'primary wide-button', 'aria-label="月次レポートを報告する" '+(sendingReport || !currentUser || !ready ? 'disabled' : '')) +
+      '<p class="muted" id="v2-report-state" role="status">' + (submittedReport ? '報告済み' : '') + '</p><details class="report-sharing"><summary>SNSにシェア</summary><div class="row">' + button('画像を保存', 'save-image') + button('シェア', 'share-image') + '</div><p class="muted">会員番号・コメントは画像に載りません。</p></details>'+(reportReplies.length?'<section class="section"><h2>カウンセラーから</h2>'+reportReplies.map(r=>'<div class="reply">'+e(r.content)+'</div>').join('')+'</section>':''), true);
     bindSwipe($('v2-month-card'), submitReport);
   }
   async function refreshReplies() {

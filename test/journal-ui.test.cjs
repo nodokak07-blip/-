@@ -121,7 +121,7 @@ test('journey choices save without comments, reactions and received words work, 
   click(w,'[data-journey=react][data-kind=step]');await tick();await tick();
   assert.ok(app.journeyCalls.some(c=>c.p_action==='react'&&c.p_payload.enabled===true));
   click(w,'[data-journey=tab][data-tab=words]');assert.equal(w.document.getElementById('journey-panel-words').hidden,false);assert.match(w.document.querySelector('.journey-quote').textContent,/休むのも/);
-  assert.equal(w.document.querySelector('.journey-reservation').href,'https://timerex.net/s/iw-inc.jp/dd1d7f4f');assert.match(w.document.querySelector('.journey-reservation').textContent,/新規の方は別途お問い合わせ/);
+  assert.equal(w.document.querySelector('#page-journey .counseling-reservation'),null);assert.equal(w.document.querySelector('#page-more .counseling-reservation').href,'https://timerex.net/s/iw-inc.jp/dd1d7f4f');assert.match(w.document.querySelector('#page-more .counseling-reservation').textContent,/新規の方は別途お問い合わせ/);
   w.showPage('page-more');const history=[...w.document.querySelectorAll('#page-more button')].find(b=>b.textContent==='以前の体調記録を見る');assert.ok(history);history.click();assert.equal(w.document.querySelector('.page.active').id,'page-record');
   assert.equal(app.errors.length,0,app.errors.map(e=>e.message).join('\n'));
  }finally{app.dom.window.close();}
@@ -210,6 +210,6 @@ test('monthly content scroll gesture does not report; handle reports once and fa
   const app=await open({loggedIn:true}),{w}=app;try{
     w.showPage('page-report');let card=w.document.getElementById('v2-month-card');swipe(w,card,{dy:-80});await tick();assert.equal(app.reportRequests.length,0);
     change(w,w.document.getElementById('v2-comment'),'今月のひとこと');app.setReportFailure(true);let handle=card.querySelector('[data-swipe-handle]');swipe(w,handle);swipe(w,handle);await tick();await tick();assert.equal(app.reportRequests.length,1);assert.match(w.document.querySelector('.sync-state').textContent,/接続できません/);assert.equal(w.document.getElementById('v2-comment').value,'今月のひとこと');assert.equal(w.document.getElementById('v2-month-card').style.transform,'');
-    app.setReportFailure(false);handle=w.document.querySelector('#v2-month-card [data-swipe-handle]');swipe(w,handle);await tick();await tick();assert.equal(app.reportRequests.length,2);assert.match(w.document.getElementById('v2-report-state').textContent,/提出済み/);assert.equal(app.reportRequests[1].comment,'今月のひとこと');assert.equal(app.errors.length,0);
+    app.setReportFailure(false);handle=w.document.querySelector('#v2-month-card [data-swipe-handle]');swipe(w,handle);await tick();await tick();assert.equal(app.reportRequests.length,2);assert.match(w.document.getElementById('v2-report-state').textContent,/報告済み/);assert.equal(app.reportRequests[1].comment,'今月のひとこと');assert.equal(app.errors.length,0);
   }finally{app.dom.window.close();}
 });

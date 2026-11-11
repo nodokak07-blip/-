@@ -95,9 +95,9 @@
   .journey .journey-post { padding:14px 0; }
   .journey .journey-stamps { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px; margin-top:10px; }
   .journey .journey-stamp { width:100%; min-width:0; padding:7px 8px; }
-  .journey .journey-reservation { margin:22px 0 12px; padding:16px 12px; gap:9px; min-height:80px; }
-  .journey .journey-reservation strong { font-size:14px; letter-spacing:0; }
-  .journey .journey-reservation small { font-size:10px; margin-top:3px; }
+  .counseling-reservation { margin:22px 0 12px; padding:16px 12px; gap:9px; min-height:80px; }
+  .counseling-reservation strong { font-size:14px; letter-spacing:0; }
+  .counseling-reservation small { font-size:10px; margin-top:3px; }
   .record-report-hub header { padding:2px 0 14px; }
   .record-report-hub h1, .meal-intro h1 { font-size:23px; margin:4px 0 8px; }
   .meal-intro { padding:2px 0 12px; }
@@ -130,3 +130,25 @@
 #v2-month-card .metric-row > .muted { font-size:10.5px; line-height:1.5; }
 #v2-month-card .meter { height:3px; margin:5px 0 4px; }
 #v2-month-card .swipe-handle { margin-top:8px; }
+
+/* The monthly view keeps the task visible and moves optional prose into details. */
+#page-v2-report .report-title { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:8px; }
+#page-v2-report .report-title h1 { margin:0; }
+#page-v2-report .sync-icon { width:36px; height:36px; min-height:36px; display:flex; align-items:center; justify-content:center; padding:0; border:1px solid #eadcdd; border-radius:50%; background:#fffaf8; color:var(--pink-dark); }
+#page-v2-report .sync-icon .ico { width:18px; height:18px; }
+#page-v2-report .sync-state:not(.error) { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
+#page-v2-report .sync-state.error { margin:8px 0; font-size:12px; }
+#v2-month-card .metric-row:first-child { border-top:0; padding-top:0; }
+#v2-month-card .metric-row { padding:7px 0; }
+#v2-month-card .metric-head small { font:400 10px var(--font-main); color:var(--text-light); }
+#v2-month-card .metric-manual { display:inline-block; font-size:9px; color:var(--pink-dark); margin-left:4px; }
+#page-v2-report details { margin-top:8px; border-bottom:1px solid #eadcdd; }
+#page-v2-report details summary { min-height:38px; font-size:12px; }
+#page-v2-report .report-details .record-row { align-items:baseline; font-size:11px; }
+#page-v2-report .report-details .record-row > span { min-width:0; overflow-wrap:anywhere; }
+#page-v2-report .report-details .record-row > span:last-child { flex-shrink:0; max-width:60%; text-align:right; }
+#page-v2-report .report-sharing .row { margin-bottom:8px; }
+#page-v2-report .report-sharing .row > button { flex:1; }
+#page-v2-report #v2-report-state:empty { display:none; }
+#page-v2-report #v2-report-state:not(:empty) { margin-top:8px; text-align:center; }
+.record-report-hub .counseling-reservation { margin:24px 0 12px; }
