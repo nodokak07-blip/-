@@ -112,3 +112,21 @@
   .page .admin-msg-banner { padding:10px 12px; margin-bottom:10px; gap:8px; }
   .page .admin-msg-content { min-width:0; font-size:12px; }
 }
+
+/* Month selection and each goal use fewer vertical rows without hiding details. */
+#page-v2-report .monthly-head, #page-v2-summary .monthly-head { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:8px; margin:10px 0; }
+#page-v2-report .monthly-head .field, #page-v2-summary .monthly-head .field { display:grid; grid-template-columns:auto minmax(0,1fr); align-items:center; gap:7px; margin:0; }
+#page-v2-report .monthly-head .field > span, #page-v2-summary .monthly-head .field > span { margin:0; font-size:11px; white-space:nowrap; }
+#page-v2-report .monthly-head input, #page-v2-summary .monthly-head input { width:100%; height:42px; min-height:42px; padding:7px 9px; }
+#page-v2-report .monthly-head > button, #page-v2-summary .monthly-head > button { height:42px; min-height:42px; padding:7px 10px; font-size:12px; }
+.jv .metric-head { display:flex; align-items:baseline; justify-content:space-between; gap:8px; }
+.jv .metric-head h3 { min-width:0; margin:0; font-size:13px; line-height:1.5; overflow-wrap:anywhere; }
+.jv .metric-head strong { max-width:48%; flex-shrink:0; font-size:17px; line-height:1.4; text-align:right; overflow-wrap:anywhere; }
+.jv .metric-target, .jv .metric-distribution { font-size:12px; line-height:1.5; margin:2px 0; color:var(--text-mid); overflow-wrap:anywhere; }
+#page-v2-report #v2-month-card { padding:12px; margin-top:10px; }
+#v2-month-card > .muted { font-size:10px; line-height:1.5; }
+#v2-month-card > h2 { font-size:16px; line-height:1.5; margin:3px 0 6px; }
+#v2-month-card .metric-row { padding:8px 0; }
+#v2-month-card .metric-row > .muted { font-size:10.5px; line-height:1.5; }
+#v2-month-card .meter { height:3px; margin:5px 0 4px; }
+#v2-month-card .swipe-handle { margin-top:8px; }
